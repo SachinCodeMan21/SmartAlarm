@@ -3,10 +3,9 @@ package com.example.smartalarm.feature.home.presentation.dialog
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.setFragmentResult
 import com.example.smartalarm.R
+import com.example.smartalarm.core.permission.sendResult
 import com.example.smartalarm.core.utility.Constants.PACKAGE
 
 /**
@@ -93,16 +92,10 @@ class PermissionSettingsDialog : DialogFragment() {
             .setTitle(getString(R.string.permission_required_title))
             .setMessage(getString(R.string.app_permission_setting_dialog_message, permissionName))
             .setPositiveButton(getString(R.string.settings)) { _, _ ->
-                setFragmentResult(
-                    SETTING_DIALOG_RESULT_KEY,
-                    bundleOf(SETTING_BUNDLE_ACTION_KEY to ACTION_SETTINGS)
-                )
+                sendResult(ACTION_SETTINGS)
             }
             .setNegativeButton(getString(R.string.cancel)) { _, _ ->
-                setFragmentResult(
-                    SETTING_DIALOG_RESULT_KEY,
-                    bundleOf(SETTING_BUNDLE_ACTION_KEY to ACTION_DENY)
-                )
+                sendResult(ACTION_DENY)
             }
             .create()
     }

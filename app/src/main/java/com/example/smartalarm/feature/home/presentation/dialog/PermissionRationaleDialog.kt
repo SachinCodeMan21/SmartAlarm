@@ -7,6 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.example.smartalarm.R
+import com.example.smartalarm.core.permission.sendResult
 import com.example.smartalarm.core.utility.Constants.PACKAGE
 
 /**
@@ -105,17 +106,11 @@ class PermissionRationaleDialog : DialogFragment() {
             .setMessage(message)
             .setPositiveButton(getString(R.string.grant_permission)) { _, _ ->
                 // Send "grant" action back to listener
-                setFragmentResult(
-                    RATIONALE_DIALOG_KEY,
-                    bundleOf(RATIONALE_DIALOG_ACTION_KEY to ACTION_GRANT)
-                )
+                sendResult(ACTION_GRANT)
             }
             .setNegativeButton(getString(R.string.deny)) { _, _ ->
                 // Send "deny" action back to listener
-                setFragmentResult(
-                    RATIONALE_DIALOG_KEY,
-                    bundleOf(RATIONALE_DIALOG_ACTION_KEY to ACTION_DENY)
-                )
+                sendResult(ACTION_DENY)
             }
             .setCancelable(true)
             .create()

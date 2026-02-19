@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -15,6 +16,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartalarm.R
+import com.example.smartalarm.core.permission.PermissionChecker
+import com.example.smartalarm.core.permission.PermissionRequester
+import com.example.smartalarm.core.permission.model.AppPermission
+import com.example.smartalarm.core.permission.model.PermissionCoordinator
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.databinding.FragmentStopwatchBinding
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchBroadCastAction
@@ -29,6 +34,7 @@ import com.example.smartalarm.feature.stopwatch.presentation.viewmodel.StopWatch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 /**
@@ -75,6 +81,14 @@ class StopwatchFragment : Fragment() {
     /** Adapter for displaying stopwatch lap times in a RecyclerView  */
     private lateinit var stopWatchLapAdapter: StopWatchLapAdapter
 
+
+    @Inject
+    lateinit var checker: PermissionChecker
+
+    private lateinit var permissionCoordinator: PermissionCoordinator
+
+
+
     // ---------------------------------------------------------------------
     // Lifecycle Methods
     // ---------------------------------------------------------------------
@@ -109,6 +123,32 @@ class StopwatchFragment : Fragment() {
         setUpLapRecyclerView()
         setUpUIStateObserver()
         setUpUIEffectObserver()
+        setUpPermissionCoordinator()
+    }
+
+    private fun setUpPermissionCoordinator() {
+
+        val requester = PermissionRequester(
+            caller = this,
+            lifecycleOwner = this,
+            context = requireContext(),
+            permissionChecker = checker,
+            rationaleProvider = { permissionName ->
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    permissionName
+                )
+            }
+        )
+
+        permissionCoordinator = PermissionCoordinator(
+            context = requireContext(),
+            requester = requester,
+            checker = checker,
+            fragmentManager = childFragmentManager,
+            lifecycleOwner = viewLifecycleOwner
+        )
+
     }
 
 
@@ -157,7 +197,9 @@ class StopwatchFragment : Fragment() {
             stopWatchViewModel.handleEvent(StopwatchEvent.ResetStopwatch)
         }
         toggleStopwatchBtn.setOnClickListener {
-            stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
+            permissionCoordinator.runPermissionGatekeeper(listOf(AppPermission.Runtime.PostNotifications),requireActivity()){
+                stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
+            }
         }
         recordLapStopwatchBtn.setOnClickListener {
             stopWatchViewModel.handleEvent(StopwatchEvent.RecordStopwatchLap)

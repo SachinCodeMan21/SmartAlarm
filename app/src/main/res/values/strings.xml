@@ -27,7 +27,10 @@
 
     <!-- Permission Dialog Messages -->
     <string name="stopwatch_notification_permission_rationale">Notification permission is required to show the running stopwatch in the notification area so you can track time while using other apps. </string>
-
+    <string name="perm_friendly_name_notifications">Notifications</string>
+    <string name="perm_friendly_name_activity">Activity Tracking</string>
+    <string name="perm_friendly_name_fullscreen">Full-screen Reminders</string>
+    <string name="perm_friendly_name_alarms">Exact Alarms</string>
 
 
 

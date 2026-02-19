@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.core.di.annotations.IoDispatcher
 import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.core.permission.NewPermissionManager
 import com.example.smartalarm.core.permission.PermissionManager
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
