@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#322f35"
+    tools:context=".feature.alarm.presentation.view.fragment.mission.ShowAlarmFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/show_alarm_guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/show_alarm_guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/show_alarm_guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/show_alarm_guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95"  />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#f5eff7"
+        android:textSize="@dimen/text_size_m"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/show_alarm_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/show_alarm_guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/show_alarm_guideline_top"
+        tools:text="Study Maths" />
+
+
+    <TextView
+        android:id="@+id/alarmTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#f5eff7"
+        android:textSize="@dimen/text_size_xxl"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/swipe_container"
+        app:layout_constraintEnd_toStartOf="@+id/show_alarm_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/show_alarm_guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:text="07:00 am" />
+
+    <TextView
+        android:id="@+id/alarmDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_m"
+        android:textSize="@dimen/text_size_m"
+        android:textStyle="bold"
+        android:textColor="#f5eff7"
+        app:layout_constraintEnd_toEndOf="@+id/alarmTime"
+        app:layout_constraintStart_toStartOf="@+id/alarmTime"
+        app:layout_constraintTop_toBottomOf="@+id/alarmTime"
+        tools:text="Tuesday" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/exit_preview_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#CCCACA"
+        android:maxWidth="@dimen/default_button_maxWidth"
+        android:padding="@dimen/padding_s"
+        android:text="@string/exit_preview"
+        android:textColor="@color/red"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Replace snoozeBtn + stop_btn with this dual-slider container -->
+    <!-- Swipe Action Container -->
+    <FrameLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toTopOf="@+id/show_alarm_guideline_bottom"
+        app:layout_constraintEnd_toStartOf="@+id/show_alarm_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/show_alarm_guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/show_alarm_guideline_top"
+        app:layout_constraintVertical_bias="0.9"
+        app:layout_constraintWidth_max="@dimen/default_button_maxWidth"
+        app:layout_constraintWidth_percent="0.85">
+
+        <!-- Background track -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/slider_track_background" />
+
+        <!-- Left hint (Snooze) -->
+        <!-- Left hint (Snooze) with TextView displaying snooze count -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/hint_snooze"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:alpha="0.4"
+                android:contentDescription="@string/swipe_left_to_snooze"
+                android:src="@drawable/ic_snooze_thumb" />
+
+            <!-- Snooze count TextView -->
+            <TextView
+                android:id="@+id/snooze_count_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/spacing_m"
+                android:alpha="0.7"
+                android:gravity="center|center_vertical"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                tools:text="3 left" />
+
+        </LinearLayout>
+
+        <!-- Right hint (Stop/Complete) -->
+        <ImageView
+            android:id="@+id/hint_action"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/spacing_m"
+            android:alpha="0.4"
+            android:contentDescription="@string/swipe_right_to_stop"
+            android:src="@drawable/ic_stop_thumb" />
+
+        <!-- Draggable thumb (starts in center) -->
+        <ImageView
+            android:id="@+id/drag_thumb"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/drag_to_snooze_or_stop"
+            android:elevation="4dp"
+            android:src="@drawable/ic_alarm_thumb" />
+
+    </FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

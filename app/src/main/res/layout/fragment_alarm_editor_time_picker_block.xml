@@ -1,0 +1,89 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Hours Picker: Allows the user to select an hour between 1 and 12 (12-hour format). -->
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/hours_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/hours_picker_description"
+        app:np_dividerColor="?attr/colorPrimary"
+        app:np_max="12"
+        app:np_min="1"
+        app:np_selectedTextSize="@dimen/text_size_m"
+        app:np_textSize="@dimen/text_size_s"
+        app:np_textColor="?attr/colorOnSurface"
+        app:np_selectedTextColor="?attr/colorOnSurface"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/colon_text"
+        app:layout_constraintHorizontal_chainStyle="packed" />
+
+    <!-- Colon Text: Displays the colon (":") between the hour and minute pickers. -->
+    <TextView
+        android:id="@+id/colon_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_m"
+        android:gravity="center"
+        android:text="@string/colon"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="@dimen/text_size_xl"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/hours_picker"
+        app:layout_constraintEnd_toStartOf="@id/minute_picker" />
+
+    <!-- Minute Picker: Allows the user to select minutes between 0 and 59. -->
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/minute_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/minute_picker_description"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/colon_text"
+        app:layout_constraintEnd_toStartOf="@id/am_pm_picker"
+        app:np_dividerColor="?attr/colorPrimary"
+        app:np_textColor="?attr/colorOnSurface"
+        app:np_selectedTextColor="?attr/colorOnSurface"
+        app:np_max="59"
+        app:np_min="0"
+        app:np_selectedTextSize="@dimen/text_size_m"
+        app:np_textSize="@dimen/text_size_s" />
+
+    <!-- AM/PM Picker: Allows the user to select AM or PM. -->
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/am_pm_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_m"
+        android:layout_marginEnd="@dimen/spacing_m"
+        android:contentDescription="@string/am_pm_picker_description"
+        app:np_textColor="?attr/colorOnSurface"
+        app:np_selectedTextColor="?attr/colorOnSurface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/minute_picker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:np_dividerColor="?attr/colorPrimary"
+        app:np_selectedTextSize="@dimen/text_size_m"
+        app:np_textSize="@dimen/text_size_s" />
+
+    <!-- Divider: A visual separator placed below the time pickers. -->
+    <View
+        android:id="@+id/timePickerAndDayDivider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spacing_xs"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:layout_marginBottom="@dimen/spacing_s"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hours_picker" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

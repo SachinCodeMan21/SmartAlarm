@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/alarm_editor_nav_graph"
+    app:startDestination="@id/alarmEditorFragment">
+
+    <fragment
+        android:id="@+id/alarmEditorFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.editor.AlarmEditorHomeFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_alarm_editor">
+
+        <action
+            android:id="@+id/action_alarmEditorFragment_to_snoozeFragment"
+            app:destination="@id/snoozeFragment"
+            app:popUpToInclusive="false" />
+
+        <argument
+            android:name="title"
+            app:argType="string" />
+
+        <argument
+            android:name="existingAlarmId"
+            app:argType="integer"
+            android:defaultValue="0" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/snoozeFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.editor.SnoozeAlarmFragment"
+        android:label="@string/snooze"
+        tools:layout="@layout/fragment_snooze_alarm" >
+
+        <argument
+            android:name="alarm"
+            app:argType="com.example.smartalarm.feature.alarm.domain.model.SnoozeSettings"
+            app:nullable="true" />
+
+    </fragment>
+
+
+</navigation>

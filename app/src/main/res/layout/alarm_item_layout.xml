@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_m"
+    android:layout_marginStart="@dimen/spacing_m"
+    android:layout_marginEnd="@dimen/spacing_m"
+    android:layout_marginBottom="@dimen/spacing_s"
+    app:cardCornerRadius="@dimen/card_corner_radius_xlarge">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurfaceContainer"
+        android:padding="@dimen/spacing_m">
+
+        <!-- Weekdays (S,M,T,W,T,F,S) [This Will Show User Selected Days In Glowing Color While For Other It Will Be Default Color]-->
+        <TextView
+            android:id="@+id/weekdays_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_xs"
+            android:letterSpacing="0.1"
+            android:textColor="@color/alarm_day_unselected_color"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="S M T W T F S" />
+
+        <!-- Alarm Time [This Will Show The Scheduled Alarm Time]-->
+        <TextView
+            android:id="@+id/alarmTimeTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_m"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:layout_marginTop="@dimen/spacing_s"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/weekdays_tv"
+            tools:text="7:00 am" />
+
+        <!-- Mission Icon [This Will Show The First Mission Icon Selected By The User]-->
+        <ImageView
+            android:id="@+id/missionIconImg"
+            android:layout_width="@dimen/alarm_item_mission_img_size"
+            android:layout_height="@dimen/alarm_item_mission_img_size"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:contentDescription="@string/alarm_mission"
+            android:src="@drawable/ic_shake"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toBottomOf="@id/alarmTimeTv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="?attr/colorPrimary" />
+
+        <!-- Mission Text [This Will Show the User Selected Missions Title] -->
+        <TextView
+            android:id="@+id/mission_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_xs"
+            android:layout_marginStart="@dimen/spacing_xs"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintTop_toTopOf="@id/missionIconImg"
+            app:layout_constraintBottom_toBottomOf="@id/missionIconImg"
+            app:layout_constraintStart_toEndOf="@id/missionIconImg"
+            tools:text="@string/mission" />
+
+        <!-- Alarm Switch [This Switch Enables User To Turn The Alarm ON/OFF]-->
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/alarm_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/alarmTimeTv"
+            app:layout_constraintBottom_toBottomOf="@id/alarmTimeTv"
+            android:importantForAccessibility="no"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

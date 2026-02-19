@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/stopwatch_fragment_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".feature.stopwatch.presentation.view.StopwatchFragment">
+
+    <!-- StopWatch Top Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/stopwatch_guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/guideline_stopwatch_top" />
+
+    <!-- StopWatch Start Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/stopwatch_guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guideline_stopwatch_start" />
+
+    <!-- StopWatch End Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/stopwatch_guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <!-- StopWatch Bottom Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/stopwatch_guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/guideline_stopwatch_bottom" />
+
+
+    <!-- Circular ProgressBar -->
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/stopwatch_progress_bar_indicator"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/stopwatch_progress_indicator"
+        app:indicatorColor="@color/purple"
+        app:layout_constraintBottom_toTopOf="@+id/stopwatch_guideline_bottom"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stopwatch_guideline_top"
+        app:trackThickness="@dimen/stopwatch_progress_indicator_thickness" />
+
+    <!-- Stopwatch Seconds Time Label -->
+    <TextView
+        android:id="@+id/stopwatch_seconds_text"
+        style="@style/TextAppearance.SmartAlarm.TitleMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/stopwatch_progress_bar_indicator"
+        app:layout_constraintEnd_toEndOf="@id/stopwatch_progress_bar_indicator"
+        app:layout_constraintStart_toStartOf="@id/stopwatch_progress_bar_indicator"
+        app:layout_constraintTop_toTopOf="@id/stopwatch_progress_bar_indicator"
+        tools:text="00s" />
+
+    <!-- Stopwatch MilliSeconds Time Label -->
+    <TextView
+        android:id="@+id/stopwatch_milliSeconds_text"
+        style="@style/TextAppearance.SmartAlarm.BodyMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        app:layout_constraintEnd_toEndOf="@id/stopwatch_seconds_text"
+        app:layout_constraintStart_toStartOf="@id/stopwatch_seconds_text"
+        app:layout_constraintTop_toBottomOf="@id/stopwatch_seconds_text"
+        tools:text="00" />
+
+    <!-- Stopwatch Time Label Group for animation blinking -->
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/stopwatch_time_text_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="stopwatch_seconds_text,stopwatch_milliSeconds_text" />
+
+    <!-- Stopwatch RecordLap Times RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stopwatch_lap_rv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/stopwatch_rv_desc"
+        android:scrollbars="vertical"
+        android:visibility="gone"
+        android:fadeScrollbars="true"
+        app:layout_constraintHeight_percent="0.9"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/stopwatch_progress_bar_indicator"
+        app:layout_constraintEnd_toStartOf="@+id/stopwatch_guideline_end"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- FAB Reset,Play/Pause,Lap Buttons -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/reset_stopwatch_Btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/reset_stopwatch"
+        android:src="@drawable/ic_restart"
+        app:layout_constraintTop_toBottomOf="@+id/toggle_stopwatch_btn"
+        app:layout_constraintEnd_toEndOf="@+id/toggle_stopwatch_btn"
+        app:layout_constraintStart_toStartOf="@+id/toggle_stopwatch_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="ClassNameCheck"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/toggle_stopwatch_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/toggle_stopwatch"
+        android:src="@drawable/ic_play"
+        app:fabCustomSize="@dimen/fab_size_large"
+        app:layout_constraintBottom_toTopOf="@+id/reset_stopwatch_Btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/stopwatch_guideline_end"
+        app:layout_constraintTop_toBottomOf="@+id/record_lap_stopwatch_btn"
+        tools:ignore="ClassNameCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/record_lap_stopwatch_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/record_lap_time"
+        android:src="@drawable/ic_alarm"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/toggle_stopwatch_btn"
+        app:layout_constraintEnd_toEndOf="@+id/toggle_stopwatch_btn"
+        app:layout_constraintStart_toStartOf="@+id/toggle_stopwatch_btn"
+        app:layout_constraintVertical_chainStyle="spread"
+        tools:ignore="ClassNameCheck"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

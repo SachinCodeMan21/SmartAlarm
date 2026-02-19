@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.SmartAlarm.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">@dimen/text_size_xxs</item>
+        <item name="lineHeight">@dimen/line_height_xxs</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.SmartAlarm.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">@dimen/text_size_xs</item>
+        <item name="lineHeight">@dimen/line_height_xs</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.SmartAlarm.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">@dimen/text_size_s</item>
+        <item name="lineHeight">@dimen/line_height_s</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.SmartAlarm.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">@dimen/text_size_m</item>
+        <item name="lineHeight">@dimen/line_height_m</item>
+    </style>
+
+    <style name="TextAppearance.SmartAlarm.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">@dimen/text_size_l</item>
+        <item name="lineHeight">@dimen/line_height_l</item>
+    </style>
+
+    <style name="TextAppearance.SmartAlarm.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textSize">@dimen/text_size_xl</item>
+        <item name="lineHeight">@dimen/line_height_xl</item>
+    </style>
+
+    <style name="TextAppearance.SmartAlarm.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:textSize">@dimen/text_size_xxl</item>
+        <item name="lineHeight">@dimen/line_height_xxl</item>
+    </style>
+
+</resources>

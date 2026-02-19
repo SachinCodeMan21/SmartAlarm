@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorSurface">
+
+    <!-- Memory Bottom Sheet Top Guideline   -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/math_mission_guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <!-- Memory Bottom Sheet Start Guideline   -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/math_mission_guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <!-- Memory Bottom Sheet End Guideline   -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/math_mission_guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <!-- Memory Bottom Sheet Bottom Guideline   -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/math_mission_guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <TextView
+        android:id="@+id/tv_round"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_l"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/math_mission_guideline_top"
+        tools:text="Round 1 of 3" />
+
+    <TextView
+        android:id="@+id/tv_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:text="@string/solve_the_math_problem"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="@dimen/text_size_m"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_round" />
+
+    <TextView
+        android:id="@+id/tv_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:textSize="@dimen/text_size_l"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7"
+        tools:text="2 + 3 = ?" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:importantForAccessibility="no"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/tv_instructions"
+        app:layout_constraintWidth_percent="@dimen/math_mission_char_img_max_width_percent"
+        app:srcCompat="@drawable/start_img" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_answer_til"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:hint="@string/enter_your_answer"
+        android:textColorHint="@color/colorOnSurface"
+        app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/tv_question"
+        app:layout_constraintWidth_max="@dimen/default_editText_maxWidth">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_answer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:importantForAutofill="no"
+            android:inputType="numberSigned|numberDecimal"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="@dimen/text_size_m" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:text="@string/submit"
+        app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/et_answer_til" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

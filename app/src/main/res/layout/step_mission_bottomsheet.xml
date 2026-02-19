@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Step Bottom Sheet Root Layout   -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_m">
+
+        <!-- Step Bottom Sheet Top Guideline   -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/shakeSheetTopGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <!-- Step Bottom Sheet Start Guideline   -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/shakeSheetStartGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <!-- Step Bottom Sheet End Guideline   -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/shakeSheetEndGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+
+        <!-- Bottom Sheet Title -->
+        <TextView
+            android:id="@+id/taskTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/step"
+            android:textSize="@dimen/text_size_l"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/shakeSheetTopGuideline"
+            />
+
+        <!-- Small Title Bottom Design  -->
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/spacing_xxs"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:layout_marginEnd="@dimen/spacing_s"
+            android:background="@android:color/holo_purple"
+            app:layout_constraintEnd_toEndOf="@+id/taskTitle"
+            app:layout_constraintStart_toStartOf="@+id/taskTitle"
+            app:layout_constraintTop_toBottomOf="@+id/taskTitle" />
+
+        <!-- Back Icon ImageView -->
+        <ImageButton
+            android:id="@+id/previousBottomSheetBtn"
+            android:layout_width="@dimen/icon_clickable_size"
+            android:layout_height="@dimen/icon_clickable_size"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/go_back_to_mission_picker"
+            app:layout_constraintBottom_toBottomOf="@+id/taskTitle"
+            app:layout_constraintEnd_toStartOf="@+id/shakeSheetStartGuideline"
+            app:layout_constraintStart_toStartOf="@+id/shakeSheetStartGuideline"
+            app:layout_constraintTop_toTopOf="@+id/taskTitle"
+            app:srcCompat="@drawable/ic_back"
+            app:tint="?attr/colorOnSurface" />
+
+        <!-- Close Icon ImageView -->
+        <ImageButton
+            android:id="@+id/closeBottomSheet"
+            android:layout_width="@dimen/icon_clickable_size"
+            android:layout_height="@dimen/icon_clickable_size"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/close_mission_bottom_sheet"
+            app:layout_constraintBottom_toBottomOf="@+id/taskTitle"
+            app:layout_constraintEnd_toStartOf="@+id/shakeSheetEndGuideline"
+            app:layout_constraintStart_toStartOf="@+id/shakeSheetEndGuideline"
+            app:layout_constraintTop_toTopOf="@+id/taskTitle"
+            app:srcCompat="@drawable/ic_close"
+            app:tint="?attr/colorOnSurface" />
+
+        <!-- Example Text-->
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@string/example"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="@dimen/text_size_m"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/shakeSheetEndGuideline"
+            app:layout_constraintStart_toStartOf="@+id/shakeSheetStartGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <!-- Step Mission Difficulty Previewer  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_m"
+            app:layout_constraintDimensionRatio="3:2"
+            android:background="@color/green"
+            android:padding="@dimen/spacing_s"
+            app:layout_constraintEnd_toStartOf="@+id/shakeSheetEndGuideline"
+            app:layout_constraintStart_toStartOf="@+id/shakeSheetStartGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+            <TextureView
+                android:id="@+id/stepTextureView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Step Mission Round Picker -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:background="?attr/colorSurfaceContainerHigh"
+            app:cardCornerRadius="@dimen/card_corner_radius_xlarge"
+            app:layout_constraintEnd_toStartOf="@+id/shakeSheetEndGuideline"
+            app:layout_constraintStart_toStartOf="@+id/shakeSheetStartGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_m">
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/step_rounds_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/mission_number_of_rounds_picker"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:np_dividerColor="?attr/colorPrimary"
+                    app:np_selectedTextColor="?attr/colorOnSurface"
+                    app:np_selectedTextSize="@dimen/text_size_m"
+                    app:np_textColor="?attr/colorOnSurface"
+                    app:np_textSize="@dimen/text_size_s" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_m"
+                    android:text="@string/steps"
+                    android:textSize="@dimen/text_size_m"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/step_rounds_picker"
+                    app:layout_constraintStart_toEndOf="@+id/step_rounds_picker"
+                    app:layout_constraintTop_toTopOf="@+id/step_rounds_picker" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Mission Preview Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/previewBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:layout_marginEnd="@dimen/spacing_s"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/preview"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintWidth_max="@dimen/default_button_maxWidth"
+            app:layout_constraintEnd_toStartOf="@+id/completeBtn"
+            app:layout_constraintStart_toStartOf="@+id/materialCardView3"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView3" />
+
+        <!-- Mission Save / Update Button  -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/completeBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/complete"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintWidth_max="@dimen/default_button_maxWidth"
+            app:layout_constraintEnd_toEndOf="@+id/materialCardView3"
+            app:layout_constraintStart_toEndOf="@+id/previewBtn"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView3" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/timer_fragment_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    tools:context=".feature.timer.presentation.view.fragment.TimerFragment">
+
+    <!-- Top Guideline Of Timer Layout -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/timer_guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/guideline_timer_top" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_timer_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guideline_timer_start" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/timer_guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guideline_timer_end" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/timer_guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/guideline_timer_bottom" />
+
+
+    <!-- Timer Keypad  -->
+    <TextView
+        android:id="@+id/timerTextTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurfaceContainerHigh"
+        android:gravity="center"
+        android:padding="@dimen/spacing_m"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="@dimen/text_size_xl"
+        app:layout_constraintEnd_toStartOf="@+id/timer_guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_timer_start"
+        app:layout_constraintTop_toTopOf="@+id/timer_guideline_top"
+        tools:text="@string/default_stop_watch_timer" />
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/spacing_l"
+        android:columnCount="4"
+        android:rowCount="3"
+        app:layout_constraintEnd_toStartOf="@+id/timer_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_timer_start"
+        app:layout_constraintTop_toBottomOf="@+id/timerTextTv">
+
+        <!-- Row 1 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOne"
+            style="@style/KeypadButton"
+            android:text="@string/_1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTwo"
+            style="@style/KeypadButton"
+            android:text="@string/_2" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnThree"
+            style="@style/KeypadButton"
+            android:text="@string/_3" />
+
+        <!-- Row 2 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFour"
+            style="@style/KeypadButton"
+            android:text="@string/_4" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFive"
+            style="@style/KeypadButton"
+            android:text="@string/_5" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSix"
+            style="@style/KeypadButton"
+            android:text="@string/_6" />
+
+        <!-- Row 3 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSeven"
+            style="@style/KeypadButton"
+            android:text="@string/_7" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEight"
+            style="@style/KeypadButton"
+            android:text="@string/_8" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNine"
+            style="@style/KeypadButton"
+            android:text="@string/_9" />
+
+        <!-- Row 4 -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnZero"
+            style="@style/KeypadButton"
+            android:text="@string/_0" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDoubleZero"
+            style="@style/KeypadButton"
+            android:text="@string/_00" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackspace"
+            style="@style/KeypadButton"
+            android:text="@string/btnBackSpace" />
+
+    </GridLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/startTimerBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/start_timer"
+        android:src="@drawable/ic_play"
+        android:visibility="visible"
+        app:fabCustomSize="@dimen/fab_size_large"
+        app:layout_constraintBottom_toTopOf="@+id/timer_guideline_bottom"
+        app:layout_constraintEnd_toStartOf="@+id/timer_guideline_end"
+        app:layout_constraintStart_toEndOf="@+id/deleteTimerFabBtn"
+        app:layout_constraintTop_toBottomOf="@+id/gridLayout"
+        tools:ignore="ClassNameCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/deleteTimerFabBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/delete_timer"
+        android:src="@drawable/ic_delete"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/startTimerBtn"
+        app:layout_constraintEnd_toStartOf="@+id/startTimerBtn"
+        app:layout_constraintStart_toStartOf="@+id/guideline_timer_start"
+        app:layout_constraintTop_toTopOf="@+id/startTimerBtn"
+        tools:ignore="ClassNameCheck"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

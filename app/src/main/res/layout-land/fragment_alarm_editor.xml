@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/alarm_editor_fragment_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".feature.alarm.presentation.view.fragment.editor.AlarmEditorHomeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/editor_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_m">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/editor_screen_start_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/alarm_editor_guideline_start_percent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/editor_screen_end_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/alarm_editor_guideline_end_percent" />
+
+        <!-- Label Block [Lets The User Enter His Desired Label For The Alarm ]-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/labelTIL"
+            style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_label"
+            android:padding="@dimen/spacing_m"
+            app:layout_constraintEnd_toStartOf="@+id/editor_screen_end_guideline"
+            app:layout_constraintStart_toEndOf="@+id/editor_screen_start_guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="@dimen/default_editText_maxWidth">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/alarmLabelET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords"
+                android:textSize="@dimen/text_size_m" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Time Picker Block [Lets The User Select The Alarm Time] -->
+        <include
+            android:id="@+id/time_picker_block"
+            layout="@layout/fragment_alarm_editor_time_picker_block"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/editor_screen_end_guideline"
+            app:layout_constraintStart_toEndOf="@+id/editor_screen_start_guideline"
+            app:layout_constraintTop_toBottomOf="@id/labelTIL" />
+
+        <!-- Weekdays Block [Lets The User Select At Which Days The Alarm Should Repeat]-->
+        <include
+            android:id="@+id/weekdays_block"
+            layout="@layout/fragment_alarm_editor_weekdays_block"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/editor_screen_end_guideline"
+            app:layout_constraintStart_toEndOf="@+id/editor_screen_start_guideline"
+            app:layout_constraintTop_toBottomOf="@id/time_picker_block"/>
+
+        <!-- Mission Block [Lets The User Select His Preferred Missions For Stooping the Alarm]-->
+        <include
+            android:id="@+id/mission_block"
+            layout="@layout/fragment_alarm_editor_mission_block"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/editor_screen_end_guideline"
+            app:layout_constraintStart_toEndOf="@+id/editor_screen_start_guideline"
+            app:layout_constraintTop_toBottomOf="@id/weekdays_block"/>
+
+        <!-- Sound Block [Lets The User Set The Alarm Sound & Manipulate the Volume, Vibration] -->
+        <include
+            android:id="@+id/sound_block"
+            layout="@layout/fragment_alarm_editor_sound_vibration_block"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/editor_screen_end_guideline"
+            app:layout_constraintStart_toEndOf="@+id/editor_screen_start_guideline"
+            app:layout_constraintTop_toBottomOf="@id/mission_block"/>
+
+        <!-- Snooze Block [Lets The User Handle The Preferred Alarm Snooze Settings]-->
+        <include
+            android:id="@+id/snooze_block"
+            layout="@layout/fragment_alarm_editor_snooze_block"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/editor_screen_end_guideline"
+            app:layout_constraintStart_toEndOf="@+id/editor_screen_start_guideline"
+            app:layout_constraintTop_toBottomOf="@id/sound_block"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_or_update_alarm_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_m"
+            android:text="@string/save"
+            app:layout_constraintWidth_max="@dimen/default_button_maxWidth"
+            app:layout_constraintWidth_percent="0.6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/snooze_block" />
+
+        <ProgressBar
+            android:id="@+id/save_progress_bar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="?attr/colorPrimary"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/save_or_update_alarm_btn"
+            app:layout_constraintStart_toStartOf="@id/save_or_update_alarm_btn"
+            app:layout_constraintTop_toTopOf="@id/save_or_update_alarm_btn"
+            app:layout_constraintBottom_toBottomOf="@id/save_or_update_alarm_btn"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

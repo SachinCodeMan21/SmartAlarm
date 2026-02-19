@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Math Bottom Sheet Root Layout   -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_m">
+
+        <!-- Math Bottom Sheet Top Guideline   -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/math_mission_guideline_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <!-- Math Bottom Sheet Start Guideline   -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/math_mission_guideline_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <!-- Math Bottom Sheet End Guideline   -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/math_mission_guideline_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+
+        <!-- Bottom Sheet Title -->
+        <TextView
+            android:id="@+id/taskTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/maths"
+            android:textSize="@dimen/text_size_l"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/math_mission_guideline_top" />
+
+        <!-- Small Title Bottom Design  -->
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/spacing_xxs"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:layout_marginEnd="@dimen/spacing_s"
+            android:background="?attr/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/taskTitle"
+            app:layout_constraintStart_toStartOf="@+id/taskTitle"
+            app:layout_constraintTop_toBottomOf="@+id/taskTitle" />
+
+        <!-- Back Icon ImageView -->
+        <ImageButton
+            android:id="@+id/previousBottomSheetBtn"
+            android:layout_width="@dimen/icon_clickable_size"
+            android:layout_height="@dimen/icon_clickable_size"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/go_back_to_mission_picker"
+            app:layout_constraintBottom_toBottomOf="@+id/taskTitle"
+            app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_start"
+            app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+            app:layout_constraintTop_toTopOf="@+id/taskTitle"
+            app:srcCompat="@drawable/ic_back"
+            app:tint="?attr/colorOnSurface" />
+
+        <!-- Close Icon ImageView -->
+        <ImageButton
+            android:id="@+id/closeBottomSheet"
+            android:layout_width="@dimen/icon_clickable_size"
+            android:layout_height="@dimen/icon_clickable_size"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/close_mission_bottom_sheet"
+            app:layout_constraintBottom_toBottomOf="@+id/taskTitle"
+            app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_end"
+            app:layout_constraintTop_toTopOf="@+id/taskTitle"
+            app:srcCompat="@drawable/ic_close"
+            app:tint="?attr/colorOnSurface" />
+
+        <!-- Example Text-->
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@string/example"
+            android:textColor="@color/colorOnSurface"
+            android:textSize="@dimen/text_size_m"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <!-- Math Mission Difficulty Previewer  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:background="@color/green"
+            android:padding="@dimen/spacing_m"
+            app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+            <TextView
+                android:id="@+id/mathExampleTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_l"
+                android:textSize="@dimen/text_size_m"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="2+1 = ?" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Math Mission Difficulty Slider -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:background="?attr/colorSurfaceContainerHigh"
+            app:cardCornerRadius="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing_m">
+
+
+                <TextView
+                    android:id="@+id/levelTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:textSize="@dimen/text_size_m"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/difficulty_easy" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/levelSlider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_m"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:layout_marginEnd="@dimen/spacing_m"
+                    android:stepSize="1"
+                    android:value="0"
+                    android:valueFrom="0"
+                    android:valueTo="3"
+                    app:labelBehavior="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/levelTv" />
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_m"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:text="@string/difficulty_easy"
+                    android:textSize="@dimen/text_size_s"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintStart_toStartOf="@+id/levelSlider"
+                    app:layout_constraintTop_toBottomOf="@+id/levelSlider" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:layout_marginEnd="@dimen/spacing_m"
+                    android:text="@string/difficulty_expert"
+                    android:textSize="@dimen/text_size_s"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintEnd_toEndOf="@+id/levelSlider"
+                    app:layout_constraintTop_toBottomOf="@+id/levelSlider" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Math Mission Round Picker -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurfaceContainerHigh"
+            android:layout_marginTop="@dimen/margin_l"
+            app:cardCornerRadius="@dimen/card_corner_radius_xlarge"
+            app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/math_mission_guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_m">
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/mathRoundsPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/mission_number_of_rounds_picker"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:np_dividerColor="?attr/colorPrimary"
+                    app:np_max="12"
+                    app:np_min="1"
+                    app:np_selectedTextSize="@dimen/text_size_m"
+                    app:np_textSize="@dimen/text_size_s"
+                    app:np_textColor="?attr/colorOnSurface"
+                    app:np_selectedTextColor="?attr/colorOnSurface" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_m"
+                    android:text="@string/times"
+                    android:textSize="@dimen/text_size_m"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/mathRoundsPicker"
+                    app:layout_constraintStart_toEndOf="@+id/mathRoundsPicker"
+                    app:layout_constraintTop_toTopOf="@+id/mathRoundsPicker" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Math Preview Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/previewBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@string/preview"
+            android:textColor="?attr/colorOnPrimary"
+            android:backgroundTint="?attr/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/completeBtn"
+            app:layout_constraintStart_toEndOf="@+id/math_mission_guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView3"
+            app:layout_constraintWidth_max="@dimen/default_button_maxWidth" />
+
+        <!-- Mission Save / Update Button  -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/completeBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@string/complete"
+            android:textColor="?attr/colorOnPrimary"
+            android:backgroundTint="?attr/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/math_mission_guideline_end"
+            app:layout_constraintStart_toEndOf="@+id/previewBtn"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView3"
+            app:layout_constraintWidth_max="@dimen/default_button_maxWidth" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
+

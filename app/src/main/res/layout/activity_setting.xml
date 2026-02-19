@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".feature.setting.activity.SettingActivity">
+
+    <!-- Setting Appbar Layout -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/settingAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/settingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_default_height"
+            app:title="@string/settings"
+            app:navigationIcon="@drawable/ic_back"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- CardView to change language -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardLanguage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_m"
+        android:layout_marginTop="@dimen/margin_l"
+        android:layout_marginEnd="@dimen/margin_m"
+        android:backgroundTint="?android:attr/colorBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/margin_m"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingAppBarLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:contentDescription="@string/change_language"
+                android:src="@drawable/ic_language" />
+
+            <TextView
+                android:id="@+id/LanguageTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:padding="@dimen/padding_m"
+                android:text="@string/language"
+                android:textSize="@dimen/text_xxl" />
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- CardView to change about -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardAbout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_m"
+        android:layout_marginTop="@dimen/margin_m"
+        android:layout_marginEnd="@dimen/margin_m"
+        android:backgroundTint="?android:attr/colorBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/margin_m"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardLanguage">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:contentDescription="@string/about"
+                android:src="@drawable/ic_info" />
+
+            <TextView
+                android:id="@+id/aboutTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:padding="@dimen/padding_m"
+                android:text="@string/about"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- CardView to app help -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardHelp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_m"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/margin_m"
+        android:backgroundTint="?android:attr/colorBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/margin_m"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardAbout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:contentDescription="@string/help"
+                android:src="@drawable/ic_help" />
+
+            <TextView
+                android:id="@+id/helpTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:padding="@dimen/padding_m"
+                android:text="@string/help"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

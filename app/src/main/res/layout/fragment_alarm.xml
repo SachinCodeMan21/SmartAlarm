@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/alarm_fragment_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    tools:context=".feature.alarm.presentation.view.fragment.home.AlarmFragment">
+
+    <!-- Alarm Recyclerview [Show All the User Alarms] -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/alarm_rv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/alarm_list_content_description"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/alarm_item_layout" />
+
+    <!-- Alarm Empty State Image -->
+    <ImageView
+        android:id="@+id/empty_state_img"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/spacing_m"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_no_alarm"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_percent="0.15"
+        app:layout_constraintWidth_max="@dimen/empty_alarm_img_max_size"
+        app:layout_constraintBottom_toTopOf="@+id/empty_state_text"
+        app:layout_constraintEnd_toEndOf="@+id/empty_state_text"
+        app:layout_constraintStart_toStartOf="@+id/empty_state_text"
+        app:tint="?attr/colorOnSurface" />
+
+    <!-- Alarm Empty State Text -->
+    <TextView
+        android:id="@+id/empty_state_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/alarm_are_not_created_yet"
+        android:textColor="@color/colorOnSurface"
+        android:textSize="@dimen/text_size_m"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55" />
+
+    <!-- Group Of Empty State To Get & Set Visibility -->
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/empty_state_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="empty_state_text,empty_state_img" />
+
+    <!--  Initial ProgressBar  -->
+    <ProgressBar
+        android:id="@+id/alarm_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:progressTint="@color/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Alarm Floating Button [Takes User To AlarmEditor Screen Where User Can Create/Edit] The Alarm-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_alarm_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_m"
+        android:layout_marginBottom="@dimen/spacing_m"
+        android:contentDescription="@string/add_alarm"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ClassNameCheck" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

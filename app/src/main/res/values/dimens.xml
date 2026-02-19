@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Spacing dimensions -->
+    <dimen name="spacing_xxs">2dp</dimen>
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_s">8dp</dimen>
+    <dimen name="spacing_m">16dp</dimen>
+    <dimen name="spacing_l">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="spacing_xxl">48dp</dimen>
+
+    <!-- Text Sizes -->
+    <dimen name="text_size_xxs">11sp</dimen>
+    <dimen name="text_size_xs">12sp</dimen>
+    <dimen name="text_size_s">14sp</dimen>
+    <dimen name="text_size_m">16sp</dimen>
+    <dimen name="text_size_l">20sp</dimen>
+    <dimen name="text_size_xl">24sp</dimen>
+    <dimen name="text_size_xxl">32sp</dimen>
+
+    <!-- Text Sizes Line Height -->
+    <dimen name="line_height_xxs">12sp</dimen>
+    <dimen name="line_height_xs">16sp</dimen>
+    <dimen name="line_height_s">20sp</dimen>
+    <dimen name="line_height_m">24sp</dimen>
+    <dimen name="line_height_l">28sp</dimen>
+    <dimen name="line_height_xl">32sp</dimen>
+    <dimen name="line_height_xxl">40sp</dimen>
+
+    <!-- Icons-->
+    <dimen name="icon_show_size">24dp</dimen>
+    <dimen name="icon_clickable_size">48dp</dimen>
+
+
+
+    <!-- Padding -->
+    <dimen name="padding_s">8dp</dimen>
+    <dimen name="padding_m">16dp</dimen>
+    <dimen name="padding_l">24dp</dimen>
+
+    <!-- Margin -->
+    <dimen name="margin_xs">4dp</dimen>
+    <dimen name="margin_s">8dp</dimen>
+    <dimen name="margin_m">16dp</dimen>
+    <dimen name="margin_l">24dp</dimen>
+    <dimen name="margin_xl">32dp</dimen>
+
+
+    <!-- Text Sizes -->
+    <dimen name="text_xs">10sp</dimen>
+    <dimen name="text_s">12sp</dimen>
+    <dimen name="text_m">14sp</dimen>
+    <dimen name="text_l">16sp</dimen>
+    <dimen name="text_xl">18sp</dimen>
+    <dimen name="text_xxl">20sp</dimen>
+    <dimen name="text_3xl">24sp</dimen>
+    <dimen name="text_display">32sp</dimen>
+
+    <!-- EditText -->
+    <dimen name="default_editText_maxWidth">488dp</dimen>
+
+    <!-- Buttons -->
+    <dimen name="default_button_maxWidth">320dp</dimen>
+    <dimen name="default_button_height">48dp</dimen>
+
+    <!-- FloatingActionButton Size  -->
+    <dimen name="fab_size_large">60dp</dimen>
+
+    <!-- Image/Avatar -->
+    <dimen name="avatar_small">24dp</dimen>
+    <dimen name="avatar_medium">48dp</dimen>
+    <dimen name="avatar_large">72dp</dimen>
+
+    <!-- Card -->
+    <dimen name="timerCardHeight">400dp</dimen>
+
+    <dimen name="card_elevation_none">0dp</dimen>
+    <dimen name="card_elevation_low">2dp</dimen>
+    <dimen name="card_elevation_medium">4dp</dimen>
+    <dimen name="card_elevation_high">8dp</dimen>
+    <dimen name="card_elevation_xhigh">12dp</dimen>
+
+    <dimen name="card_corner_radius_small">4dp</dimen>
+    <dimen name="card_corner_radius_medium">8dp</dimen>
+    <dimen name="card_corner_radius_large">12dp</dimen>
+    <dimen name="card_corner_radius_xlarge">16dp</dimen>
+
+    <!-- Toolbar -->
+    <dimen name="toolbar_default_height">56dp</dimen>
+
+    <!-- Navigation Rail   -->
+    <dimen name="navigation_rail_width">72dp</dimen>
+
+    <!-- Fab Size   -->
+    <dimen name="fabLargeSize">60dp</dimen>
+
+
+    <!-- Alarm Screen Dimens   -->
+    <dimen name="empty_alarm_img_max_size">56dp</dimen>
+    <dimen name="alarm_item_mission_img_size">20dp</dimen>
+    <dimen name="edit_alarm_weekday_max_size">48dp</dimen>
+    <dimen name="video_preview_size">200dp</dimen>
+    <item name="alarm_editor_guideline_top_percent" format="float" type="dimen">0.0</item>
+    <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.05</item>
+    <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.95</item>
+    <item name="memory_mission_grid_max_width_percent" format="float" type="dimen">0.8</item>
+    <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.0</item>
+    <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.8</item>
+
+
+
+    <!-- Timer Screen Dimens -->
+    <item name="guideline_timer_top" format="float" type="dimen">0.15</item>
+    <item name="guideline_timer_start" format="float" type="dimen">0.1</item>
+    <item name="guideline_timer_end" format="float" type="dimen">0.9</item>
+    <item name="guideline_timer_bottom" format="float" type="dimen">0.9</item>
+
+
+    <!-- Show Timer Dimens -->
+    <dimen name="timer_item_card_height">380dp</dimen>
+
+
+    <!-- Stopwatch Screen Dimens   -->
+    <dimen name="stopwatch_seconds_tv_tran_textSize">18sp</dimen>
+    <dimen name="stopwatch_progress_indicator_thickness">1dp</dimen>
+    <item name="guideline_stopwatch_top" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_anim_top" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_start" format="float" type="dimen">0.05</item>
+    <item name="guideline_stopwatch_anim_start" format="float" type="dimen">0.25</item>
+    <item name="guideline_stopwatch_end" format="float" type="dimen">0.95</item>
+    <item name="guideline_stopwatch_anim_end" format="float" type="dimen">0.75</item>
+    <item name="guideline_stopwatch_bottom" format="float" type="dimen">0.85</item>
+    <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">0.0</item>
+
+
+
+
+
+
+</resources>

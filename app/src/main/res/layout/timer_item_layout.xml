@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_m"
+    android:layout_marginStart="@dimen/spacing_m"
+    android:layout_marginEnd="@dimen/spacing_m"
+    android:layout_gravity="center_horizontal"
+    app:cardCornerRadius="@dimen/card_corner_radius_xlarge"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/timerCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurfaceContainerHigh"
+        android:padding="@dimen/spacing_m">
+
+        <ImageButton
+            android:id="@+id/finishTimerItemBtn"
+            android:layout_width="@dimen/icon_clickable_size"
+            android:layout_height="@dimen/icon_clickable_size"
+            android:backgroundTint="#EDEDED"
+            android:contentDescription="@string/finish_timer"
+            android:minWidth="@dimen/icon_clickable_size"
+            android:minHeight="@dimen/icon_clickable_size"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/timerItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_m"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/finishTimerItemBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/finishTimerItemBtn"
+            tools:text="1m 23s Timer" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/timerItemBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="timerItemTitle,finishTimerItemBtn" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/circularProgressBar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            app:layout_constraintWidth_max="300dp"
+            app:indicatorColor="@color/purple"
+            app:trackColor="?attr/colorOnSecondaryContainer"
+            app:layout_constraintWidth_percent="0.7"
+            app:layout_constraintBottom_toTopOf="@+id/progressBarBottomGuideline"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timerItemBarrier"
+            app:trackThickness="1dp" />
+
+        <TextView
+            android:id="@+id/remainingTimerItemTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/default_stop_watch_timer"
+            android:textSize="@dimen/text_size_m"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/circularProgressBar"
+            app:layout_constraintEnd_toEndOf="@+id/circularProgressBar"
+            app:layout_constraintStart_toStartOf="@+id/circularProgressBar"
+            app:layout_constraintTop_toTopOf="@+id/circularProgressBar" />
+
+        <ImageButton
+            android:id="@+id/restartTimerItemBtn"
+            android:layout_width="@dimen/icon_clickable_size"
+            android:layout_height="@dimen/icon_clickable_size"
+            android:layout_marginTop="@dimen/margin_m"
+            android:backgroundTint="@android:color/transparent"
+            android:contentDescription="@string/restart_timer"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_restart"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/remainingTimerItemTime"
+            app:layout_constraintStart_toStartOf="@+id/remainingTimerItemTime"
+            app:layout_constraintTop_toBottomOf="@+id/remainingTimerItemTime"
+            app:tint="?attr/colorPrimary" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/progressBarBottomGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.8" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/snoozeTimerItemBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="@string/_1_00"
+            app:cornerRadius="@dimen/spacing_m"
+            android:textSize="@dimen/text_size_s"
+            app:layout_constraintBottom_toBottomOf="@+id/playPauseTimerItemBtn"
+            app:layout_constraintEnd_toStartOf="@+id/playPauseTimerItemBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/playPauseTimerItemBtn" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/playPauseTimerItemBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/play_pause_timer"
+            android:src="@drawable/ic_play"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/snoozeTimerItemBtn"
+            app:layout_constraintTop_toTopOf="@+id/progressBarBottomGuideline"
+            tools:ignore="ClassNameCheck" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>
+
+

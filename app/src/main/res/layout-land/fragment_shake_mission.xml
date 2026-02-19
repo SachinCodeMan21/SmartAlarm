@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutShake"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Instruction TextView to show 'Shake your phone' -->
+    <TextView
+        android:id="@+id/tvInstruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/shake_your_phone"
+        android:textSize="@dimen/text_xxl"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/shakeTopGuideLine" />
+
+    <!-- GuideLine for positioning the top of the Instruction TextView -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/shakeTopGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <!-- GuideLine for positioning the Left of the Post Shake TextView -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/shakeLeftGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <!-- GuideLine for positioning the Right of the Next Shake TextView -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/shakeRightGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <TextView
+        android:id="@+id/postShakeTv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_shake_pending"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_l"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintBottom_toBottomOf="@+id/currentShakeTv"
+        app:layout_constraintEnd_toStartOf="@+id/currentShakeTv"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@+id/shakeLeftGuideLine"
+        app:layout_constraintTop_toTopOf="@+id/currentShakeTv" />
+
+    <TextView
+        android:id="@+id/currentShakeTv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/margin_s"
+        android:background="@drawable/bg_shake_current"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_xl"
+        android:textStyle="bold"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvRight"
+        app:layout_constraintStart_toEndOf="@+id/postShakeTv"
+        app:layout_constraintTop_toBottomOf="@+id/tvInstruction" />
+
+    <TextView
+        android:id="@+id/tvRight"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/margin_s"
+        android:background="@drawable/bg_shake_pending"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_l"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintBottom_toBottomOf="@+id/currentShakeTv"
+        app:layout_constraintStart_toEndOf="@+id/currentShakeTv"
+        app:layout_constraintTop_toTopOf="@+id/currentShakeTv"
+        app:layout_constraintEnd_toStartOf="@id/shakeRightGuideLine"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

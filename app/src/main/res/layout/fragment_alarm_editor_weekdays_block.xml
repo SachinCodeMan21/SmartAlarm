@@ -1,0 +1,135 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Weekdays Label: Displays the label "Weekdays" above the checkboxes for the days of the week. -->
+    <TextView
+        android:id="@+id/weekdays_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="@string/weekday"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="@dimen/text_size_m"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/is_daily_check_box"
+        app:layout_constraintEnd_toStartOf="@+id/is_daily_check_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/is_daily_check_box" />
+
+    <!-- Daily CheckBox: A checkbox to toggle whether the alarm should repeat daily. -->
+    <CheckBox
+        android:id="@+id/is_daily_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:text="@string/daily"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="@dimen/text_size_s"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Sunday Circle: Displays the short form for Sunday ("S") inside a circular layout. -->
+    <TextView
+        android:id="@+id/day1"
+        style="@style/WeekdayCircle"
+        android:layout_marginStart="@dimen/spacing_m"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:layout_marginEnd="@dimen/spacing_s"
+        android:text="@string/sun"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintWidth_max="@dimen/edit_alarm_weekday_max_size"
+        app:layout_constraintEnd_toStartOf="@+id/day2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/is_daily_check_box"
+        />
+
+    <!-- Monday Circle: Displays the short form for Monday ("M") inside a circular layout. -->
+    <TextView
+        android:id="@+id/day2"
+        style="@style/WeekdayCircle"
+        android:text="@string/mon"
+        app:layout_constraintBottom_toBottomOf="@+id/day1"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/day3"
+        app:layout_constraintStart_toEndOf="@+id/day1"
+        app:layout_constraintTop_toTopOf="@+id/day1"
+        app:layout_constraintWidth_max="@dimen/edit_alarm_weekday_max_size" />
+
+    <!-- Tuesday Circle: Displays the short form for Tuesday ("T") inside a circular layout. -->
+    <TextView
+        android:id="@+id/day3"
+        style="@style/WeekdayCircle"
+        android:text="@string/tue"
+        app:layout_constraintBottom_toBottomOf="@+id/day2"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/day4"
+        app:layout_constraintStart_toEndOf="@+id/day2"
+        app:layout_constraintTop_toTopOf="@+id/day2"
+        app:layout_constraintWidth_max="@dimen/edit_alarm_weekday_max_size" />
+
+    <!-- Wednesday Circle: Displays the short form for Wednesday ("W") inside a circular layout. -->
+    <TextView
+        android:id="@+id/day4"
+        style="@style/WeekdayCircle"
+        android:text="@string/wed"
+        app:layout_constraintBottom_toBottomOf="@+id/day3"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/day5"
+        app:layout_constraintStart_toEndOf="@+id/day3"
+        app:layout_constraintTop_toTopOf="@+id/day3"
+        app:layout_constraintWidth_max="@dimen/edit_alarm_weekday_max_size" />
+
+    <!-- Thursday Circle: Displays the short form for Thursday ("T") inside a circular layout. -->
+    <TextView
+        android:id="@+id/day5"
+        style="@style/WeekdayCircle"
+        android:text="@string/thu"
+        app:layout_constraintBottom_toBottomOf="@+id/day4"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/day6"
+        app:layout_constraintStart_toEndOf="@+id/day4"
+        app:layout_constraintTop_toTopOf="@+id/day4"
+        app:layout_constraintWidth_max="@dimen/edit_alarm_weekday_max_size" />
+
+    <!-- Friday Circle: Displays the short form for Friday ("F") inside a circular layout. -->
+    <TextView
+        android:id="@+id/day6"
+        style="@style/WeekdayCircle"
+        android:text="@string/fri"
+        app:layout_constraintBottom_toBottomOf="@+id/day5"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/day7"
+        app:layout_constraintStart_toEndOf="@+id/day5"
+        app:layout_constraintTop_toTopOf="@+id/day5"
+        app:layout_constraintWidth_max="@dimen/edit_alarm_weekday_max_size" />
+
+    <!-- Saturday Circle: Displays the short form for Saturday ("S") inside a circular layout. -->
+    <TextView
+        android:id="@+id/day7"
+        style="@style/WeekdayCircle"
+        android:layout_marginEnd="@dimen/spacing_m"
+        android:text="@string/sat"
+        app:layout_constraintBottom_toBottomOf="@+id/day6"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/day6"
+        app:layout_constraintTop_toTopOf="@+id/day6"
+        app:layout_constraintWidth_max="@dimen/edit_alarm_weekday_max_size" />
+
+    <!-- Divider: A horizontal divider separating the weekdays from other UI elements. -->
+    <View
+        android:id="@+id/day_and_mission_divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spacing_xs"
+        android:layout_marginTop="@dimen/spacing_xl"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/day7" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <!-- App Required Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Permissions for Foreground Services -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" /> <!-- Permissions related to Alarm and Notifications -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" /> <!-- Permissions for Device Interaction -->
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- Declare the attribution tag globally -->
+
+    <attribution
+        android:label="@string/alarm_playback_attribution"
+        android:tag="audioPlayback" />
+
+    <application
+        android:name=".core.application.SmartAlarmApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SmartAlarm">
+
+
+        <!-- Meta Data -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_api_key" />
+
+
+        <!-- Activity Section -->
+
+        <activity
+            android:name=".feature.setting.activity.AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".feature.setting.activity.HelpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".feature.setting.activity.LanguageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".feature.setting.activity.SettingActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".feature.home.presentation.view.HomeActivity"
+            android:theme="@style/Theme.App.Starting"
+            android:launchMode="singleTop"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".feature.alarm.presentation.view.activity.AlarmActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".feature.alarm.presentation.view.activity.AlarmEditorActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".feature.timer.presentation.view.activity.ShowTimerActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".feature.clock.presentation.view.activity.SearchTimeZoneActivity"
+            android:exported="false" />
+
+        <!-- Service Section -->
+        <service
+            android:name=".feature.alarm.framework.services.AlarmService"
+            android:directBootAware="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback|systemExempted"/>
+
+        <service
+            android:name=".feature.stopwatch.framework.services.StopwatchService"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <service
+            android:name=".feature.timer.framework.service.ShowTimerService"
+            android:exported="false" />
+
+
+        <!-- Broadcast Receivers Section -->
+        <receiver
+            android:name=".feature.alarm.framework.broadcasts.receivers.AlarmReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".feature.stopwatch.framework.broadcasts.receivers.StopwatchReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".feature.timer.framework.broadcast.receiver.TimerReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".core.broadcast.AppBootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+
+        <!-- Provider Section -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+    </application>
+
+</manifest>

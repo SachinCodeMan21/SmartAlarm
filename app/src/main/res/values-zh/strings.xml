@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Meta Data -->
+    <string name="app_name">智能闹钟</string>
+    <string name="google_api_key" translatable="false">AIzaSyDV41n8TtAZvffXa4noYukHytxcWMUe9gw</string>
+
+    // ---------------------------------------------------------------------
+    // # Global Common String
+    // ---------------------------------------------------------------------
+    <string name="undo">撤销</string>
+    <string name="mission">任务</string>
+    <string name="am">上午</string>
+    <string name="pm">下午</string>
+
+    // ---------------------------------------------------------------------
+    // # Permission Dialog Related Strings
+    // ---------------------------------------------------------------------
+
+    <!-- Permission Dialog Titles -->
+    <string name="permission_required_title">权限要求</string>
+    <string name="full_screen_permission_title">全屏通知权限要求</string>
+    <string name="schedule_exact_alarm_permission_title">设置精确闹钟权限要求</string>
+    <string name="notification_permission_required_title">通知权限要求</string>
+
+    <!-- Permission Dialog Messages -->
+    <string name="full_screen_permission_message">为了允许应用在闹钟触发时显示通知，请在设置中授予全屏通知权限。</string>
+    <string name="schedule_exact_alarm_permission_message">为了允许应用安排闹钟和计时器，请在设置中授予设置精确闹钟权限。</string>
+    <string name="post_notification_permission_rationale_message">本应用需要通知权限来可靠地传递闹钟、计时器和秒表的提醒，确保及时和准确的通知。</string>
+    <string name="app_permission_setting_dialog_message">%1$s权限是该应用正常运行所必需的，请在系统设置中启用它。</string>
+
+    <!-- Dialog Button Action Messages -->
+    <string name="grant_permission">授予权限</string>
+    <string name="deny">拒绝</string>
+    <string name="cancel">取消</string>
+
+    <!-- Permission Post Action Messages -->
+    <string name="permission_granted_successfully">权限授予成功！</string>
+    <string name="permissions_denied">权限被拒绝！</string>
+    <string name="post_notification_rationale_declined">拒绝了通知权限说明！</string>
+    <string name="full_screen_notification_permission_granted">已授予全屏通知权限！</string>
+    <string name="full_screen_notification_permission_denied">已拒绝全屏通知权限！</string>
+    <string name="schedule_exact_alarm_permission_granted">已授予设置精确闹钟权限！</string>
+    <string name="schedule_exact_alarm_permission_denied">已拒绝设置精确闹钟权限！</string>
+
+    // ---------------------------------------------------------------------
+    // # Toolbar Menu Related Strings
+    // ---------------------------------------------------------------------
+    <string name="settings">设置</string>
+    <string name="help">帮助</string>
+
+    // ---------------------------------------------------------------------
+    // # Home Activity Strings
+    // ---------------------------------------------------------------------
+    <string name="alarm">闹钟</string>
+    <string name="clock">时钟</string>
+    <string name="timer">计时器</string>
+    <string name="stopwatch">秒表</string>
+    <string name="empty">空</string>
+    <string name="alarm_playback_attribution">闹钟音频播放</string>
+    <string name="empty_attribution_label">空的归属标签</string>
+    <string name="navigation_drawer_open">打开导航抽屉</string>
+    <string name="navigation_drawer_close">关闭导航抽屉</string>
+
+    // ---------------------------------------------------------------------
+    // # Alarm Screen Related Strings
+    // ---------------------------------------------------------------------
+    <!-- Common Alarm Strings -->
+    <string name="create_new_alarm">创建新闹钟</string>
+    <string name="update_alarm">更新闹钟</string>
+
+    <!--   A]  Alarm Fragment  Strings -->
+    <!-- 1]  Alarm Fragment Layout Strings -->
+    <string name="add_alarm">添加闹钟</string>
+    <string name="alarm_list_content_description">您的闹钟列表</string>
+    <string name="alarm_are_not_created_yet">尚未创建闹钟！</string>
+
+    <!-- 2]  Alarm Fragment Strings -->
+    <string name="one_time">一次性</string>
+    <string name="alarm_deleted">闹钟已删除</string>
+    <string name="alarm_time_is_in_the_past_or_now">闹钟时间已经过去或设置为当前时间！</string>
+    <string name="alarm_time_less_than_a_minute">闹钟安排在不到一分钟的时间内。</string>
+    <string name="day">天</string>
+    <string name="days">天</string>
+    <string name="hour">小时</string>
+    <string name="hours">小时</string>
+    <string name="minute">分钟</string>
+    <string name="minutes">分钟</string>
+    <string name="and">和</string>         <!-- "and" for joining time units -->
+    <string name="alarm_time_left">闹钟将在 %1$s 后响铃。</string>
+
+    <!-- 3]  Alarm Fragment AlarmViewmodel Strings -->
+    <string name="error_failed_to_load_alarms">加载闹钟失败！</string>
+    <string name="error_failed_to_update_alarm">更新闹钟失败！</string>
+    <string name="error_failed_to_delete_alarm">删除闹钟失败！</string>
+    <string name="error_failed_to_restore_alarm">恢复闹钟失败！</string>
+
+    <!-- 4] Alarm Card Item Layout Strings -->
+    <string name="alarm_mission">闹钟任务</string>
+    <string name="none">无</string>
+    <string-array name="alarm_weekday">
+        <item>日</item>
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+    </string-array>
+
+    <!-- 4]  Alarm Fragment Adapter Strings -->
+
+    <!--   B]  Alarm Editor Activity Strings -->
+    <!-- 1] Alarm Editor Fragment Layout -->
+    <string name="enter_label">输入标签</string>
+    <string name="colon">:</string>
+    <string name="weekday">星期</string>
+    <string name="daily">每日</string>
+    <string name="sun">星期</string>
+    <string name="mon">星期</string>
+    <string name="tue">星期</string>
+    <string name="wed">星期</string>
+    <string name="thu">星期</string>
+    <string name="fri">星期</string>
+    <string name="sat">星期</string>
+    <string name="alarm_mission_rv_desc">闹钟任务列表</string>
+    <string name="alarm_sound">闹钟声音</string>
+    <string name="vibrate">震动</string>
+    <string name="sound">声音</string>
+    <string name="save">保存</string>
+    <string name="update">更新</string>
+    <string name="hours_picker_description">选择闹钟小时</string>
+    <string name="minute_picker_description">选择闹钟分钟</string>
+    <string name="am_pm_picker_description">选择闹钟上午/下午</string>
+    <string name="snooze">打盹</string>
+    <string name="mission_icon">任务图标</string>
+    <string name="remove_mission">移除任务</string>
+    <string name="min">分钟</string>
+    <string name="times">次</string>
+
+    <!-- 2] Alarm Editor Fragment -->
+    <string name="mission_count_format">%1$d / %2$d</string>
+    <string name="unknown">未知</string>
+    <string name="snooze_times_min">%1$d 次, %2$d 分钟</string>
+    <string name="select_alarm_ringtone">选择闹钟铃声</string>
+    <string name="snooze_min_times">%1$d 分钟 ,  %2$d 次</string>
+    <string-array name="meri_diem_list">
+        <item>上午</item>
+        <item>下午</item>
+    </string-array>
+
+    <!-- 3] Mission Picker Bottom Sheet Layout -->
+    <string name="choose_mission">选择任务</string>
+    <string name="mission_type_selection">任务类型选择</string>
+    <string name="memory">记忆</string>
+    <string name="typing">打字</string>
+    <string name="maths">数学</string>
+    <string name="shake">摇晃</string>
+    <string name="step">步数</string>
+
+    <!-- 4] Missions Bottom Sheet Common Strings -->
+    <string name="difficulty_easy">简单</string>
+    <string name="difficulty_normal">普通</string>
+    <string name="difficulty_hard">困难</string>
+    <string name="difficulty_expert">专家</string>
+    <string name="example">示例</string>
+    <string name="go_back_to_mission_picker">返回任务选择器</string>
+    <string name="close_mission_bottom_sheet">关闭任务底部面板</string>
+    <string name="easy">简单</string>
+    <string name="expert">专家</string>
+    <string name="mission_level_slider">任务难度滑动条</string>
+    <string name="mission_number_of_rounds_picker">任务回合数选择器</string>
+    <string name="complete">完成</string>
+    <string name="preview">预览</string>
+
+    <!-- C] Snooze Fragment Strings -->
+
+    <!-- Snooze Fragment Layout Strings -->
+    <string name="limit">限制</string>
+    <string name="interval">间隔</string>
+    <string name="_1_min">1 分钟</string>
+    <string name="_5_min">5 分钟</string>
+    <string name="_10_min">10 分钟</string>
+    <string name="_15_min">15 分钟</string>
+    <string name="_20_min">20 分钟</string>
+    <string name="_25_min">25 分钟</string>
+    <string name="_30_min">30 分钟</string>
+    <string name="max_snooze_limit_picker">最大打盹次数选择器</string>
+
+    <!-- D] Alarm Activity Fragments Strings -->
+
+    <!-- 1] Show Alarm Mission Strings -->
+    <string-array name="alarm_weekday_full">
+        <item>星期天</item>
+        <item>星期一</item>
+        <item>星期二</item>
+        <item>星期三</item>
+        <item>星期四</item>
+        <item>星期五</item>
+        <item>星期六</item>
+    </string-array>
+
+    <!-- Mission Fragment Common Strings -->
+    <string name="round_text">第 %1$s 轮，共 %2$s 轮</string>
+    <string name="mission_completed">任务完成！</string>
+    <string name="great_job_you_completed_all_rounds">做得好！你完成了所有的回合。</string>
+    <string name="submit">提交</string>
+
+    <!-- 1] Memory Mission Strings -->
+    <string name="memorize_the_glowing_squares">记住发光的方块！</string>
+    <string name="select_the_squares_that_glowed">选择发光的方块</string>
+    <string name="correct">正确！</string>
+    <string name="wrong_square_selected">选择了错误的方块！</string>
+    <string name="too_many_incorrect_attempts">尝试次数过多，重新记忆。</string>
+    <string name="failed_to_update_alarm">更新闹钟失败</string>
+    <string name="failed_to_load_alarm">加载闹钟失败</string>
+
+    <!-- 2] Typing Mission Strings -->
+    <string name="typing_example">快速的棕色狐狸跳过懒狗，在温暖的阳光下停下来。</string>
+    <string name="incorrect_try_again">不正确，请再试。</string>
+    <string name="please_type_the_paragraph">请输入段落。</string>
+
+    <!-- 3]  Math Mission Strings -->
+    <string name="solve_the_math_problem">解决数学问题</string>
+    <string name="enter_your_answer">输入你的答案</string>
+
+    <!-- 4]  Shake Mission Strings -->
+    <string name="shake_your_phone">摇晃你的手机！</string>
+
+    <!-- 5]  Step Mission Strings -->
+    <string name="steps">步数</string>
+    <string name="take_steps">开始走步！</string>
+    <string name="detect_the_first_step">为了同步你的步伐，请开始走步。一旦我们检测到第一步，我们就会开始记录。</string>
+    <string name="accelerometer_sensor_not_available">加速度传感器不可用</string>
+    <string name="step_detector_sensor_not_available">步态检测传感器不可用</string>
+    <string name="permission_required_for_step_detection">需要步态检测权限</string>
+
+    <!-- Alarm View Model -->
+    <string name="alarm_already_passed">闹钟时间已过去。</string>
+    <string name="alarm_days_hours_minutes">闹钟设置为 %d 天 %d 小时 %d 分钟后。</string>
+    <string name="alarm_days_hours">闹钟设置为 %d 天 %d 小时后。</string>
+    <string name="alarm_day">闹钟设置为 %d 天后。</string>
+    <string name="alarm_hours_minutes">闹钟设置为 %d 小时 %d 分钟后。</string>
+    <string name="alarm_hours">闹钟设置为 %d 小时后。</string>
+    <string name="alarm_minutes">闹钟设置为 %d 分钟后。</string>
+    <string name="alarm_switch">闹钟开关</string>
+    <string name="hello_blank_fragment">你好，空白片段</string>
+    <string name="delete">删除</string>
+    <string name="default_stop_watch_timer">00小时 : 00分钟 : 00秒</string>
+    <string name="resume">继续</string>
+    <string name="notification_scheduled_alarm_time">%1$s , %2$s 下午</string>
+    <string name="stop_watch_timer">%1$d %2$d 小时 : %3$d %4$d 分钟 : %5$d %6$d 秒</string>
+    <string name="update_the_alarm_time">更新闹钟时间</string>
+    <string name="dismiss_alarm">关闭闹钟</string>
+    <string name="scheduled_alarm">已安排闹钟</string>
+    <string name="snoozeAlarm">打盹闹钟</string>
+    <string name="stopAlarm">停止闹钟</string>
+
+    // ---------------------------------------------------------------------
+    // # Clock Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="add_new_timezone">添加新时区</string>
+    <string name="selected_timezones_list">时区列表</string>
+    <string name="no_result_found">未找到结果！</string>
+    <string name="search">搜索</string>
+
+    // ---------------------------------------------------------------------
+    // # Timer Screen Related Strings
+    // ---------------------------------------------------------------------
+    <!-- Timer Screen Strings -->
+    <string name="_0">0</string>
+    <string name="_00">00</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="_9">9</string>
+    <string name="btnBackSpace">⌫</string>
+    <string name="default_timer_time">00小时 : 00分钟 : 00秒</string>
+    <string name="formatted_timer_time">%1$sh : %2$sm : %3$ss</string>
+    <string name="unable_to_start_the_timer">目前无法启动计时器。请稍后再试。</string>
+
+    // ---------------------------------------------------------------------
+    // # Show Timer Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="add_new_timer">添加新计时器</string>
+    <string name="restart_timer">重启计时器</string>
+    <string name="finish_timer">完成计时器</string>
+    <string name="_1_00">+1:00</string>
+    <string name="play_pause_timer">播放/暂停计时器</string>
+    <string name="timer_title">%1$s 计时器</string>
+    <string name="active_timer">活动计时器</string>
+    <string name="completed_timer">已完成计时器</string>
+    <string name="add_one_minute">添加1分钟</string>
+    <string name="hour_formatted_stopwatch_time">%1$sh : %2$sm : %3$ss</string>
+    <string name="min_formatted_stopwatch_time">%1$sm : %2$ss</string>
+    <string name="sec_formatted_stopwatch_time">%1$ss</string>
+    <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
+    <string name="timer_dashboard">计时器仪表板</string>
+
+    // ---------------------------------------------------------------------
+    // # Stopwatch Screen Related Strings
+    // ---------------------------------------------------------------------
+
+    <!-- 1] Stopwatch layout Strings -->
+    <string name="stopwatch_progress_indicator">秒表进度指示器</string>
+    <string name="stopwatch_rv_desc">记录的秒表圈次列表</string>
+    <string name="toggle_stopwatch">切换启动/暂停秒表</string>
+    <string name="reset_stopwatch">重置秒表</string>
+    <string name="record_lap_time">记录圈次时间</string>
+    <string name="lap_index">#圈</string>
+
+    <!-- Stopwatch Viewmodel Specific Error Strings -->
+    <string name="failed_to_restore_stopwatch_state">恢复秒表状态失败，请重试。</string>
+    <string name="failed_to_start_stopwatch">启动秒表失败，请重试。</string>
+    <string name="failed_to_pause_stopwatch_state">暂停秒表状态失败，请重试。</string>
+    <string name="failed_to_reset_stopwatch_state">重置秒表状态失败，请重试。</string>
+    <string name="failed_to_record_lap_stopwatch_state">记录秒表圈次失败，请重试。</string>
+
+    // ---------------------------------------------------------------------
+    // Setting Related Strings
+    // ---------------------------------------------------------------------
+    <string name="change_language">更改语言</string>
+    <string name="language">语言</string>
+    <string name="about">关于</string>
+    <string name="flag">国家旗帜</string>
+
+    <string name="english">英语</string>
+    <string name="spanish">西班牙语</string>
+    <string name="german">德语</string>
+    <string name="french">法语</string>
+    <string name="portuguese">葡萄牙语</string>
+    <string name="korean">韩语</string>
+    <string name="chinese">中文</string>
+    <string name="japanese">日语</string>
+    <string name="hindi">印地语</string>
+
+    // ---------------------------------------------------------------------
+    // # Notification Related Strings
+    // ---------------------------------------------------------------------
+    <string name="notification">通知</string>
+    <string name="today">今天</string>
+    <string name="tomorrow">明天</string>
+
+    <!-- Notification Channel Names -->
+    <string name="channel_upcoming_alarm">即将来临的闹钟通知</string>
+    <string name="channel_snoozed_alarm">已打盹的闹钟通知</string>
+    <string name="channel_missed_alarm">错过的闹钟通知</string>
+    <string name="channel_scheduled_alarm">已安排的闹钟通知</string>
+    <string name="channel_active_timer">活动计时器通知</string>
+    <string name="channel_completed_timer">已完成计时器通知</string>
+    <string name="channel_stopwatch">秒表通知</string>
+
+    <!-- Notification Channel Descriptions -->
+    <string name="desc_upcoming_alarm">用于通知用户即将来临的闹钟</string>
+    <string name="desc_snoozed_alarm">用于通知用户已打盹的闹钟</string>
+    <string name="desc_missed_alarm">用于通知用户错过的闹钟</string>
+    <string name="desc_smart_alarm">用于通知用户已安排的闹钟通知</string>
+    <string name="desc_active_timer">用于通知用户活动计时器通知</string>
+    <string name="desc_completed_timer">用于通知用户已完成计时器通知</string>
+    <string name="desc_stopwatch">用于通知用户秒表通知</string>
+
+    <!-- Notification Group Titles -->
+    <string name="all_upcoming_alarms">所有即将来临的闹钟</string>
+    <string name="all_snoozed_alarms">所有已打盹的闹钟</string>
+    <string name="all_missed_alarms">所有错过的闹钟</string>
+
+    <!-- Grouped Notification Titles -->
+    <string name="upcoming_alarm">即将来临的闹钟</string>
+    <string name="snoozed_alarm">已打盹的闹钟</string>
+    <string name="missed_alarm">错过的闹钟</string>
+
+    <!-- Notification Actions -->
+    <string name="restart">重新启动</string>
+    <string name="reset">重置</string>
+    <string name="pause">暂停</string>
+    <string name="add_1_min">添加1分钟</string>
+    <string name="stop">停止</string>
+    <string name="lap">圈次</string>
+    <string name="complete_task">完成任务</string>
+
+    <!-- Notification Stopwatch Builder -->
+    <string name="lap_time_format">#圈次 %1$s : %2$s</string>
+    <string name="stop_all_completed">停止所有已完成的计时器</string>
+    <string name="stop_all_active">停止所有活动计时器</string>
+    <string name="start_timer">启动计时器</string>
+    <string name="delete_timer">删除计时器</string>
+    <string name="rounds">回合</string>
+    <string name="exact_alarm">精确闹钟</string>
+</resources>

@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Meta Data -->
+    <string name="app_name">स्मार्टअलार्म</string>
+    <string name="google_api_key">AIzaSyDV41n8TtAZvffXa4noYukHytxcWMUe9gw</string>
+
+
+
+
+    // ---------------------------------------------------------------------
+    // # Global Common String
+    // ---------------------------------------------------------------------
+    <string name="undo">पूर्ववत करें</string>
+    <string name="mission">मिशन</string>
+    <string name="am">ए.एम</string>
+    <string name="pm">पी.एम</string>
+
+    // ---------------------------------------------------------------------
+    // # Permission Dialog Related Strings
+    // ---------------------------------------------------------------------
+
+    <!-- Permission Dialog Titles -->
+    <string name="permission_required_title">अनुमति आवश्यक है</string>
+    <string name="full_screen_permission_title">फुल-स्क्रीन अधिसूचना अनुमति आवश्यक है</string>
+    <string name="schedule_exact_alarm_permission_title">सटीक अलार्म अधिसूचना अनुमति आवश्यक है</string>
+    <string name="notification_permission_required_title">सूचना अनुमति आवश्यक है</string>
+
+    <!-- Permission Dialog Messages -->
+    <string name="full_screen_permission_message">अलार्म ट्रिगर होने पर अधिसूचनाएँ दिखाने के लिए कृपया अपनी सेटिंग्स में फुल-स्क्रीन अधिसूचना अनुमति प्रदान करें।</string>
+    <string name="schedule_exact_alarm_permission_message">अलार्म और टाइमर शेड्यूल करने के लिए कृपया अपनी सेटिंग्स में सटीक अलार्म अनुमति प्रदान करें।</string>
+    <string name="post_notification_permission_rationale_message">इस ऐप को अलार्म, टाइमर और स्टॉपवॉच के लिए समय पर सूचनाएँ भेजने के लिए सूचना अनुमति की आवश्यकता है।</string>
+    <string name="app_permission_setting_dialog_message">%1$s अनुमति इस ऐप के सही तरीके से काम करने के लिए आवश्यक है। कृपया इसे अपने सिस्टम सेटिंग्स में सक्षम करें।</string>
+
+    <!-- Dialog Button Action Messages -->
+    <string name="grant_permission">अनुमति दें</string>
+    <string name="deny">अस्वीकृत करें</string>
+    <string name="cancel">रद्द करें</string>
+
+    <!-- Permission Post Action Messages   -->
+    <string name="permission_granted_successfully">अनुमति सफलतापूर्वक प्रदान की गई!</string>
+    <string name="permissions_denied">अनुमतियाँ अस्वीकृत की गईं!</string>
+    <string name="post_notification_rationale_declined">पोस्ट नोटिफिकेशन अनुमती अस्वीकृत!</string>
+    <string name="full_screen_notification_permission_granted">पूर्ण स्क्रीन सूचना अनुमति प्राप्त हुई!</string>
+    <string name="full_screen_notification_permission_denied">फुल स्क्रीन नोटिफिकेशन अनुमती अस्वीकृत!</string>
+    <string name="schedule_exact_alarm_permission_granted">सटीक अलार्म अनुसूची अनुमति प्राप्त हुई!</string>
+    <string name="schedule_exact_alarm_permission_denied">सटीक अलार्म अनुसूची अनुमती अस्वीकृत!</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Toolbar Menu Related Strings
+    // ---------------------------------------------------------------------
+    <string name="settings">सेटिंग्स</string>
+    <string name="help">मदद</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Home Activity Strings
+    // ---------------------------------------------------------------------
+    <!-- Home Activity Strings in Hindi -->
+    <string name="alarm">अलार्म</string>
+    <string name="clock">घड़ी</string>
+    <string name="timer">टाइमर</string>
+    <string name="stopwatch">स्टॉपवॉच</string>
+    <string name="empty">खाली</string>
+    <string name="alarm_playback_attribution">अलार्म के लिए ऑडियो प्लेबैक</string>
+    <string name="empty_attribution_label">खाली टैग</string>
+    <string name="navigation_drawer_open">नेविगेशन ड्रॉअर खोलें</string>
+    <string name="navigation_drawer_close">नेविगेशन ड्रॉअर बंद करें</string>
+
+
+
+
+    // ---------------------------------------------------------------------
+    // # Alarm Screen Related Strings
+    // ---------------------------------------------------------------------
+
+    <!-- Common Alarm Strings  -->
+    <string name="create_new_alarm">नया अलार्म बनाएं</string>
+    <string name="update_alarm">अलार्म अपडेट करें</string>
+
+    <!-- A]  Alarm Fragment Strings -->
+
+    <!-- 1]  Alarm Fragment Layout Strings -->
+    <string name="add_alarm">अलार्म जोड़ें</string>
+    <string name="alarm_list_content_description">आपके सेट किए गए अलार्म की सूची</string>
+    <string name="alarm_are_not_created_yet">अभी तक कोई अलार्म नहीं बनाया गया है!</string>
+
+    <!-- 2]  Alarm Fragment Strings -->
+    <string name="one_time">एक बार</string>
+    <string name="alarm_deleted">अलार्म हटा दिया गया</string>
+    <string name="alarm_time_is_in_the_past_or_now">अलार्म का समय पहले या अभी है!</string>
+    <string name="alarm_time_less_than_a_minute">अलार्म अब से एक मिनट से भी कम समय में बजेगा।</string>
+    <string name="day">दिन</string>
+    <string name="days">दिन</string>
+    <string name="hour">घंटा</string>
+    <string name="hours">घंटे</string>
+    <string name="minute">मिनट</string>
+    <string name="minutes">मिनट</string>
+    <string name="and">और</string>
+    <string name="alarm_time_left">अलार्म %1$s में बजेगा।</string>
+
+    <!-- 3]  Alarm Fragment AlarmViewmodel Strings -->
+    <string name="error_failed_to_load_alarms">अलार्म लोड करने में विफल!</string>
+    <string name="error_failed_to_update_alarm">अलार्म अपडेट करने में विफल!</string>
+    <string name="error_failed_to_delete_alarm">अलार्म को हटाने में विफल!</string>
+    <string name="error_failed_to_restore_alarm">अलार्म को पुनर्स्थापित करने में विफल!</string>
+
+    <!-- 4] Alarm Card Item Layout Strings -->
+    <string name="alarm_mission">अलार्म मिशन</string>
+    <string name="none">कोई नहीं</string>
+    <string-array name="alarm_weekday">
+        <item>सोम</item>  <!-- Monday -->
+        <item>मंगल</item> <!-- Tuesday -->
+        <item>बुध</item>  <!-- Wednesday -->
+        <item>गुरु</item>  <!-- Thursday -->
+        <item>शुक्र</item> <!-- Friday -->
+        <item>शनि</item>  <!-- Saturday -->
+        <item>रवि</item>  <!-- Sunday -->
+    </string-array>
+
+    <!--  Alarm View Model    -->
+    <string name="alarm_already_passed">अलार्म का समय पहले ही गुजर चुका है।</string>
+    <string name="alarm_days_hours_minutes">अलार्म %d दिन, %d घंटे और %d मिनट में सेट किया गया है।</string>
+    <string name="alarm_days_hours">अलार्म %d दिन और %d घंटे में सेट किया गया है।</string>
+    <string name="alarm_day">अलार्म %d दिन में सेट किया गया है।</string>
+    <string name="alarm_hours_minutes">अलार्म %d घंटे और %d मिनट में सेट किया गया है।</string>
+    <string name="alarm_hours">अलार्म %d घंटे में सेट किया गया है।</string>
+    <string name="alarm_minutes">अलार्म %d मिनट में सेट किया गया है।</string>
+    <string name="alarm_switch">अलार्म स्विच</string>
+    <string name="hello_blank_fragment">नमस्ते ब्लैंक फ़्रैगमेंट</string>
+    <string name="delete">हटाएं</string>
+    <string name="default_stop_watch_timer">00घ : 00मि : 00से</string>
+    <string name="resume">पुनः प्रारंभ करें</string>
+    <string name="notification_scheduled_alarm_time">%1$s , %2$s अपराह्न</string>
+    <string name="stop_watch_timer">%1$d %2$d घ : %3$d %4$d मि : %5$d %6$d से</string>
+    <string name="update_the_alarm_time">अलार्म का समय अपडेट करें</string>
+    <string name="dismiss_alarm">अलार्म बंद करें</string>
+    <string name="scheduled_alarm">निर्धारित अलार्म</string>
+    <string name="snoozeAlarm">स्नूज़ अलार्म</string>
+    <string name="stopAlarm">अलार्म बंद करें</string>
+
+
+    <!-- B]  Alarm Editor Fragment Strings -->
+
+    <!-- 1] Alarm Editor Fragment Layout   -->
+    <string name="enter_label">लेबल दर्ज करें</string>
+    <string name="colon">:</string>
+    <string name="weekday">सप्ताह का दिन</string>
+    <string name="daily">रोज़ाना</string>
+    <string name="sun">रवि</string>
+    <string name="mon">सोम</string>
+    <string name="tue">मंगल</string>
+    <string name="wed">बुध</string>
+    <string name="thu">गुरु</string>
+    <string name="fri">शुक्र</string>
+    <string name="sat">शनि</string>
+    <string name="alarm_mission_rv_desc">अलार्म मिशन सूची</string>
+    <string name="alarm_sound">अलार्म ध्वनि</string>
+    <string name="vibrate">वाइब्रेट</string>
+    <string name="sound">ध्वनि</string>
+    <string name="save">सहेजें</string>
+    <string name="update">अपडेट करें</string>
+    <string name="hours_picker_description">अलार्म के लिए घंटे चुनें</string>
+    <string name="minute_picker_description">अलार्म के लिए मिनट चुनें</string>
+    <string name="am_pm_picker_description">अलार्म के लिए AM/PM चुनें</string>
+    <string name="snooze">स्नूज़</string>
+    <string name="mission_icon">मिशन आइकन</string>
+    <string name="remove_mission">मिशन हटाएं</string>
+    <string name="min">मिनट</string>
+    <string name="times">बार</string>
+
+    <!-- 2] Alarm Editor Fragment  -->
+    <string name="mission_count_format">%1$d / %2$d</string>
+    <string name="unknown">अज्ञात</string>
+    <string name="snooze_times_min">%1$d बार, %2$d मिनट</string>
+    <string name="select_alarm_ringtone">अलार्म रिंगटोन चुनें</string>
+    <string name="snooze_min_times">%1$d मिनट, %2$d बार</string>
+    <string-array name="meri_diem_list">
+        <item>ए.एम</item>
+        <item>पी.एम</item>
+    </string-array>
+
+
+    <!-- 3] Mission Picker Bottom Sheet Layout  -->
+    <string name="choose_mission">मिशन चुनें</string>
+    <string name="mission_type_selection">मिशन प्रकार चयन</string>
+    <string name="memory">स्मृति</string>
+    <string name="typing">टाइपिंग</string>
+    <string name="maths">गणित</string>
+    <string name="shake">झटका</string>
+    <string name="step">कदम</string>
+
+    <!-- 4] Missions Bottom Sheet Common Strings -->
+    <string name="difficulty_easy">आसान</string> <!-- Easy -->
+    <string name="difficulty_normal">सामान्य</string> <!-- Normal -->
+    <string name="difficulty_hard">कठिन</string> <!-- Hard -->
+    <string name="difficulty_expert">विशेषज्ञ</string> <!-- Expert -->
+    <string name="example">उदाहरण</string>
+    <string name="go_back_to_mission_picker">मिशन चयन पर वापस जाएं</string>
+    <string name="close_mission_bottom_sheet">मिशन शीट बंद करें</string>
+    <string name="easy">आसान</string>
+    <string name="expert">विशेषज्ञ</string>
+    <string name="mission_level_slider">मिशन स्तर स्लाइडर</string>
+    <string name="mission_number_of_rounds_picker">मिशन राउंड संख्या चयन</string>
+    <string name="complete">पूर्ण करें</string>
+    <string name="preview">पूर्वावलोकन</string>
+
+    <!-- C]  Alarm Snooze Fragment Strings -->
+
+    <!-- 1] Snooze Fragment Layout -->
+    <string name="limit">सीमा</string>
+    <string name="interval">अंतराल</string>
+    <string name="_1_min">१ मिनट</string>
+    <string name="_5_min">५ मिनट</string>
+    <string name="_10_min">१० मिनट</string>
+    <string name="_15_min">१५ मिनट</string>
+    <string name="_20_min">२० मिनट</string>
+    <string name="_25_min">२५ मिनट</string>
+    <string name="_30_min">३० मिनट</string>
+    <string name="max_snooze_limit_picker">अधिकतम स्नूज़ सीमा चुनें</string>
+
+
+
+    <!--  D] Alarm Activity Fragments Strings -->
+
+    <!-- 1] Show Alarm Mission Strings -->
+    <string-array name="alarm_weekday_full">
+        <item>रविवार</item>  <!-- Sunday -->
+        <item>सोमवार</item>  <!-- Monday -->
+        <item>मंगलवार</item> <!-- Tuesday -->
+        <item>बुधवार</item>  <!-- Wednesday -->
+        <item>गुरुवार</item> <!-- Thursday -->
+        <item>शुक्रवार</item> <!-- Friday -->
+        <item>शनिवार</item>  <!-- Saturday -->
+    </string-array>
+
+    <!-- Mission Fragment Common Strings -->
+    <string name="round_text">राउंड %1$s का %2$s</string>
+    <string name="mission_completed">मिशन पूरा हुआ!</string>
+    <string name="great_job_you_completed_all_rounds">शानदार! आपने सभी राउंड पूरे कर लिए हैं।</string>
+    <string name="submit">सबमिट करें</string>
+
+    <!-- 1] Memory Mission Strings -->
+    <string name="memorize_the_glowing_squares">चमकते हुए वर्गों को याद करें!</string>
+    <string name="select_the_squares_that_glowed">चमकते हुए वर्गों का चयन करें</string>
+    <string name="correct">सही!</string>
+    <string name="wrong_square_selected">गलत वर्ग चुना गया!</string>
+    <string name="too_many_incorrect_attempts">बहुत अधिक गलत प्रयास किए गए! \n कृपया फिर से याद करें।</string>
+    <string name="failed_to_update_alarm">अलार्म को अपडेट करने में विफल</string>
+    <string name="failed_to_load_alarm">मिशन फ्लो के लिए अलार्म लोड करने में विफल</string>
+
+    <!-- 2] Typing Mission Strings -->
+    <string name="typing_example">तेज़ भूरा लोमड़ी आलसी कुत्ते के ऊपर कई बार कूदती है, फिर गर्म सूरज की रोशनी के नीचे आराम करने के लिए बैठती है।</string>
+    <string name="incorrect_try_again">गलत, फिर से प्रयास करें।</string>
+    <string name="please_type_the_paragraph">कृपया अनुच्छेद टाइप करें।</string>
+    <string-array name="typing_mission_sentences">
+        <item>तेज़ भूरा लोमड़ी आलसी कुत्ते के ऊपर कई बार कूदती है, फिर गर्म सूरज की रोशनी के नीचे एक लंबी दोपहर की झपकी के लिए बैठ जाती है</item>
+        <item>हज़ार मील की यात्रा एक कदम से शुरू होती है, लेकिन यह लगातार चलते रहने का संकल्प ही है जो वास्तव में साहसिकता को परिभाषित करता है</item>
+        <item>होना या न होना, यही सवाल है जो समय के साथ गूंजता है, हमारे अस्तित्व और उद्देश्य की समझ को चुनौती देता है</item>
+        <item>वह हर सप्ताहांत समुद्र तट के पास सीशेल्स बेचती है, उम्मीद करती है कि वह पर्याप्त पैसे इकट्ठा कर सके ताकि वह उन प्रवाल भित्तियों की यात्रा कर सके जिनके बारे में वह हमेशा से सपने देखती रही है</item>
+        <item>जो चमकता है, वह हमेशा सोना नहीं होता, कुछ चीज़ें केवल थोड़ी देर के लिए चमकती हैं, फिर भूल गए यादों के पृष्ठभूमि में लुप्त हो जाती हैं</item>
+        <item>मैं सोचता हूँ, इसलिए मैं हूँ, लेकिन मैं भी आश्चर्यचकित होता हूँ, कल्पना करता हूँ, और सपने देखता हूँ—शायद यही है जो हमें वास्तव में इंसान बनाता है</item>
+        <item>अभ्यास से परफेक्ट बनता है, लेकिन केवल तब जब उसे धैर्य, persistence, और विफलताओं से सीखने की इच्छा के साथ जोड़ा जाता है</item>
+        <item>देर से आना कभी भी न आने से बेहतर है, खासकर जब यह आपके लक्ष्यों का पीछा करने और उन विकल्पों के साथ शांति बनाने की बात हो जो आपके रास्ते को आकार देते हैं</item>
+        <item>ईमानदारी सबसे अच्छा नीति है, भले ही सत्य सुनने में कठिन हो या फिर उसे खुलकर बोलने में कठिनाई हो, खासकर संवेदनशील क्षणों में</item>
+        <item>अपने मुर्गे को अंडे से पहले गिनना मत करो, क्योंकि जीवन अक्सर उस तरीके से खुलता है जिसे हम भविष्यवाणी नहीं कर सकते, चाहे हम कितनी भी कोशिश करें</item>
+        <item>कलम तलवार से ज़्यादा ताकतवर होती है, खासकर जब इसका उपयोग उद्देश्य, सहानुभूति और प्रेरणा देने की चाह के साथ किया जाता है</item>
+        <item>समय और ज्वार किसी का इंतजार नहीं करते, वे हमारे संकोच के क्षणों को लांघते हुए यह याद दिलाते हैं कि अब वह समय है जो हमारे पास है</item>
+    </string-array>
+
+    <!-- 3]  Math Mission Strings -->
+    <string name="solve_the_math_problem">गणित का प्रश्न हल करें</string>
+    <string name="enter_your_answer">अपना उत्तर दर्ज करें</string>
+
+    <!-- 4]  Shake Mission Strings -->
+    <string name="shake_your_phone">अपना फ़ोन हिलाएँ!</string>
+
+    <!-- 5]  Step Mission Strings -->
+    <string name="steps">कदम</string>
+    <string name="take_steps">कदम उठाएं!</string>
+    <string name="detect_the_first_step">अपने कदमों का सिंक करने के लिए कृपया चलना शुरू करें। हम पहला कदम पहचानने पर ट्रैकिंग शुरू करेंगे।</string>
+    <string name="accelerometer_sensor_not_available">एक्सेलेरोमीटर सेंसर उपलब्ध नहीं है</string>
+    <string name="step_detector_sensor_not_available">स्टेप डिटेक्टर सेंसर उपलब्ध नहीं है</string>
+    <string name="permission_required_for_step_detection">स्टेप डिटेक्शन के लिए अनुमति आवश्यक है</string>
+
+
+
+    // ---------------------------------------------------------------------
+    // # Clock Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="add_new_timezone">नया टाइमज़ोन जोड़ें</string>
+    <string name="selected_timezones_list">चयनित टाइमज़ोन की सूची</string>
+    <string name="no_result_found">कोई परिणाम नहीं मिला!</string>
+    <string name="search">खोजें</string>
+
+    // ---------------------------------------------------------------------
+    // # Timer Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="_0">०</string>
+    <string name="_00">००</string>
+    <string name="_1">१</string>
+    <string name="_2">२</string>
+    <string name="_3">३</string>
+    <string name="_4">४</string>
+    <string name="_5">५</string>
+    <string name="_6">६</string>
+    <string name="_7">७</string>
+    <string name="_8">८</string>
+    <string name="_9">९</string>
+    <string name="btnBackSpace">⌫</string>
+    <string name="default_timer_time">००घ : ००मि : ००से</string>
+    <string name="formatted_timer_time">%1$sघ : %2$sमि : %3$sसे</string>
+    <string name="unable_to_start_the_timer">वर्तमान में टाइमर शुरू करने में असमर्थ। कृपया बाद में पुनः प्रयास करें।</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Show Timer Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="add_new_timer">नया टाइमर जोड़ें</string>
+    <string name="restart_timer">टाइमर को पुनः प्रारंभ करें</string>
+    <string name="finish_timer">टाइमर पूरा करें</string>
+    <string name="_1_00">+१:००</string>
+    <string name="play_pause_timer">टाइमर को चलाएँ/रोकें</string>
+    <string name="timer_title">%1$s टाइमर</string>
+    <string name="active_timer">सक्रिय टाइमर</string>
+    <string name="completed_timer">पूरा हुआ टाइमर</string>
+    <string name="add_one_minute">१ मिनट जोड़ें</string>
+    <string name="hour_formatted_stopwatch_time">%1$sघ : %2$sमि : %3$sसे</string>
+    <string name="min_formatted_stopwatch_time">%1$sमि : %2$sसे</string>
+    <string name="sec_formatted_stopwatch_time">%1$sसे</string>
+    <string name="sec_millis_formatted_stopwatch_time">%1$sसे : %2$sमिसे</string>
+    <string name="timer_dashboard">टाइमर डैशबोर्ड</string> <!-- Hindi -->
+
+
+
+
+    // ---------------------------------------------------------------------
+    // # Stopwatch Screen Related Strings
+    // ---------------------------------------------------------------------
+    <!--  1] Stopwatch layout Strings   -->
+    <string name="stopwatch_progress_indicator">स्टॉपवॉच समय प्रगति संकेतक</string>
+    <string name="stopwatch_rv_desc">रिकॉर्ड किए गए स्टॉपवॉच लैप टाइम की सूची</string>
+    <string name="toggle_stopwatch">स्टॉपवॉच शुरू/रोकें</string>
+    <string name="reset_stopwatch">स्टॉपवॉच रीसेट करें</string>
+    <string name="record_lap_time">लैप समय रिकॉर्ड करें</string>
+    <string name="lap_index"># लैप</string>
+
+    <!-- Stopwatch Viewmodel Specific Error Strings  -->
+    <string name="failed_to_restore_stopwatch_state">स्टॉपवॉच की स्थिति पुनर्स्थापित करने में विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="failed_to_start_stopwatch">स्टॉपवॉच शुरू करने में विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="failed_to_pause_stopwatch_state">स्टॉपवॉच की स्थिति रोकने में विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="failed_to_reset_stopwatch_state">स्टॉपवॉच की स्थिति रीसेट करने में विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="failed_to_record_lap_stopwatch_state">स्टॉपवॉच की लैप रिकॉर्ड करने में विफल। कृपया पुनः प्रयास करें।</string>
+
+    // ---------------------------------------------------------------------
+    //  Setting Related Strings
+    // ---------------------------------------------------------------------
+    <string name="change_language">भाषा बदलें</string>
+    <string name="language">भाषा</string>
+    <string name="about">के बारे में</string>
+    <string name="flag">देश का ध्वज</string>
+
+    <string name="english">अंग्रेजी</string>
+    <string name="spanish">स्पेनिश</string>
+    <string name="german">जर्मन</string>
+    <string name="french">फ्रेंच</string>
+    <string name="portuguese">पोर्तुगीज़</string>
+    <string name="korean">कोरियाई</string>
+    <string name="chinese">चाइनीज़</string>
+    <string name="japanese">जापानी</string>
+    <string name="hindi">हिंदी</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Notification Related Strings
+    // ---------------------------------------------------------------------
+
+    <string name="notification">सूचना</string>
+    <string name="today">आज</string>
+    <string name="tomorrow">कल</string>
+
+    <!-- Notification Channel Names -->
+    <string name="channel_upcoming_alarm">आगामी अलार्म सूचनाएँ</string>
+    <string name="channel_snoozed_alarm">स्नूज़ किए गए अलार्म सूचनाएँ</string>
+    <string name="channel_missed_alarm">मिस किए गए अलार्म सूचनाएँ</string>
+    <string name="channel_scheduled_alarm">निर्धारित अलार्म सूचनाएँ</string>
+    <string name="channel_active_timer">सक्रिय टाइमर सूचनाएँ</string>
+    <string name="channel_completed_timer">पूरा हुआ टाइमर सूचनाएँ</string>
+    <string name="channel_stopwatch">स्टॉपवॉच सूचनाएँ</string>
+
+    <!-- Notification Channel Descriptions -->
+    <string name="desc_upcoming_alarm">आगामी अलार्म के बारे में उपयोगकर्ता को सूचित करने के लिए चैनल</string>
+    <string name="desc_snoozed_alarm">स्नूज़ किए गए अलार्म के बारे में उपयोगकर्ता को सूचित करने के लिए चैनल</string>
+    <string name="desc_missed_alarm">मिस किए गए अलार्म के बारे में उपयोगकर्ता को सूचित करने के लिए चैनल</string>
+    <string name="desc_smart_alarm">निर्धारित अलार्म सूचनाओं के बारे में उपयोगकर्ता को सूचित करने के लिए चैनल</string>
+    <string name="desc_active_timer">सक्रिय टाइमर सूचनाओं के बारे में उपयोगकर्ता को सूचित करने के लिए चैनल</string>
+    <string name="desc_completed_timer">पूरा हुआ टाइमर सूचनाओं के बारे में उपयोगकर्ता को सूचित करने के लिए चैनल</string>
+    <string name="desc_stopwatch">स्टॉपवॉच सूचनाओं के बारे में उपयोगकर्ता को सूचित करने के लिए चैनल</string>
+
+    <!-- Notification Group Titles -->
+    <string name="all_upcoming_alarms">सभी आगामी अलार्म</string>
+    <string name="all_snoozed_alarms">सभी स्नूज़ किए गए अलार्म</string>
+    <string name="all_missed_alarms">सभी मिस किए गए अलार्म</string>
+
+    <!-- Grouped Notification Titles -->
+    <string name="upcoming_alarm">आगामी अलार्म</string>
+    <string name="snoozed_alarm">स्नूज़ किए गए अलार्म</string>
+    <string name="missed_alarm">मिस किया गया अलार्म</string>
+
+    <!-- Notification Actions -->
+    <string name="restart">पुनः प्रारंभ करें</string>
+    <string name="reset">रीसेट करें</string>
+    <string name="pause">रोकें</string>
+    <string name="add_1_min">1 मिनट जोड़ें</string>
+    <string name="stop">रोकें</string>
+    <string name="lap">लैप</string>
+    <string name="complete_task">मिशन पूरा करें</string>
+
+    <!-- Notification Stopwatch Builder -->
+    <string name="lap_time_format">#लैप %1$s : %2$s</string>
+    <string name="stop_all_completed">सभी पूर्ण हुए टाइमर रोकें</string>
+    <string name="stop_all_active">सभी सक्रिय टाइमर रोकें</string>
+    <string name="start_timer">टाइमर शुरू करें</string>
+    <string name="delete_timer">टाइमर हटाएँ</string>
+    <string name="rounds">राउंड्स</string>
+    <string name="exact_alarm">सटीक अलार्म</string>
+
+
+
+
+
+
+</resources>

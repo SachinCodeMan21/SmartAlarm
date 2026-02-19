@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mission_nav_graph"
+    app:startDestination="@id/showAlarmFragment">
+
+    <fragment
+        android:id="@+id/showAlarmFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.mission.ShowAlarmFragment"
+        android:label="fragment_show_alarm"
+        tools:layout="@layout/fragment_show_alarm" >
+        <argument
+            android:name="alarmId"
+            app:argType="integer"
+            android:defaultValue="0" />
+
+
+        <!-- Argument to pass isPreview -->
+        <argument
+            android:name="isPreview"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
+        <!-- Argument to pass previewMission, assuming it's a custom object -->
+        <argument
+            android:name="previewMission"
+            app:nullable="true"
+            app:argType="com.example.smartalarm.feature.alarm.domain.model.AlarmModel" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/memoryMissionFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.mission.MemoryMissionFragment"
+        android:label="fragment_memory_mission"
+        tools:layout="@layout/fragment_memory_mission" />
+    <fragment
+        android:id="@+id/mathMissionFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.mission.MathMissionFragment"
+        android:label="fragment_math_mission"
+        tools:layout="@layout/fragment_math_mission" />
+    <fragment
+        android:id="@+id/shakeMissionFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.mission.ShakeMissionFragment"
+        android:label="fragment_shake_mission"
+        tools:layout="@layout/fragment_shake_mission" />
+    <fragment
+        android:id="@+id/typingMissionFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.mission.TypingMissionFragment"
+        android:label="fragment_typing_mission"
+        tools:layout="@layout/fragment_typing_mission" />
+    <fragment
+        android:id="@+id/stepMissionFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.mission.StepMissionFragment"
+        android:label="fragment_step_mission"
+        tools:layout="@layout/fragment_step_mission" />
+
+</navigation>

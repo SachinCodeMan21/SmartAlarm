@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Toolbar Styles -->
+    <style name="Widget.MyApp.DefaultTitleToolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextAppearance">@style/TextAppearance.SmartAlarm.TitleMedium</item>
+    </style>
+
+    <style name="Widget.MyApp.CenteredTitleToolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleCentered">true</item>
+        <item name="titleTextAppearance">@style/TextAppearance.SmartAlarm.TitleMedium</item>
+        <item name="navigationIconTint">?attr/colorOnSurface</item>
+    </style>
+
+
+    <!-- Navigation Components Styles -->
+    <style name="Widget.MyApp.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemTextAppearanceActive">@style/TextAppearance.SmartAlarm.LabelMedium</item>
+        <item name="backgroundTint">?attr/colorSurfaceContainer</item>
+    </style>
+
+    <style name="Widget.MyApp.NavigationRail" parent="Widget.Material3.NavigationRailView">
+        <item name="backgroundTint">?attr/colorSurfaceContainer</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.SmartAlarm.LabelMedium</item>
+    </style>
+
+    <style name="Widget.MyApp.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="backgroundTint">?attr/colorSurfaceContainer</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.SmartAlarm.LabelMedium</item>
+    </style>
+
+
+    <!-- Buttons -->
+    <style name="KeypadButton" parent="Widget.Material3.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/spacing_s</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:textSize">@dimen/text_size_s</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:maxWidth">320dp</item>
+    </style>
+
+    <style name="SnoozeRadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_m</item>
+        <item name="android:paddingStart">@dimen/padding_s</item>
+        <item name="android:paddingEnd">@dimen/padding_s</item>
+    </style>
+
+
+   <!-- Textview Style -->
+    <style name="WeekdayCircle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginStart">@dimen/spacing_xs</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_xs</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/padding_s</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+        <item name="android:background">@drawable/unselected_circular_background</item>
+    </style>
+
+
+
+</resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_s">
+
+    <TextView
+        android:id="@+id/lapIndexTv"
+        style="@style/TextAppearance.SmartAlarm.LabelMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/spacing_s"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/lapElapsedTimeTv"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Text" />
+
+    <TextView
+        android:id="@+id/lapElapsedTimeTv"
+        style="@style/TextAppearance.SmartAlarm.LabelMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:gravity="center"
+        android:padding="@dimen/spacing_s"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/lapEndTimeTv"
+        app:layout_constraintStart_toEndOf="@+id/lapIndexTv"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Text" />
+
+    <TextView
+        android:id="@+id/lapEndTimeTv"
+        style="@style/TextAppearance.SmartAlarm.LabelMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:gravity="center"
+        android:padding="@dimen/spacing_s"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lapElapsedTimeTv"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Core / Brand Colors (Primary Family) -->
+    <color name="colorPrimary">#67548e</color>                     <!-- Main brand color -->
+    <color name="colorOnPrimary">#ffffff</color>                   <!-- Text/icons on primary -->
+    <color name="colorPrimaryContainer">#eaddff</color>           <!-- Lighter container (cards, sheets) -->
+    <color name="colorOnPrimaryContainer">#4f3d74</color>         <!-- Text/icons on primary container -->
+
+    <!-- Secondary Family (Complementary) -->
+    <color name="colorSecondary">#635b70</color>
+    <color name="colorOnSecondary">#ffffff</color>
+    <color name="colorSecondaryContainer">#e9def8</color>
+    <color name="colorOnSecondaryContainer">#4a4358</color>
+
+    <!-- Tertiary Family (Accent / Highlight) -->
+    <color name="colorTertiary">#7f525c</color>
+    <color name="colorOnTertiary">#ffffff</color>
+    <color name="colorTertiaryContainer">#ffd9e0</color>
+    <color name="colorOnTertiaryContainer">#643b45</color>
+
+    <!-- Error / Warning -->
+    <color name="colorError">#ba1a1a</color>
+    <color name="colorOnError">#ffffff</color>
+    <color name="colorErrorContainer">#ffdad6</color>
+    <color name="colorOnErrorContainer">#93000a</color>
+
+    <!-- Surface / Background Family (Neutral) -->
+    <color name="colorSurfaceDim">#ded8e0</color>                 <!-- Dim surface -->
+    <color name="colorSurface">#fef7ff</color>                       <!-- Main background -->
+    <color name="colorSurfaceBright">#fef7ff</color>           <!-- Bright surface -->
+
+    <color name="colorSurfaceContainerLowest">#ffffff</color>
+    <color name="colorSurfaceContainerLow">#f8f1f9</color>         <!-- Slightly elevated -->
+    <color name="colorSurfaceContainer">#f3ecf4</color>
+    <color name="colorSurfaceContainerHigh">#ede6ee</color>
+    <color name="colorSurfaceContainerHighest">#e7e0e8</color>
+    <color name="colorOnSurface">#1d1a20</color>                   <!-- Main text on surface -->
+    <color name="colorOnSurfaceVariant">#49454e</color>     <!-- Text for variant surfaces -->
+
+    <!-- Inverse / Outline -->
+    <color name="colorSurfaceInverse">#322f35</color>
+    <color name="colorOnSurfaceInverse">#f5eff7</color>
+    <color name="colorInversePrimary">#d2bcfd</color>
+    <color name="colorOutline">#5A4E61</color>
+    <color name="colorOutlineVariant">#cbc4cf</color>
+
+    <!-- Background Color -->
+    <color name="colorBackground">#FEF7FF</color>
+    <color name="colorOnBackground">#1D1B20</color>
+
+    <!-- Scrim & Shadow Colors -->
+    <color name="colorScrim">#000000</color>
+    <color name="colorShadow">#000000</color>
+
+    <!-- Status Bar Color -->
+    <color name="colorStatusBar">#EADDFF</color>
+
+
+
+
+
+
+    <!-- Text Color -->
+    <color name="grey">#787575</color>
+    <color name="purple">#7849CA</color>
+    <color name="green">#47BC4B</color>
+    <color name="red">#D3463C</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Text Colors-->
+    <color name="alarm_day_unselected_color">#596D85</color>
+    <color name="alarm_day_selected_color">#3192DF</color>
+    <color name="selected_weekdays_color">#3192DF</color>
+    <color name="unselected_weekdays_color">#596D85</color>
+
+
+    <!-- Card Background Colors -->
+    <color name="swipe_background">#D28D95</color> <!-- light red -->
+
+  <!-- Timer Adapter-->
+    <color name="darkRed">#B52F2F</color>
+    <color name="lightPurple">#D7C6F6</color>
+    <color name="lightRed">#F3A2A2</color>
+
+
+    <!-- Memory Mission Fragment    -->
+    <color name="neutral">#A9A9A9</color> <!-- darker_gray -->
+    <color name="glow">#9C27B0</color> <!-- holo_purple -->
+    <color name="selected">#388E3C</color> <!-- holo_green_dark -->
+    <color name="incorrect">#F44336</color> <!-- holo_red_light -->
+    <color name="text_error">#F44336</color>
+    <color name="error">#F44336</color> <!-- same as incorrect -->
+
+</resources>

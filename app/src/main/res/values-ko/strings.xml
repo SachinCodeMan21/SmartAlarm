@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Meta Data -->
+    <string name="app_name">스마트 알람</string>
+    <string name="google_api_key" translatable="false">AIzaSyDV41n8TtAZvffXa4noYukHytxcWMUe9gw</string>
+
+    // ---------------------------------------------------------------------
+    // # Global Common String
+    // ---------------------------------------------------------------------
+    <string name="undo">실행 취소</string>
+    <string name="mission">미션</string>
+    <string name="am">오전</string>
+    <string name="pm">오후</string>
+
+    // ---------------------------------------------------------------------
+    // # Permission Dialog Related Strings
+    // ---------------------------------------------------------------------
+
+    <string name="permission_required_title">권한 필요</string>
+    <string name="full_screen_permission_title">전체 화면 알림 권한 필요</string>
+    <string name="schedule_exact_alarm_permission_title">정확한 알람 예약 권한 필요</string>
+    <string name="notification_permission_required_title">알림 권한 필요</string>
+
+    <string name="full_screen_permission_message">알람이 울릴 때 전체 화면으로 알림을 표시하려면 전체 화면 알림 권한을 허용해 주세요.</string>
+    <string name="schedule_exact_alarm_permission_message">알람과 타이머를 정확히 예약하려면 ‘정확한 알람 예약’ 권한을 허용해 주세요.</string>
+    <string name="post_notification_permission_rationale_message">이 앱은 알람, 타이머, 스톱워치를 정확하고 신속하게 알려드리기 위해 알림 권한이 필요합니다.</string>
+    <string name="app_permission_setting_dialog_message">%1$s 권한은 앱이 정상 작동하는 데 필요합니다. 시스템 설정에서 활성화해 주세요.</string>
+
+    <string name="grant_permission">허용</string>
+    <string name="deny">거부</string>
+    <string name="cancel">취소</string>
+
+    <string name="permission_granted_successfully">권한이 성공적으로 부여되었습니다!</string>
+    <string name="permissions_denied">권한이 거부되었습니다</string>
+    <string name="post_notification_rationale_declined">알림 권한 설명을 거부했습니다</string>
+    <string name="full_screen_notification_permission_granted">전체 화면 알림 권한이 부여되었습니다!</string>
+    <string name="full_screen_notification_permission_denied">전체 화면 알림 권한이 거부되었습니다</string>
+    <string name="schedule_exact_alarm_permission_granted">정확한 알람 예약 권한이 부여되었습니다!</string>
+    <string name="schedule_exact_alarm_permission_denied">정확한 알람 예약 권한이 거부되었습니다</string>
+
+    // ---------------------------------------------------------------------
+    // # Toolbar Menu Related Strings
+    // ---------------------------------------------------------------------
+    <string name="settings">설정</string>
+    <string name="help">도움말</string>
+
+    // ---------------------------------------------------------------------
+    // # Home Activity Strings
+    // ---------------------------------------------------------------------
+    <string name="alarm">알람</string>
+    <string name="clock">시계</string>
+    <string name="timer">타이머</string>
+    <string name="stopwatch">스톱워치</string>
+    <string name="empty">비어 있음</string>
+    <string name="alarm_playback_attribution">알람 사운드 재생</string>
+    <string name="empty_attribution_label">빈 속성 태그</string>
+    <string name="navigation_drawer_open">내비게이션 드로어 열기</string>
+    <string name="navigation_drawer_close">내비게이션 드로어 닫기</string>
+
+    // ---------------------------------------------------------------------
+    // # Alarm Screen Related Strings
+    // ---------------------------------------------------------------------
+
+    <string name="create_new_alarm">새 알람 만들기</string>
+    <string name="update_alarm">알람 수정</string>
+    <string name="add_alarm">알람 추가</string>
+    <string name="alarm_list_content_description">설정된 알람 목록</string>
+    <string name="alarm_are_not_created_yet">아직 알람이 생성되지 않았습니다!</string>
+
+    <string name="one_time">1회만</string>
+    <string name="alarm_deleted">알람이 삭제되었습니다</string>
+    <string name="alarm_time_is_in_the_past_or_now">알람 시간이 이미 지났거나 현재입니다!</string>
+    <string name="alarm_time_less_than_a_minute">알람이 1분 이내에 울립니다.</string>
+    <string name="day">일</string>
+    <string name="days">일</string>
+    <string name="hour">시간</string>
+    <string name="hours">시간</string>
+    <string name="minute">분</string>
+    <string name="minutes">분</string>
+    <string name="and">그리고</string>
+    <string name="alarm_time_left">알람이 %1$s 후에 울립니다.</string>
+
+    <string name="error_failed_to_load_alarms">알람을 불러오지 못했습니다!</string>
+    <string name="error_failed_to_update_alarm">알람 업데이트 실패!</string>
+    <string name="error_failed_to_delete_alarm">알람 삭제 실패!</string>
+    <string name="error_failed_to_restore_alarm">알람 복원 실패!</string>
+
+    <string name="alarm_mission">알람 미션</string>
+    <string name="none">없음</string>
+    <string-array name="alarm_weekday">
+        <item>일</item>
+        <item>월</item>
+        <item>화</item>
+        <item>수</item>
+        <item>목</item>
+        <item>금</item>
+        <item>토</item>
+    </string-array>
+
+    <!-- Alarm Editor -->
+    <string name="enter_label">라벨 입력</string>
+    <string name="colon">:</string>
+    <string name="weekday">평일</string>
+    <string name="daily">매일</string>
+    <string name="sun">일요</string>
+    <string name="mon">월요</string>
+    <string name="tue">화요</string>
+    <string name="wed">수요</string>
+    <string name="thu">목요</string>
+    <string name="fri">금요</string>
+    <string name="sat">토요</string>
+    <string name="alarm_mission_rv_desc">알람 미션 목록</string>
+    <string name="alarm_sound">알람 사운드</string>
+    <string name="vibrate">진동</string>
+    <string name="sound">소리</string>
+    <string name="save">저장</string>
+    <string name="update">수정</string>
+    <string name="hours_picker_description">알람 시 선택</string>
+    <string name="minute_picker_description">알람 분 선택</string>
+    <string name="am_pm_picker_description">오전/오후 선택</string>
+    <string name="snooze">스누즈</string>
+    <string name="mission_icon">미션 아이콘</string>
+    <string name="remove_mission">미션 삭제</string>
+    <string name="min">분</string>
+    <string name="times">회</string>
+
+    <string name="mission_count_format">%1$d / %2$d</string>
+    <string name="unknown">알 수 없음</string>
+    <string name="snooze_times_min">%1$d회, %2$d분</string>
+    <string name="select_alarm_ringtone">알람 벨소리 선택</string>
+    <string name="snooze_min_times">%1$d분, %2$d회</string>
+    <string-array name="meri_diem_list">
+        <item>오전</item>
+        <item>오후</item>
+    </string-array>
+
+    <!-- Mission Picker -->
+    <string name="choose_mission">미션 선택</string>
+    <string name="mission_type_selection">미션 종류 선택</string>
+    <string name="memory">기억력</string>
+    <string name="typing">타이핑</string>
+    <string name="maths">수학</string>
+    <string name="shake">흔들기</string>
+    <string name="step">걸음</string>
+
+    <string name="difficulty_easy">쉬움</string>
+    <string name="difficulty_normal">보통</string>
+    <string name="difficulty_hard">어려움</string>
+    <string name="difficulty_expert">전문가</string>
+    <string name="example">예시</string>
+    <string name="go_back_to_mission_picker">미션 선택으로 돌아가기</string>
+    <string name="close_mission_bottom_sheet">닫기</string>
+    <string name="easy">쉬움</string>
+    <string name="expert">전문가</string>
+    <string name="mission_level_slider">난이도 슬라이dal</string>
+    <string name="mission_number_of_rounds_picker">라운드 수 선택</string>
+    <string name="complete">완료</string>
+    <string name="preview">미리보기</string>
+
+    <!-- Snooze -->
+    <string name="limit">제한</string>
+    <string name="interval">간격</string>
+    <string name="_1_min">1분</string>
+    <string name="_5_min">5분</string>
+    <string name="_10_min">10분</string>
+    <string name="_15_min">15분</string>
+    <string name="_20_min">20분</string>
+    <string name="_25_min">25분</string>
+    <string name="_30_min">30분</string>
+    <string name="max_snooze_limit_picker">최대 스누즈 횟수 선택</string>
+
+    <!-- Alarm Ringing Screen -->
+    <string-array name="alarm_weekday_full">
+        <item>일요일</item>
+        <item>월요일</item>
+        <item>화요일</item>
+        <item>수요일</item>
+        <item>목요일</item>
+        <item>금요일</item>
+        <item>토요일</item>
+    </string-array>
+
+    <string name="round_text">%2$s 라운드 중 %1$s</string>
+    <string name="mission_completed">미션 완료!</string>
+    <string name="great_job_you_completed_all_rounds">잘하셨습니다! 모든 라운드를 완료했습니다.</string>
+    <string name="submit">제출</string>
+
+    <!-- Memory Mission -->
+    <string name="memorize_the_glowing_squares">빛나는 칸을 기억하세요!</string>
+    <string name="select_the_squares_that_glowed">빛났던 칸을 선택하세요</string>
+    <string name="correct">정답!</string>
+    <string name="wrong_square_selected">틀린 칸을 선택했습니다!</string>
+    <string name="too_many_incorrect_attempts">오답이 너무 많습니다!\n다시 기억해 주세요.</string>
+    <string name="failed_to_update_alarm">알람을 업데이트하지 못했습니다</string>
+    <string name="failed_to_load_alarm">미션 흐름에 대한 알람을 불러오지 못했습니다</string>
+
+    <!-- Typing Mission -->
+    <string name="typing_example">The quick brown fox jumps over the lazy dog multiple times before settling under the warm sunlight.</string>
+    <string name="incorrect_try_again">틀렸습니다. 다시 입력해 주세요.</string>
+    <string name="please_type_the_paragraph">문장을 입력해 주세요.</string>
+    <string-array name="typing_mission_sentences">
+        <item>빠른 갈색 여우가 게으른 개를 여러 번 뛰어넘은 후 따뜻한 햇살 아래에서 잠을 청합니다.</item>
+        <item>천 리 길도 한 걸음부터. 그러나 계속 걷겠다는 결심이 진짜 모험을 만듭니다.</item>
+        <item>살 것인가 죽을 것인가, 그것이 문제다. 이 질문은 시대를 초월해 존재와 목적에 대한 이해를 묻습니다.</item>
+        <item>그녀는 주말마다 해변에서 조개껍데기를 팔며, 늘 꿈꿔오던 산호초를 보러 갈 돈을 모읍니다.</item>
+        <item>반짝이는 것이 모두 금은 아니다. 잠깐만 빛나는 것도 많기 때문이다.</item>
+        <item>나는 생각한다, 고로 존재한다. 하지만 상상하고 꿈꾸는 것도 우리를 인간답게 만드는 것일지도 모른다.</item>
+        <item>연습이 완벽을 만든다. 단, 인내와 실패에서 배우려는 자세가 함께할 때만.</item>
+        <item>늦더라도 하지 않는 것보다는 낫다. 특히 목표를 쫓거나 과거 선택과 화해할 때.</item>
+        <item>정직이 최선의 방책이다. 진실이 듣기 힘들 때도 마찬가지다.</item>
+        <item>알이 깨기 전에 병아리를 세지 말라. 인생은 우리가 아무리 노력해도 예측할 수 없다.</item>
+        <item>펜은 칼보다 강하다. 특히 목적과 자비를 가지고 휘두를 때.</item>
+        <item>시간과 조수는 누구를 기다리지 않는다. 망설이는 순간을 휩쓸며 지금만이 진짜 시간임을 알려준다.</item>
+    </string-array>
+
+    <!-- Math Mission -->
+    <string name="solve_the_math_problem">수학 문제를 풀어 주세요</string>
+    <string name="enter_your_answer">정답 입력</string>
+
+    <!-- Shake Mission -->
+    <string name="shake_your_phone">휴대폰을 흔들어 주세요!</string>
+
+    <!-- Step Mission -->
+    <string name="steps">걸음</string>
+    <string name="take_steps">걸어 주세요!</string>
+    <string name="detect_the_first_step">걸음 리듬을 맞추기 위해 먼저 걸어 주세요. 첫 걸음을 감지하면 카운트를 시작합니다.</string>
+    <string name="accelerometer_sensor_not_available">가속도 센서를 사용할 수 없습니다</string>
+    <string name="step_detector_sensor_not_available">만보기 센서를 사용할 수 없습니다</string>
+    <string name="permission_required_for_step_detection">걸음 수 감지에 권한이 필요합니다</string>
+
+    <!-- 기타 알람 -->
+    <string name="alarm_already_passed">알람 시간이 이미 지났습니다.</string>
+    <string name="alarm_days_hours_minutes">%d일%s %d시간%s %d분%s 후</string>
+    <string name="alarm_days_hours">%d일%s %d시간%s 후</string>
+    <string name="alarm_day">%d일%s 후</string>
+    <string name="alarm_hours_minutes">%d시간%s %d분%s 후</string>
+    <string name="alarm_hours">%d시간%s 후</string>
+    <string name="alarm_minutes">%d분%s 후</string>
+    <string name="alarm_switch">알람 스위치</string>
+    <string name="delete">삭제</string>
+    <string name="default_stop_watch_timer">00시간 : 00분 : 00초</string>
+    <string name="resume">다시 시작</string>
+    <string name="notification_scheduled_alarm_time">%1$s, %2$s</string>
+    <string name="stop_watch_timer">%1$d%2$d시간 : %3$d%4$d분 : %5$d%6$d초</string>
+    <string name="update_the_alarm_time">알람 시간 수정</string>
+    <string name="dismiss_alarm">알람 끄기</string>
+    <string name="scheduled_alarm">예약된 알람</string>
+    <string name="snoozeAlarm">스누즈</string>
+    <string name="stopAlarm">정지</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Clock Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="add_new_timezone">새 시간대 추가</string>
+    <string name="selected_timezones_list">시간대 목록</string>
+    <string name="no_result_found">결과 없음</string>
+    <string name="search">검색</string>
+
+    // ---------------------------------------------------------------------
+    // # Timer Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="_0">0</string>
+    <string name="_00">00</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="_9">9</string>
+    <string name="btnBackSpace">Backspace</string>
+    <string name="default_timer_time">00시간 : 00분 : 00초</string>
+    <string name="formatted_timer_time">%1$s시간 : %2$s분 : %3$s초</string>
+    <string name="unable_to_start_the_timer">현재 타이머를 시작할 수 없습니다. 나중에 다시 시도해주세요.</string>
+
+    // ---------------------------------------------------------------------
+    // # Show Timer Screen Related Strings
+    // ---------------------------------------------------------------------
+
+    <string name="add_new_timer">새 타이머 추가</string>
+    <string name="restart_timer">타이머 다시 시작</string>
+    <string name="finish_timer">타이머 종료</string>
+    <string name="_1_00">+1:00</string>
+    <string name="play_pause_timer">재생/일시정지</string>
+    <string name="timer_title">%1$s 타이머</string>
+    <string name="active_timer">진행 중 타이머</string>
+    <string name="completed_timer">완료된 타이머</string>
+    <string name="add_one_minute">1분 추가</string>
+    <string name="hour_formatted_stopwatch_time">%1$sh : %2$sm : %3$ss</string>
+    <string name="min_formatted_stopwatch_time">%1$sm : %2$ss</string>
+    <string name="sec_formatted_stopwatch_time">%1$ss</string>
+    <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
+    <string name="timer_dashboard">타이머 대시보드</string>
+
+    // ---------------------------------------------------------------------
+    // # Stopwatch Screen Related Strings
+    // ---------------------------------------------------------------------
+
+    <!-- Stopwatch -->
+
+    <!--  1] Stopwatch layout Strings   -->
+    <string name="stopwatch_progress_indicator">스톱워치 진행 표시</string>
+    <string name="stopwatch_rv_desc">기록된 랩 타임 목록</string>
+    <string name="toggle_stopwatch">시작/일시정지 전환</string>
+    <string name="reset_stopwatch">초기화</string>
+    <string name="record_lap_time">랩 기록</string>
+    <string name="lap_index">#랩</string>
+
+    <string name="failed_to_restore_stopwatch_state">스톱워치 상태를 복원하지 못했습니다. 다시 시도해 주세요.</string>
+    <string name="failed_to_start_stopwatch">스톱워치를 시작하지 못했습니다. 다시 시도해 주세요.</string>
+    <string name="failed_to_pause_stopwatch_state">스톱워치 상태를 일시 정지하지 못했습니다. 다시 시도해 주세요.</string>
+    <string name="failed_to_reset_stopwatch_state">스톱워치 상태를 리셋하지 못했습니다. 다시 시도해 주세요.</string>
+    <string name="failed_to_record_lap_stopwatch_state">스톱워치 랩 기록을 저장하지 못했습니다. 다시 시도해 주세요.</string>
+
+
+    // ---------------------------------------------------------------------
+    //  Setting Related Strings
+    // ---------------------------------------------------------------------
+    <string name="change_language">언어 변경</string>
+    <string name="language">언어</string>
+    <string name="about">앱 정보</string>
+    <string name="flag">country_flag</string>
+
+    <string name="english">영어</string>
+    <string name="spanish">스페인어</string>
+    <string name="german">독일어</string>
+    <string name="french">프랑스어</string>
+    <string name="portuguese">포르투갈어</string>
+    <string name="korean">한국어</string>
+    <string name="chinese">중국어</string>
+    <string name="japanese">일본어</string>
+    <string name="hindi">힌디어</string>
+
+    <!-- Notification Channels -->
+    <string name="notification">알림</string>
+    <string name="today">오늘</string>
+    <string name="tomorrow">내일</string>
+
+    <string name="channel_upcoming_alarm">다가오는 알람 알림</string>
+    <string name="channel_snoozed_alarm">스누즈 중 알람 알림</string>
+    <string name="channel_missed_alarm">놓친 알람 알림</string>
+    <string name="channel_scheduled_alarm">예약된 알람 알림</string>
+    <string name="channel_active_timer">진행 중 타이머 알림</string>
+    <string name="channel_completed_timer">완료된 타이머 알림</string>
+    <string name="channel_stopwatch">스톱워치 알림</string>
+
+    <!-- Notification Group Titles -->
+    <string name="all_upcoming_alarms">모든 예정된 알람</string>
+    <string name="all_snoozed_alarms">모든 미루어진 알람</string>
+    <string name="all_missed_alarms">모든 놓친 알람</string>
+
+    <!-- Grouped Notification Titles -->
+    <string name="upcoming_alarm">예정된 알람</string>
+    <string name="snoozed_alarm">미루어진 알람</string>
+    <string name="missed_alarm">놓친 알람</string>
+
+    <string name="desc_upcoming_alarm">다가오는 알람을 알려주는 채널</string>
+    <string name="desc_snoozed_alarm">스누즈 중인 알람을 알려주는 채널</string>
+    <string name="desc_missed_alarm">놓친 알람을 알려주는 채널</string>
+    <string name="desc_smart_alarm">예약된 알람 알림 채널</string>
+    <string name="desc_active_timer">진행 중인 타이머 알림 채널</string>
+    <string name="desc_completed_timer">완료된 타이머 알림 채널</string>
+    <string name="desc_stopwatch">스톱워치 관련 알림 채널</string>
+
+    <string name="restart">다시 시작</string>
+    <string name="reset">초기화</string>
+    <string name="pause">일시정지</string>
+    <string name="add_1_min">1분 추가</string>
+    <string name="stop">정지</string>
+    <string name="lap">랩</string>
+    <string name="complete_task">미션 완료</string>
+
+    <string name="lap_time_format">#랩 %1$s : %2$s</string>
+    <string name="stop_all_completed">모든 완료 타이머 정지</string>
+    <string name="stop_all_active">모든 진행 중 타이머 정지</string>
+    <string name="start_timer">타이머 시작</string>
+    <string name="delete_timer">타이머 삭제</string>
+    <string name="rounds">라운드</string>
+    <string name="exact_alarm">정확한 알람</string>
+
+
+</resources>

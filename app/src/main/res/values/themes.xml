@@ -1,0 +1,75 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme for Material3 -->
+    <style name="Base.Theme.SmartAlarm" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Core / Brand Colors (Primary Family) -->
+        <item name="colorPrimary">@color/colorPrimary</item>                     <!-- Main brand color -->
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>                   <!-- Text/icons on primary -->
+        <item name="colorPrimaryContainer">@color/colorPrimaryContainer</item>           <!-- Lighter container (cards, sheets) -->
+        <item name="colorOnPrimaryContainer">@color/colorOnPrimaryContainer</item>         <!-- Text/icons on primary container -->
+
+        <!-- Secondary Family (Complementary) -->
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorSecondaryContainer">@color/colorSecondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/colorOnSecondaryContainer</item>
+
+        <!-- Tertiary Family (Accent / Highlight) -->
+        <item name="colorTertiary">@color/colorTertiary</item>
+        <item name="colorOnTertiary">@color/colorOnTertiary</item>
+        <item name="colorTertiaryContainer">@color/colorTertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/colorOnTertiaryContainer</item>
+
+        <!-- Error / Warning -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/colorOnError</item>
+        <item name="colorErrorContainer">@color/colorErrorContainer</item>
+        <item name="colorOnErrorContainer">@color/colorOnErrorContainer</item>
+
+        <!-- Surface / Background Family (Neutral) -->
+        <item name="colorSurfaceBright">@color/colorSurfaceBright</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorSurfaceDim">@color/colorSurfaceDim</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="colorOnSurfaceVariant">@color/colorOnSurfaceVariant</item>
+        <item name="colorSurfaceContainerLow">@color/colorSurfaceContainerLow</item>
+        <item name="colorSurfaceContainerLowest">@color/colorSurfaceContainerLowest</item>
+        <item name="colorSurfaceContainer">@color/colorSurfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/colorSurfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/colorSurfaceContainerHighest</item>
+
+        <!-- Inverse / Outline -->
+        <item name="colorSurfaceInverse">@color/colorSurfaceInverse</item>
+        <item name="colorOnSurfaceInverse">@color/colorOnSurfaceInverse</item>
+        <item name="colorOutline">@color/colorOutline</item>
+        <item name="colorOutlineVariant">@color/colorOutlineVariant</item>
+
+        <!-- Background Color -->
+        <item name="backgroundColor">@color/colorBackground</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+
+        <!-- Status Bar Color -->
+        <item name="android:statusBarColor">@color/colorStatusBar</item>
+
+        <!-- Toolbar -->
+        <item name="toolbarStyle">@style/Widget.MyApp.DefaultTitleToolbar</item>
+
+        <!-- Navigation Components -->
+        <item name="bottomNavigationStyle">@style/Widget.MyApp.BottomNavigationView</item>
+        <item name="navigationRailStyle">@style/Widget.MyApp.NavigationRail</item>
+        <item name="navigationViewStyle">@style/Widget.MyApp.NavigationView</item>
+
+
+    </style>
+
+    <style name="Theme.SmartAlarm" parent="Base.Theme.SmartAlarm" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FFFFFF</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="windowSplashScreenAnimationDuration">200</item>
+        <item name="postSplashScreenTheme">@style/Theme.SmartAlarm</item>
+    </style>
+
+</resources>

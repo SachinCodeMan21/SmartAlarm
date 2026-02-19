@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Meta Data -->
+    <string name="app_name">スマートアラーム</string>
+    <string name="google_api_key" translatable="false">AIzaSyDV41n8TtAZvffXa4noYukHytxcWMUe9gw</string>
+
+    <!-- Global Common String -->
+    <string name="undo">元に戻す</string>
+    <string name="mission">ミッション</string>
+    <string name="am">午前</string>
+    <string name="pm">午後</string>
+
+    <!-- Permission Dialog Related Strings -->
+    <string name="permission_required_title">権限が必要です</string>
+    <string name="full_screen_permission_title">全画面通知権限が必要です</string>
+    <string name="schedule_exact_alarm_permission_title">正確なアラーム設定権限が必要です</string>
+    <string name="notification_permission_required_title">通知権限が必要です</string>
+
+    <string name="full_screen_permission_message">アラームが鳴ったときに全画面で通知を表示するため、設定から全画面通知権限を許可してください。</string>
+    <string name="schedule_exact_alarm_permission_message">アラームやタイマーを正確に設定するため、「正確なアラームの設定」権限を許可してください。</string>
+    <string name="post_notification_permission_rationale_message">このアプリはアラーム・タイマー・ストップウォッチの通知を確実に届けるために通知権限が必要です。</string>
+    <string name="app_permission_setting_dialog_message">%1$s の権限はこのアプリの正常な動作に必要です。システム設定から有効にしてください。</string>
+
+    <string name="grant_permission">許可する</string>
+    <string name="deny">拒否</string>
+    <string name="cancel">キャンセル</string>
+
+    <string name="permission_granted_successfully">権限が正常に付与されました！</string>
+    <string name="permissions_denied">権限が拒否されました</string>
+    <string name="post_notification_rationale_declined">通知権限の説明を拒否しました</string>
+    <string name="full_screen_notification_permission_granted">全画面通知権限が付与されました！</string>
+    <string name="full_screen_notification_permission_denied">全画面通知権限が拒否されました</string>
+    <string name="schedule_exact_alarm_permission_granted">正確なアラーム設定権限が付与されました！</string>
+    <string name="schedule_exact_alarm_permission_denied">正確なアラーム設定権限が拒否されました</string>
+
+    <!-- Toolbar Menu -->
+    <string name="settings">設定</string>
+    <string name="help">ヘルプ</string>
+
+    <!-- Home Activity -->
+    <string name="alarm">アラーム</string>
+    <string name="clock">世界時計</string>
+    <string name="timer">タイマー</string>
+    <string name="stopwatch">ストップウォッチ</string>
+    <string name="empty">空</string>
+    <string name="alarm_playback_attribution">アラーム音の再生</string>
+    <string name="empty_attribution_label">空の属性タグ</string>
+    <string name="navigation_drawer_open">ナビゲーションドロワーを開く</string>
+    <string name="navigation_drawer_close">ナビゲーションドロワーを閉じる</string>
+
+    <!-- Alarm Screen -->
+    <string name="create_new_alarm">新しいアラームを作成</string>
+    <string name="update_alarm">アラームを更新</string>
+    <string name="add_alarm">アラームを追加</string>
+    <string name="alarm_list_content_description">設定したアラームのリスト</string>
+    <string name="alarm_are_not_created_yet">まだアラームが作成されていません</string>
+
+    <string name="one_time">1回のみ</string>
+    <string name="alarm_deleted">アラームを削除しました</string>
+    <string name="alarm_time_is_in_the_past_or_now">アラーム時刻が過去または現在です！</string>
+    <string name="alarm_time_less_than_a_minute">アラームが1分以内に設定されています。</string>
+    <string name="day">日</string>
+    <string name="days">日</string>
+    <string name="hour">時間</string>
+    <string name="hours">時間</string>
+    <string name="minute">分</string>
+    <string name="minutes">分</string>
+    <string name="and">と</string>
+    <string name="alarm_time_left">あと %1$s でアラームが鳴ります</string>
+
+    <string name="error_failed_to_load_alarms">アラームの読み込みに失敗しました</string>
+    <string name="error_failed_to_update_alarm">アラームの更新に失敗しました</string>
+    <string name="error_failed_to_delete_alarm">アラームの削除に失敗しました</string>
+    <string name="error_failed_to_restore_alarm">アラームの復元に失敗しました</string>
+
+    <string name="alarm_mission">アラームミッション</string>
+    <string name="none">なし</string>
+    <string-array name="alarm_weekday">
+        <item>日</item>
+        <item>月</item>
+        <item>火</item>
+        <item>水</item>
+        <item>木</item>
+        <item>金</item>
+        <item>土</item>
+    </string-array>
+
+    <!-- Alarm Editor -->
+    <string name="enter_label">ラベルを入力</string>
+    <string name="colon">:</string>
+    <string name="weekday">平日</string>
+    <string name="daily">毎日</string>
+    <string name="sun">日曜</string>
+    <string name="mon">月曜</string>
+    <string name="tue">火曜</string>
+    <string name="wed">水曜</string>
+    <string name="thu">木曜</string>
+    <string name="fri">金曜</string>
+    <string name="sat">土曜</string>
+    <string name="alarm_mission_rv_desc">アラームミッション一覧</string>
+    <string name="alarm_sound">アラーム音</string>
+    <string name="vibrate">振動</string>
+    <string name="sound">音</string>
+    <string name="save">保存</string>
+    <string name="update">更新</string>
+    <string name="hours_picker_description">アラームの時間を選択</string>
+    <string name="minute_picker_description">アラームの分を選択</string>
+    <string name="am_pm_picker_description">午前/午後を選択</string>
+    <string name="snooze">スヌーズ</string>
+    <string name="mission_icon">ミッションアイコン</string>
+    <string name="remove_mission">ミッションを削除</string>
+    <string name="min">分</string>
+    <string name="times">回</string>
+
+    <string name="mission_count_format">%1$d / %2$d</string>
+    <string name="unknown">不明</string>
+    <string name="snooze_times_min">%1$d 回、%2$d 分</string>
+    <string name="select_alarm_ringtone">アラーム音を選択</string>
+    <string name="snooze_min_times">%1$d 分、%2$d 回</string>
+    <string-array name="meri_diem_list">
+        <item>午前</item>
+        <item>午後</item>
+    </string-array>
+
+    <!-- Mission Picker -->
+    <string name="choose_mission">ミッションを選択</string>
+    <string name="mission_type_selection">ミッションタイプの選択</string>
+    <string name="memory">記憶</string>
+    <string name="typing">タイピング</string>
+    <string name="maths">計算</string>
+    <string name="shake">シェイク</string>
+    <string name="step">歩数</string>
+
+    <string name="difficulty_easy">簡単</string>
+    <string name="difficulty_normal">普通</string>
+    <string name="difficulty_hard">難しい</string>
+    <string name="difficulty_expert">超難</string>
+    <string name="example">例</string>
+    <string name="go_back_to_mission_picker">ミッション選択に戻る</string>
+    <string name="close_mission_bottom_sheet">閉じる</string>
+    <string name="easy">簡単</string>
+    <string name="expert">エキスパート</string>
+    <string name="mission_level_slider">難易度スライダー</string>
+    <string name="mission_number_of_rounds_picker">ラウンド数選択</string>
+    <string name="complete">完了</string>
+    <string name="preview">プレビュー</string>
+
+    <!-- Snooze -->
+    <string name="limit">上限</string>
+    <string name="interval">間隔</string>
+    <string name="_1_min">1分</string>
+    <string name="_5_min">5分</string>
+    <string name="_10_min">10分</string>
+    <string name="_15_min">15分</string>
+    <string name="_20_min">20分</string>
+    <string name="_25_min">25分</string>
+    <string name="_30_min">30分</string>
+    <string name="max_snooze_limit_picker">スヌーズ上限回数</string>
+
+    <!-- Alarm Ringing Screen -->
+    <string-array name="alarm_weekday_full">
+        <item>日曜日</item>
+        <item>月曜日</item>
+        <item>火曜日</item>
+        <item>水曜日</item>
+        <item>木曜日</item>
+        <item>金曜日</item>
+        <item>土曜日</item>
+    </string-array>
+
+    <string name="round_text">%2$s ラウンド中 %1$s</string>
+    <string name="mission_completed">ミッションクリア！</string>
+    <string name="great_job_you_completed_all_rounds">おめでとう！すべてのラウンドをクリアしました！</string>
+    <string name="submit">送信</string>
+
+    <!-- Memory Mission -->
+    <string name="memorize_the_glowing_squares">光ったマスを覚えてください！</string>
+    <string name="select_the_squares_that_glowed">光ったマスを選択してください</string>
+    <string name="correct">正解！</string>
+    <string name="wrong_square_selected">間違いです！</string>
+    <string name="too_many_incorrect_attempts">間違いが多すぎます！\nもう一度覚え直してください。</string>
+    <string name="failed_to_update_alarm">アラームの更新に失敗しました</string>
+    <string name="failed_to_load_alarm">ミッション用アラームの読み込みに失敗しました</string>
+
+    <!-- Typing Mission -->
+    <string name="typing_example">The quick brown fox jumps over the lazy dog multiple times before settling under the warm sunlight.</string>
+    <string name="incorrect_try_again">不正解です。もう一度入力してください。</string>
+    <string name="please_type_the_paragraph">文章を入力してください</string>
+    <string-array name="typing_mission_sentences">
+        <item>速い茶色のキツネは怠惰な犬を何度も飛び越え、暖かい日差しの下で長い午睡をとる前に落ち着きます。</item>
+        <item>千里の道も一歩から。しかし歩き続ける決意こそが本当の冒険を定義するのです。</item>
+        <item>生きるべきか死ぬべきか、それが問題だ。この問いが時を超えて響き、私たちの存在と目的への理解を問いかける。</item>
+        <item>彼女は週末ごとに海辺で貝殻を売り、サンゴ礁を訪れる夢を叶えるためのお金を貯めています。</item>
+        <item>輝くものすべてが金ではない。なぜなら一時的にしか輝かないものもあるからだ。</item>
+        <item>我思う、故に我在り。しかし想像し、夢見ることもまた、私たちを人間たらしめるものかもしれない。</item>
+        <item>練習は完璧を作る。ただし忍耐と失敗から学ぶ姿勢があってこそ。</item>
+        <item>遅れてもやらないよりまし。特に目標を追いかける時や過去の選択と和解するときは。</item>
+        <item>正直は最良の策。たとえ真実が聞きづらく、口にするのが難しくても。</item>
+        <item>卵が孵る前に雛を数えるな。人生は予測不能に展開するものだから。</item>
+        <item>ペンは剣より強し。特に目的と慈悲を持って振るわれるとき。</item>
+        <item>時と潮は誰も待たない。躊躇する瞬間をさらって行き、今だけが本当の時間だと教えてくれる。</item>
+    </string-array>
+
+    <!-- Math Mission -->
+    <string name="solve_the_math_problem">計算問題を解いてください</string>
+    <string name="enter_your_answer">答えを入力</string>
+
+    <!-- Shake Mission -->
+    <string name="shake_your_phone">スマホを振ってください！</string>
+
+    <!-- Step Mission -->
+    <string name="steps">歩数</string>
+    <string name="take_steps">歩いてください！</string>
+    <string name="detect_the_first_step">歩くリズムを検知するため、まず歩き始めてください。最初の歩行を検知したらカウントを開始します。</string>
+    <string name="accelerometer_sensor_not_available">加速度センサーが利用できません</string>
+    <string name="step_detector_sensor_not_available">歩数センサーが利用できません</string>
+    <string name="permission_required_for_step_detection">歩数検出に権限が必要です</string>
+
+    <!-- その他アラーム関連 -->
+    <string name="alarm_already_passed">アラーム時刻を過ぎました</string>
+    <string name="alarm_days_hours_minutes">%d日%s %d時間%s %d分%s後に設定</string>
+    <string name="alarm_days_hours">%d日%s %d時間%s後に設定</string>
+    <string name="alarm_day">%d日%s後に設定</string>
+    <string name="alarm_hours_minutes">%d時間%s %d分%s後に設定</string>
+    <string name="alarm_hours">%d時間%s後に設定</string>
+    <string name="alarm_minutes">%d分%s後に設定</string>
+    <string name="alarm_switch">アラームスイッチ</string>
+    <string name="hello_blank_fragment">空白フラグメント</string>
+    <string name="delete">削除</string>
+    <string name="default_stop_watch_timer">00時間 : 00分 : 00秒</string>
+    <string name="resume">再開</string>
+    <string name="notification_scheduled_alarm_time">%1$s、%2$s</string>
+    <string name="stop_watch_timer">%1$d%2$d時間 : %3$d%4$d分 : %5$d%6$d秒</string>
+    <string name="update_the_alarm_time">アラーム時刻を更新</string>
+    <string name="dismiss_alarm">アラームを停止</string>
+    <string name="scheduled_alarm">予定されたアラーム</string>
+    <string name="snoozeAlarm">スヌーズ</string>
+    <string name="stopAlarm">停止</string>
+
+    <!-- Clock -->
+    <string name="add_new_timezone">タイムゾーンを追加</string>
+    <string name="selected_timezones_list">タイムゾーン一覧</string>
+    <string name="no_result_found">結果が見つかりません</string>
+    <string name="search">検索</string>
+
+    <!-- Timer -->
+    <string name="_0">0</string>
+    <string name="_00">00</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="_9">9</string>
+    <string name="btnBackSpace">⌫</string>
+    <string name="default_timer_time">00時間 : 00分 : 00秒</string>
+    <string name="formatted_timer_time">%1$s時間 : %2$s分 : %3$s秒</string>
+    <string name="unable_to_start_the_timer">現在、タイマーを開始できません。後でもう一度お試しください。</string>
+
+    <!-- ShowTimer   -->
+    <string name="add_new_timer">新しいタイマーを作成</string>
+    <string name="restart_timer">タイマーを再開</string>
+    <string name="finish_timer">タイマー終了</string>
+    <string name="_1_00">+1:00</string>
+    <string name="play_pause_timer">再生/一時停止</string>
+    <string name="timer_title">%1$s タイマー</string>
+    <string name="active_timer">実行中タイマー</string>
+    <string name="completed_timer">完了したタイマー</string>
+    <string name="add_one_minute">1分追加</string>
+    <string name="hour_formatted_stopwatch_time">%1$s時間 : %2$s分 : %3$s秒</string>
+    <string name="min_formatted_stopwatch_time">%1$s分 : %2$s秒</string>
+    <string name="sec_formatted_stopwatch_time">%1$s秒</string>
+    <string name="sec_millis_formatted_stopwatch_time">%1$s秒 : %2$sミリ秒</string>
+    <string name="timer_dashboard">タイマーダッシュボード</string>
+
+
+    <!-- Stopwatch -->
+
+    <!--  1] Stopwatch layout Strings   -->
+    <string name="stopwatch_progress_indicator">ストップウォッチ進行インジケーター</string>
+    <string name="stopwatch_rv_desc">記録されたラップタイム一覧</string>
+    <string name="toggle_stopwatch">スタート/ポーズ切り替え</string>
+    <string name="reset_stopwatch">リセット</string>
+    <string name="record_lap_time">ラップを記録</string>
+    <string name="lap_index">#ラップ</string>
+
+    <string name="failed_to_restore_stopwatch_state">ストップウォッチの状態復元に失敗しました</string>
+    <string name="failed_to_start_stopwatch">ストップウォッチの開始に失敗しました</string>
+    <string name="failed_to_pause_stopwatch_state">ストップウォッチの一時停止に失敗しました</string>
+    <string name="failed_to_reset_stopwatch_state">ストップウォッチのリセットに失敗しました</string>
+    <string name="failed_to_record_lap_stopwatch_state">ラップ記録に失敗しました</string>
+
+    <!-- Settings -->
+    <string name="change_language">言語を変更</string>
+    <string name="language">言語</string>
+    <string name="about">アプリ情報</string>
+    <string name="flag">country_flag</string>
+
+    <string name="english">英語</string>
+    <string name="spanish">スペイン語</string>
+    <string name="german">ドイツ語</string>
+    <string name="french">フランス語</string>
+    <string name="portuguese">ポルトガル語</string>
+    <string name="korean">韓国語</string>
+    <string name="chinese">中国語</string>
+    <string name="japanese">日本語</string>
+    <string name="hindi">ヒンディー語</string>
+
+    <!-- Notification -->
+    <string name="notification">通知</string>
+    <string name="today">今日</string>
+    <string name="tomorrow">明日</string>
+
+    <string name="channel_upcoming_alarm">近日中のアラーム通知</string>
+    <string name="channel_snoozed_alarm">スヌーズ中アラーム通知</string>
+    <string name="channel_missed_alarm">見逃したアラーム通知</string>
+    <string name="channel_scheduled_alarm">設定済みアラーム通知</string>
+    <string name="channel_active_timer">実行中タイマー通知</string>
+    <string name="channel_completed_timer">完了タイマー通知</string>
+    <string name="channel_stopwatch">ストップウォッチ通知</string>
+
+    <string name="desc_upcoming_alarm">近日中のアラームをお知らせするチャンネル</string>
+    <string name="desc_snoozed_alarm">スヌーズ中のアラームをお知らせするチャンネル</string>
+    <string name="desc_missed_alarm">見逃したアラームをお知らせするチャンネル</string>
+    <string name="desc_smart_alarm">設定されたアラームの通知チャンネル</string>
+    <string name="desc_active_timer">実行中のタイマーの通知チャンネル</string>
+    <string name="desc_completed_timer">完了したタイマーの通知チャンネル</string>
+    <string name="desc_stopwatch">ストップウォッチ関連の通知チャンネル</string>
+
+    <string name="all_upcoming_alarms">近日中のアラームすべて</string>
+    <string name="all_snoozed_alarms">スヌーズ中のアラームすべて</string>
+    <string name="all_missed_alarms">見逃したアラームすべて</string>
+
+    <string name="upcoming_alarm">近日中のアラーム</string>
+    <string name="snoozed_alarm">スヌーズ中アラーム</string>
+    <string name="missed_alarm">見逃したアラーム</string>
+
+    <string name="restart">再開</string>
+    <string name="reset">リセット</string>
+    <string name="pause">一時停止</string>
+    <string name="add_1_min">1分追加</string>
+    <string name="stop">停止</string>
+    <string name="lap">ラップ</string>
+    <string name="complete_task">ミッション完了</string>
+
+    <string name="lap_time_format">#ラップ %1$s : %2$s</string>
+    <string name="stop_all_completed">すべての完了タイマーを停止</string>
+    <string name="stop_all_active">すべての実行中タイマーを停止</string>
+    <string name="start_timer">タイマー開始</string>
+    <string name="delete_timer">タイマー削除</string>
+    <string name="rounds">ラウンド</string>
+    <string name="exact_alarm">正確なアラーム</string>
+
+</resources>

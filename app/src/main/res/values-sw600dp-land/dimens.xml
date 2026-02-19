@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Padding (increased for larger screens) -->
+    <dimen name="padding_s">12dp</dimen>      <!-- from 8dp -->
+    <dimen name="padding_m">24dp</dimen>      <!-- from 16dp -->
+    <dimen name="padding_l">28dp</dimen>      <!-- from 24dp -->
+
+    <!-- Margin (increased similarly) -->
+    <dimen name="margin_xs">8dp</dimen>       <!-- from 4dp -->
+    <dimen name="margin_s">12dp</dimen>       <!-- from 8dp -->
+    <dimen name="margin_m">24dp</dimen>       <!-- from 16dp -->
+    <dimen name="margin_l">32dp</dimen>       <!-- from 24dp -->
+    <dimen name="margin_xl">40dp</dimen>      <!-- from 32dp -->
+
+    <!-- Text Sizes (slightly larger for readability) -->
+    <dimen name="text_xs">12sp</dimen>        <!-- from 10sp -->
+    <dimen name="text_s">14sp</dimen>         <!-- from 12sp -->
+    <dimen name="text_m">16sp</dimen>         <!-- from 14sp -->
+    <dimen name="text_l">18sp</dimen>         <!-- from 16sp -->
+    <dimen name="text_xl">20sp</dimen>        <!-- from 18sp -->
+    <dimen name="text_3xl">28sp</dimen>       <!-- from 24sp -->
+    <dimen name="text_display">40sp</dimen>   <!-- from 32sp -->
+
+    <!-- Buttons (height increased) -->
+    <dimen name="default_button_height">56dp</dimen>  <!-- from 48dp -->
+
+    <!-- Card Elevations (keep same or increase a bit) -->
+    <dimen name="card_elevation_none">0dp</dimen>
+    <dimen name="card_elevation_low">3dp</dimen>     <!-- from 2dp -->
+    <dimen name="card_elevation_medium">6dp</dimen>  <!-- from 4dp -->
+    <dimen name="card_elevation_high">10dp</dimen>   <!-- from 8dp -->
+    <dimen name="card_elevation_xhigh">14dp</dimen>  <!-- from 12dp -->
+
+    <!-- Card Corner Radius (scaled up) -->
+    <dimen name="card_corner_radius_small">6dp</dimen>   <!-- from 4dp -->
+    <dimen name="card_corner_radius_medium">10dp</dimen> <!-- from 8dp -->
+    <dimen name="card_corner_radius_large">14dp</dimen>  <!-- from 12dp -->
+    <dimen name="card_corner_radius_xlarge">20dp</dimen> <!-- from 16dp -->
+
+    <!-- Toolbar -->
+    <dimen name="toolbar_default_height">64dp</dimen>  <!-- from 56dp -->
+
+    <!-- Navigation Rail width -->
+    <dimen name="navigation_rail_width">72dp</dimen> <!-- usually fixed -->
+
+
+    <!-- Fab Size   -->
+    <dimen name="fab_size_large">60dp</dimen> <!-- Default large FAB size -->
+
+
+    <!--  Alarm Specific Screen Sizes  -->
+    <dimen name="empty_alarm_img_max_size">64dp</dimen>
+    <dimen name="alarm_item_mission_img_size">24dp</dimen>
+    <dimen name="edit_alarm_weekday_max_size">48dp</dimen>
+    <item name="alarm_editor_guideline_top_percent" format="float" type="dimen">0.05</item>
+    <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.2</item>
+    <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.8</item>
+    <item name="memory_mission_grid_max_width_percent" format="float" type="dimen">0.25</item>
+    <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.05</item>
+    <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.2</item>
+
+
+    <!-- Timer Screen Dimens   -->
+    <item name="guideline_timer_top" format="float" type="dimen">0.15</item>
+    <item name="guideline_timer_start" format="float" type="dimen">0.25</item>
+    <item name="guideline_timer_end" format="float" type="dimen">0.75</item>
+    <item name="guideline_timer_bottom" format="float" type="dimen">0.9</item>
+
+    <!-- Show Timer Dimens -->
+    <dimen name="timer_item_card_height">450dp</dimen>
+
+    <!-- Stopwatch Screen Dimens   -->
+    <dimen name="stopwatch_seconds_tv_tran_textSize">24sp</dimen>
+    <dimen name="stopwatch_progress_indicator_thickness">1dp</dimen>
+    <item name="guideline_stopwatch_top" format="float" type="dimen">0.15</item>
+    <item name="guideline_stopwatch_anim_top" format="float" type="dimen">0.25</item>
+    <item name="guideline_stopwatch_start" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_anim_start" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_end" format="float" type="dimen">0.8</item>
+    <item name="guideline_stopwatch_anim_end" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_bottom" format="float" type="dimen">0.85</item>
+    <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">0.75</item>
+
+
+</resources>

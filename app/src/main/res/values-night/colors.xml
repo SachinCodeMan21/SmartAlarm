@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Core / Brand Colors (Primary Family) -->
+    <color name="colorPrimary">#d2bcfd</color>
+    <color name="colorOnPrimary">#38265c</color>
+    <color name="colorPrimaryContainer">#4f3d74</color>
+    <color name="colorOnPrimaryContainer">#eaddff</color>
+
+    <!-- Secondary Family (Complementary) -->
+    <color name="colorSecondary">#cdc2db</color>
+    <color name="colorOnSecondary">#4a2530</color>
+    <color name="colorSecondaryContainer">#643b47</color>
+    <color name="colorOnSecondaryContainer">#ffd9e1</color>
+
+    <!-- Tertiary Family (Accent / Highlight) -->
+    <color name="colorTertiary">#f0b7c6</color>
+    <color name="colorOnTertiary">#ffffff</color>
+    <color name="colorTertiaryContainer">#ffd9e0</color>
+    <color name="colorOnTertiaryContainer">#ffdad6</color>
+
+    <!-- Error / Warning -->
+    <color name="colorError">#ffb4ab</color>
+    <color name="colorOnError">#690005</color>
+    <color name="colorErrorContainer">#93000a</color>
+    <color name="colorOnErrorContainer">#93000a</color>
+
+    <!-- Surface / Background Family (Neutral) -->
+    <color name="colorSurfaceDim">#141218</color>
+    <color name="colorSurface">#141218</color>
+    <color name="colorSurfaceBright">#3b383e</color>
+
+    <color name="colorSurfaceContainerLowest">#0f0d13</color>
+    <color name="colorSurfaceContainerLow">#1d1b20</color>
+    <color name="colorSurfaceContainer">#211f24</color>
+    <color name="colorSurfaceContainerHigh">#2b292f</color>
+    <color name="colorSurfaceContainerHighest">#36343a</color>
+    <color name="colorOnSurface">#e7e0e8</color>
+    <color name="colorOnSurfaceVariant">#cbc4cf</color>
+
+    <!-- Inverse / Outline -->
+    <color name="colorSurfaceInverse">#e7e0e8</color>
+    <color name="colorOnSurfaceInverse">#322f35</color>
+    <color name="colorInversePrimary">#67548e</color>
+    <color name="colorOutline">#948f99</color>
+    <color name="colorOutlineVariant">#49454e</color>
+
+    <!-- Background Color -->
+    <color name="colorBackground">#141218</color>
+    <color name="colorOnBackground">#ffffff</color>
+
+    <!-- Scrim & Shadow Colors -->
+    <color name="colorScrim">#000000</color>
+    <color name="colorShadow">#000000</color>
+
+    <!-- Status Bar Color -->
+    <color name="colorStatusBar">#1d1a20</color>
+
+</resources>

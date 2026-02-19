@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/alarm_editor_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".feature.alarm.presentation.view.activity.AlarmEditorActivity">
+
+    <!-- Alarm Editor Activity Toolbar [This Toolbar is Exclusive To Only AlarmEditorActivity & Its Child Fragments ] -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/home_app_bar_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/alarmEditorToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.AppCompat.Title"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationContentDescription="Navigate up"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Alarm Editor Activity Host Fragment Container [This HostFragmentContainer Contains AlarmEditorHomeFragment, AlarmSnoozeFragment ]  -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/alarm_editor_host_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_app_bar_layout"
+        tools:layout="@layout/fragment_alarm_editor" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

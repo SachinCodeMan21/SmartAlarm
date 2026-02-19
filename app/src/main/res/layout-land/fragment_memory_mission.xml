@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/memory_mission_guideLine_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/memory_mission_guideLine_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/memory_mission_guideLine_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/memory_mission_guideLine_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <TextView
+        android:id="@+id/tv_round"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_l"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/memory_mission_guideLine_end"
+        app:layout_constraintStart_toStartOf="@+id/memory_mission_guideLine_start"
+        app:layout_constraintTop_toTopOf="@+id/memory_mission_guideLine_top"
+        tools:text="Round 1 of 3" />
+
+    <TextView
+        android:id="@+id/tv_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/memorize_the_glowing_squares"
+        android:textSize="@dimen/text_size_m"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/memory_mission_guideLine_end"
+        app:layout_constraintStart_toStartOf="@+id/memory_mission_guideLine_start"
+        app:layout_constraintTop_toBottomOf="@+id/tv_round" />
+
+    <TextView
+        android:id="@+id/tvCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_m"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/tv_instructions"
+        app:layout_constraintStart_toStartOf="@+id/tv_instructions"
+        app:layout_constraintTop_toBottomOf="@+id/tv_instructions" />
+
+    <GridLayout
+        android:id="@+id/grid_squares"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_m"
+        app:layout_constraintBottom_toTopOf="@+id/memory_mission_guideLine_bottom"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/memory_mission_guideLine_end"
+        app:layout_constraintStart_toStartOf="@+id/memory_mission_guideLine_start"
+        app:layout_constraintTop_toBottomOf="@+id/tvCountdown"
+        app:layout_constraintWidth_percent="0.25" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

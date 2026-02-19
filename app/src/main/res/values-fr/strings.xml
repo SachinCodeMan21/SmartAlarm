@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Meta Data -->
+    <string name="app_name">SmartAlarm</string>
+    <string name="google_api_key" translatable="false">AIzaSyDV41n8TtAZvffXa4noYukHytxcWMUe9gw</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Global Common String
+    // ---------------------------------------------------------------------
+    <string name="undo">Annuler</string>
+    <string name="mission">Mission</string>
+    <string name="am">matin</string>
+    <string name="pm">soir</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Permission Dialog Related Strings
+    // ---------------------------------------------------------------------
+
+    <!-- Permission Dialog Titles -->
+    <string name="permission_required_title">Autorisation requise</string>
+    <string name="full_screen_permission_title">Autorisation de notification plein écran requise</string>
+    <string name="schedule_exact_alarm_permission_title">Autorisation d\'alarme précise requise</string>
+    <string name="notification_permission_required_title">Autorisation de notification requise</string>
+
+
+    <!-- Permission Dialog Messages -->
+    <string name="full_screen_permission_message">Pour permettre à l\'application d\'afficher des notifications en plein écran lorsque l\'alarme se déclenche, veuillez accorder l\'autorisation dans les paramètres.</string>
+    <string name="schedule_exact_alarm_permission_message">Pour permettre la planification d\'alarmes et de minuteurs précis, veuillez accorder l\'autorisation d\'alarme exacte dans les paramètres.</string>
+    <string name="post_notification_permission_rationale_message">Cette application nécessite l\'autorisation de notification pour diffuser de manière fiable les alertes d\'alarme, de minuteur et de chronomètre.</string>
+    <string name="app_permission_setting_dialog_message">L\'autorisation %1$s est requise pour le bon fonctionnement de l\'application. Veuillez l\'activer dans les paramètres système.</string>
+
+    <!-- Dialog Button Action Messages -->
+    <string name="grant_permission">Accorder l\'autorisation</string>
+    <string name="deny">Refuser</string>
+    <string name="cancel">Annuler</string>
+
+    <!-- Permission Post Action Messages   -->
+    <string name="permission_granted_successfully">Autorisation accordée avec succès !</string>
+    <string name="permissions_denied">Autorisations refusées !</string>
+    <string name="post_notification_rationale_declined">Justification de notification refusée !</string>
+    <string name="full_screen_notification_permission_granted">Autorisation de notification plein écran accordée !</string>
+    <string name="full_screen_notification_permission_denied">Autorisation de notification plein écran refusée !</string>
+    <string name="schedule_exact_alarm_permission_granted">Autorisation d\'alarme précise accordée !</string>
+    <string name="schedule_exact_alarm_permission_denied">Autorisation d\'alarme précise refusée !</string>
+
+    // ---------------------------------------------------------------------
+    // # Toolbar Menu Related Strings
+    // ---------------------------------------------------------------------
+    <string name="settings">Paramètres</string>
+    <string name="help">Aide</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Home Activity Strings
+    // ---------------------------------------------------------------------
+    <string name="alarm">Alarme</string>
+    <string name="clock">Horloge</string>
+    <string name="timer">Minuteur</string>
+    <string name="stopwatch">Chronomètre</string>
+    <string name="empty">Vide</string>
+    <string name="alarm_playback_attribution">Lecture audio pour les alarmes</string>
+    <string name="empty_attribution_label">Étiquette d\'attribution vide</string>
+    <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
+    <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Alarm Screen Related Strings
+    // ---------------------------------------------------------------------
+
+
+    <!-- Common Alarm Strings  -->
+    <string name="create_new_alarm">Créer une nouvelle alarme</string>
+    <string name="update_alarm">Mettre à jour l\'alarme</string>
+
+    <!--   A]  Alarm Fragment  Strings -->
+
+    <!-- 1]  Alarm Fragment Layout Strings -->
+    <string name="add_alarm">Ajouter une alarme</string>
+    <string name="alarm_list_content_description">Liste de vos alarmes programmées</string>
+    <string name="alarm_are_not_created_yet">Aucune alarme créée pour le moment !</string>
+
+    <!-- 2]  Alarm Fragment Strings -->
+    <string name="one_time">Unique</string>
+    <string name="alarm_deleted">Alarme supprimée</string>
+    <string name="alarm_time_is_in_the_past_or_now">L\'heure de l\'alarme est dans le passé ou maintenant !</string>
+    <string name="alarm_time_less_than_a_minute">L\'alarme est programmée dans moins d\'une minute.</string>
+    <string name="day">jour</string>
+    <string name="days">jours</string>
+    <string name="hour">heure</string>
+    <string name="hours">heures</string>
+    <string name="minute">minute</string>
+    <string name="minutes">minutes</string>
+    <string name="and">et</string>         <!-- "and" for joining time units -->
+    <string name="alarm_time_left">L\'alarme sonnera dans %1$s.</string>
+
+    <!-- 3]  Alarm Fragment AlarmViewmodel Strings -->
+    <string name="error_failed_to_load_alarms">Échec du chargement des alarmes !</string>
+    <string name="error_failed_to_update_alarm">Échec de la mise à jour de l\'alarme !</string>
+    <string name="error_failed_to_delete_alarm">Échec de la suppression de l\'alarme !</string>
+    <string name="error_failed_to_restore_alarm">Échec de la restauration de l\'alarme !</string>
+
+    <!-- 4] Alarm Card Item Layout Strings -->
+    <string name="alarm_mission">Mission d\'alarme</string>
+    <string name="none">Aucune</string>
+    <string-array name="alarm_weekday">
+        <item>D</item>
+        <item>L</item>
+        <item>M</item>
+        <item>M</item>
+        <item>J</item>
+        <item>V</item>
+        <item>S</item>
+    </string-array>
+
+
+    <!-- 4]  Alarm Fragment Adapter Strings -->
+
+
+    <!--   B]  Alarm Editor Activity Strings -->
+
+    <!-- 1] Alarm Editor Fragment Layout   -->
+    <string name="enter_label">Saisir un libellé</string>
+    <string name="colon">:</string>
+    <string name="weekday">Jours de la semaine</string>
+    <string name="daily">Quotidien</string>
+    <string name="sun">Dim</string>
+    <string name="mon">Lun</string>
+    <string name="tue">Mar</string>
+    <string name="wed">Mer</string>
+    <string name="thu">Jeu</string>
+    <string name="fri">Ven</string>
+    <string name="sat">Sam</string>
+    <string name="alarm_mission_rv_desc">Liste des missions d\'alarme</string>
+    <string name="alarm_sound">Sonnerie d\'alarme</string>
+    <string name="vibrate">Vibrer</string>
+    <string name="sound">Son</string>
+    <string name="save">Enregistrer</string>
+    <string name="update">Mettre à jour</string>
+    <string name="hours_picker_description">Sélectionner l\'heure de l\'alarme</string>
+    <string name="minute_picker_description">Sélectionner les minutes de l\'alarme</string>
+    <string name="am_pm_picker_description">Sélectionner matin/soir pour l\'alarme</string>
+    <string name="snooze">Rappel</string>
+    <string name="mission_icon">Icône de mission</string>
+    <string name="remove_mission">Supprimer la mission</string>
+    <string name="min">min</string>
+    <string name="times">fois</string>
+
+    <!-- 2] Alarm Editor Fragment  -->
+    <string name="mission_count_format">%1$d / %2$d</string>
+    <string name="unknown">Inconnu</string>
+    <string name="snooze_times_min">%1$d fois, %2$d min</string>
+    <string name="select_alarm_ringtone">Choisir la sonnerie</string>
+    <string name="snooze_min_times">%1$d min, %2$d fois</string>
+    <string-array name="meri_diem_list">
+        <item>MAT.</item>
+        <item>SOIR</item>
+    </string-array>
+
+
+    <!-- 3] Mission Picker Bottom Sheet Layout  -->
+    <string name="choose_mission">Choisir une mission</string>
+    <string name="mission_type_selection">Sélection du type de mission</string>
+    <string name="memory">Mémoire</string>
+    <string name="typing">Saisie</string>
+    <string name="maths">Maths</string>
+    <string name="shake">Secouer</string>
+    <string name="step">Pas</string>
+
+
+    <!-- 4] Missions Bottom Sheet Common Strings -->
+    <string name="difficulty_easy">Facile</string>
+    <string name="difficulty_normal">Normal</string>
+    <string name="difficulty_hard">Difficile</string>
+    <string name="difficulty_expert">Expert</string>
+    <string name="example">Exemple</string>
+    <string name="go_back_to_mission_picker">Retour à la sélection de mission</string>
+    <string name="close_mission_bottom_sheet">Fermer la feuille de mission</string>
+    <string name="easy">Facile</string>
+    <string name="expert">Expert</string>
+    <string name="mission_level_slider">Curseur de niveau de mission</string>
+    <string name="mission_number_of_rounds_picker">Sélecteur du nombre de tours</string>
+    <string name="complete">Terminer</string>
+    <string name="preview">Aperçu</string>
+
+
+    <!-- C] Snooze Fragment Strings -->
+
+    <!-- Snooze Fragment Layout Strings -->
+    <string name="limit">Limite</string>
+    <string name="interval">Intervalle</string>
+    <string name="_1_min">1 min</string>
+    <string name="_5_min">5 min</string>
+    <string name="_10_min">10 min</string>
+    <string name="_15_min">15 min</string>
+    <string name="_20_min">20 min</string>
+    <string name="_25_min">25 min</string>
+    <string name="_30_min">30 min</string>
+    <string name="max_snooze_limit_picker">Sélecteur de limite maximale de rappel</string>
+
+
+    <!--  D] Alarm Activity Fragments Strings -->
+
+    <!-- 1] Show Alarm Mission Strings -->
+    <string-array name="alarm_weekday_full">
+        <item>Dimanche</item>
+        <item>Lundi</item>
+        <item>Mardi</item>
+        <item>Mercredi</item>
+        <item>Jeudi</item>
+        <item>Vendredi</item>
+        <item>Samedi</item>
+    </string-array>
+
+    <!-- Mission Fragment Common Strings -->
+    <string name="round_text">Tour %1$s sur %2$s</string>
+    <string name="mission_completed">Mission terminée !</string>
+    <string name="great_job_you_completed_all_rounds">Bravo ! Vous avez terminé tous les tours.</string>
+    <string name="submit">Valider</string>
+
+
+    <!-- 1] Memory Mission Strings -->
+    <string name="memorize_the_glowing_squares">Mémorise les cases qui s\'allument !</string>
+    <string name="select_the_squares_that_glowed">Sélectionne les cases qui se sont allumées</string>
+    <string name="correct">Correct !</string>
+    <string name="wrong_square_selected">Mauvaise case sélectionnée !</string>
+    <string name="too_many_incorrect_attempts">Trop d\'erreurs ! \n Recommence à mémoriser.</string>
+    <string name="failed_to_update_alarm">Échec de la mise à jour de l\'alarme</string>
+    <string name="failed_to_load_alarm">Échec du chargement de l\'alarme pour le flux de mission</string>
+
+    <!-- 2] Typing Mission Strings -->
+    <string name="typing_example">Le rapide renard brun saute plusieurs fois par-dessus le chien paresseux avant de s\'installer sous le chaud soleil de l\'après-midi.</string>
+    <string name="incorrect_try_again">Incorrect, réessaie.</string>
+    <string name="please_type_the_paragraph">Veuillez saisir le paragraphe.</string>
+    <string-array name="typing_mission_sentences">
+        <item>Le rapide renard brun saute plusieurs fois par-dessus le chien paresseux avant de s\'installer au soleil pour une longue sieste.</item>
+        <item>Un voyage de mille kilomètres commence toujours par un premier pas, mais c\'est la détermination à continuer qui définit vraiment l\'aventure.</item>
+        <item>Être ou ne pas être, telle est la question qui résonne à travers les âges et remet en cause notre compréhension de l\'existence.</item>
+        <item>Elle vend des coquillages au bord de la mer tous les week-ends pour réunir assez d\'argent et visiter les récifs coralliens dont elle rêve.</item>
+        <item>Tout ce qui brille n\'est pas or, certaines choses ne brillent que brièvement avant de s\'effacer dans les souvenirs oubliés.</item>
+        <item>Je pense, donc je suis, mais je me demande aussi, j\'imagine et je rêve – peut-être que c\'est cela qui nous rend vraiment humains.</item>
+        <item>La pratique mène à la perfection, mais seulement avec patience, persévérance et la volonté d\'apprendre de ses échecs.</item>
+        <item>Mieux vaut tard que jamais, surtout lorsqu\'il s\'agit de poursuivre ses rêves et de faire la paix avec ses choix passés.</item>
+        <item>L\'honnêteté est la meilleure des politiques, même quand la vérité est difficile à entendre ou à dire.</item>
+        <item>Il ne faut pas vendre la peau de l\'ours avant de l\'avoir tué, car la vie réserve souvent des surprises imprévues.</item>
+        <item>La plume est plus forte que l\'épée, surtout quand elle est utilisée avec compassion et le désir d\'inspirer plutôt que de blesser.</item>
+        <item>Le temps et la marée n\'attendent personne ; ils passent malgré nos hésitations et nous rappellent que seul le présent compte.</item>
+    </string-array>
+
+    <!-- 3]  Math Mission Strings -->
+    <string name="solve_the_math_problem">Résous le calcul</string>
+    <string name="enter_your_answer">Entre ta réponse</string>
+
+    <!-- 4]  Shake Mission Strings -->
+    <string name="shake_your_phone">Secoue ton téléphone !</string>
+
+    <!-- 5]  Step Mission Strings -->
+    <string name="steps">Pas</string>
+    <string name="take_steps">Fais des pas !</string>
+    <string name="detect_the_first_step">Pour synchroniser avec ton rythme, commence à marcher. Le comptage démarrera dès le premier pas détecté.</string>
+    <string name="accelerometer_sensor_not_available">Capteur d\'accélération non disponible</string>
+    <string name="step_detector_sensor_not_available">Capteur de pas non disponible</string>
+    <string name="permission_required_for_step_detection">Autorisation requise pour la détection de pas</string>
+
+
+    <!--  Alarm View Model    -->
+    <string name="alarm_already_passed">L\'heure de l\'alarme est déjà passée.</string>
+    <string name="alarm_days_hours_minutes">Alarme dans %d jour%s, %d heure%s et %d minute%s.</string>
+    <string name="alarm_days_hours">Alarme dans %d jour%s et %d heure%s.</string>
+    <string name="alarm_day">Alarme dans %d jour%s.</string>
+    <string name="alarm_hours_minutes">Alarme dans %d heure%s et %d minute%s.</string>
+    <string name="alarm_hours">Alarme dans %d heure%s.</string>
+    <string name="alarm_minutes">Alarme dans %d minute%s.</string>
+    <string name="alarm_switch">Interrupteur d\'alarme</string>
+    <string name="hello_blank_fragment">Bonjour fragment vide</string>
+    <string name="delete">Supprimer</string>
+    <string name="default_stop_watch_timer">00h : 00m : 00s</string>
+    <string name="resume">Reprendre</string>
+    <string name="notification_scheduled_alarm_time">%1$s, %2$s</string>
+    <string name="stop_watch_timer">%1$d%2$d h : %3$d%4$d m : %5$d%6$d s</string>
+    <string name="update_the_alarm_time">Mettre à jour l\'heure de l\'alarme</string>
+    <string name="dismiss_alarm">Arrêter l\'alarme</string>
+    <string name="scheduled_alarm">Alarme programmée</string>
+    <string name="snoozeAlarm">Mettre en rappel</string>
+    <string name="stopAlarm">Arrêter l\'alarme</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Clock Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="add_new_timezone">Ajouter un fuseau horaire</string>
+    <string name="selected_timezones_list">Liste des fuseaux horaires</string>
+
+    <string name="no_result_found">Aucun résultat trouvé !</string>
+    <string name="search">Rechercher</string>
+
+    // ---------------------------------------------------------------------
+    // # Timer Screen Related Strings
+    // ---------------------------------------------------------------------
+    <!-- Timer Screen Strings   -->
+    <string name="_0">0</string>
+    <string name="_00">00</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="_9">9</string>
+    <string name="btnBackSpace">⌫</string>
+    <string name="default_timer_time">00h : 00m : 00s</string>
+    <string name="formatted_timer_time">%1$sh : %2$sm : %3$ss</string>
+    <string name="unable_to_start_the_timer">Impossible de démarrer le minuteur pour le moment. Veuillez réessayer plus tard.</string>
+
+
+    // ---------------------------------------------------------------------
+    // # Show Timer Screen Related Strings
+    // ---------------------------------------------------------------------
+    <string name="add_new_timer">Ajouter un minuteur</string>
+    <string name="restart_timer">Redémarrer le minuteur </string>
+    <string name="finish_timer">Terminer le minuteur</string>
+    <string name="_1_00">+1:00</string>
+    <string name="play_pause_timer">Lancer/Pause le minuteur</string>
+    <string name="timer_title">Minuteur %1$s</string>
+    <string name="active_timer">Minuteurs actifs</string>
+    <string name="completed_timer">Minuteurs terminés</string>
+    <string name="add_one_minute">Ajouter 1 min</string>
+    <string name="hour_formatted_stopwatch_time">%1$sh : %2$sm : %3$ss</string>
+    <string name="min_formatted_stopwatch_time">%1$sm : %2$ss</string>
+    <string name="sec_formatted_stopwatch_time">%1$ss</string>
+    <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
+    <string name="timer_dashboard">Tableau de bord du minuteur</string>
+
+    // ---------------------------------------------------------------------
+    // # Stopwatch Screen Related Strings
+    // ---------------------------------------------------------------------
+
+    <!--  1] Stopwatch layout Strings   -->
+    <string name="stopwatch_progress_indicator">Indicateur de progression du chronomètre</string>
+    <string name="stopwatch_rv_desc">Liste des temps intermédiaires enregistrés</string>
+    <string name="toggle_stopwatch">Démarrer/Pause le chronomètre</string>
+    <string name="reset_stopwatch">Réinitialiser le chronomètre</string>
+    <string name="record_lap_time">Enregistrer un tour</string>
+    <string name="lap_index">#Tour</string>
+
+    <!-- Stopwatch Viewmodel Specific Error Strings -->
+    <string name="failed_to_restore_stopwatch_state">Échec de la restauration de l\'état du chronomètre. Veuillez réessayer.</string>
+    <string name="failed_to_start_stopwatch">Échec du démarrage du chronomètre. Veuillez réessayer.</string>
+    <string name="failed_to_pause_stopwatch_state">Échec de la pause du chronomètre. Veuillez réessayer.</string>
+    <string name="failed_to_reset_stopwatch_state">Échec de la réinitialisation du chronomètre. Veuillez réessayer.</string>
+    <string name="failed_to_record_lap_stopwatch_state">Échec de l\'enregistrement du tour. Veuillez réessayer.</string>
+
+
+
+    // ---------------------------------------------------------------------
+    //  Setting Related Strings
+    // ---------------------------------------------------------------------
+    <string name="change_language">Changer de langue</string>
+    <string name="language">Langue</string>
+    <string name="about">À propos</string>
+    <string name="flag">country_flag</string>
+
+    <string name="english">Anglais</string>
+    <string name="spanish">Espagnol</string>
+    <string name="german">Allemand</string>
+    <string name="french">Français</string>
+    <string name="portuguese">Portugais</string>
+    <string name="korean">Coréen</string>
+    <string name="chinese">Chinois</string>
+    <string name="japanese">Japonais</string>
+    <string name="hindi">Hindi</string>
+
+    // ---------------------------------------------------------------------
+    // # Notification Related Strings
+    // ---------------------------------------------------------------------
+
+    <string name="notification">Notification</string>
+    <string name="today">Aujourd’hui</string>
+    <string name="tomorrow">Demain</string>
+
+
+    <!-- Notification Channel Names -->
+    <string name="channel_upcoming_alarm">Notifications d\'alarme à venir</string>
+    <string name="channel_snoozed_alarm">Notifications d\'alarme en rappel</string>
+    <string name="channel_missed_alarm">Notifications d\'alarme manquée</string>
+    <string name="channel_scheduled_alarm">Notifications d\'alarme programmée</string>
+    <string name="channel_active_timer">Notifications de minuteur actif</string>
+    <string name="channel_completed_timer">Notifications de minuteur terminé</string>
+    <string name="channel_stopwatch">Notifications de chronomètre</string>
+
+    <!-- Notification Channel Descriptions -->
+    <string name="desc_upcoming_alarm">Canal pour les notifications d\'alarmes à venir</string>
+    <string name="desc_snoozed_alarm">Canal pour les notifications d\'alarmes en rappel</string>
+    <string name="desc_missed_alarm">Canal pour les notifications d\'alarmes manquées</string>
+    <string name="desc_smart_alarm">Canal pour les notifications d\'alarme intelligente</string>
+    <string name="desc_active_timer">Canal pour les notifications de minuteurs actifs</string>
+    <string name="desc_completed_timer">Canal pour les notifications de minuteurs terminés</string>
+    <string name="desc_stopwatch">Canal pour les notifications du chronomètre</string>
+
+    <!-- Notification Group Titles -->
+    <string name="all_upcoming_alarms">Toutes les alarmes à venir</string>
+    <string name="all_snoozed_alarms">Toutes les alarmes en rappel</string>
+    <string name="all_missed_alarms">Toutes les alarmes manquées</string>
+
+
+    <!-- Grouped Notification Titles  -->
+    <string name="upcoming_alarm">Alarme à venir</string>
+    <string name="snoozed_alarm">Alarme en rappel</string>
+    <string name="missed_alarm">Alarme manquée</string>
+
+
+    <!-- Notification Actions   -->
+    <string name="restart">Redémarrer</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="pause">Pause</string>
+    <string name="add_1_min">+1 min</string>
+    <string name="stop">Arrêter</string>
+    <string name="lap">Tour</string>
+    <string name="complete_task">Terminer la mission</string>
+
+    <!-- Notification Stopwatch Builder  -->
+    <string name="lap_time_format">#Tour %1$s : %2$s</string>
+    <string name="stop_all_completed">Arrêter tous les minuteurs terminés</string>
+    <string name="stop_all_active">Arrêter tous les minuteurs actifs</string>
+    <string name="start_timer">Démarrer le minuteur</string>
+    <string name="delete_timer">Supprimer le minuteur</string>
+    <string name="rounds">Tours</string>
+    <string name="exact_alarm">Alarme exacte</string>
+
+</resources>

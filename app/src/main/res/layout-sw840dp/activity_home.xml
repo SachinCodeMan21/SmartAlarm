@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    tools:context=".feature.home.presentation.view.HomeActivity">
+
+    <!-- Home Material NavigationView -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:menu="@menu/home_bottom_nav_menu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Home Material Toolbar -->
+    <include
+        android:id="@+id/home_toolbar_layout"
+        layout="@layout/home_toolbar_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/navigation_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Home Navigation host fragment container -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/home_fragment_container_view"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/navigation_view"
+        app:layout_constraintTop_toBottomOf="@+id/home_toolbar_layout"
+        app:navGraph="@navigation/home_nav_graph" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

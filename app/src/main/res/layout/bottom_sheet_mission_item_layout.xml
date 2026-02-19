@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding_s"
+    android:gravity="center_vertical">
+
+   <!-- Represent The Mission Icon   -->
+    <ImageView
+        android:id="@+id/mission_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="@dimen/spacing_s"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_memory"/>
+
+    <!-- Represent The Mission Name   -->
+    <TextView
+        android:id="@+id/mission_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="@dimen/text_size_m"
+        android:fontFamily="sans-serif-medium"
+        android:padding="@dimen/spacing_s"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginEnd="@dimen/spacing_m"
+        tools:text="Mission Name"
+        />
+
+    <!-- Represent The Selected State For The Current Mission   -->
+    <ImageView
+        android:id="@+id/tickIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_selected"
+        android:visibility="gone"
+        />
+
+</LinearLayout>

@@ -1,0 +1,49 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- ImageView for the snooze icon, positioned next to the "Snooze" label. -->
+    <ImageView
+        android:id="@+id/snooze_icon_img"
+        android:layout_width="@dimen/icon_show_size"
+        android:layout_height="@dimen/icon_show_size"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_snooze"
+        app:layout_constraintBottom_toBottomOf="@+id/snooze_label_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/snooze_label_tv"
+        app:tint="@color/colorOnSurface" />
+
+    <!-- TextView displaying the "Snooze" label, placed next to the snooze icon. -->
+    <TextView
+        android:id="@+id/snooze_label_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_m"
+        android:text="@string/snooze"
+        android:textSize="@dimen/text_size_m"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintBottom_toBottomOf="@+id/alarm_snooze_tv"
+        app:layout_constraintStart_toEndOf="@+id/snooze_icon_img"
+        app:layout_constraintTop_toTopOf="@+id/alarm_snooze_tv" />
+
+    <!-- TextView showing the snooze time and frequency, with a clickable arrow. -->
+    <TextView
+        android:id="@+id/alarm_snooze_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:drawablePadding="@dimen/spacing_m"
+        android:padding="@dimen/spacing_m"
+        android:textSize="@dimen/text_size_s"
+        android:textColor="?attr/colorOnSurface"
+        app:drawableEndCompat="@drawable/ic_right_arrow"
+        app:drawableTint="?attr/colorOnSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="3min, 5times" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

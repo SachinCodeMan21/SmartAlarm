@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/alarmFragment">
+
+    <fragment
+        android:id="@+id/alarmFragment"
+        android:name="com.example.smartalarm.feature.alarm.presentation.view.fragment.home.AlarmFragment"
+        android:label="@string/alarm"
+        tools:layout="@layout/fragment_alarm" />
+    <fragment
+        android:id="@+id/clockFragment"
+        android:name="com.example.smartalarm.feature.clock.presentation.view.fragment.ClockFragment"
+        android:label="@string/clock"
+        tools:layout="@layout/fragment_clock" />
+    <fragment
+        android:id="@+id/timerFragment"
+        android:name="com.example.smartalarm.feature.timer.presentation.view.fragment.TimerFragment"
+        android:label="@string/timer"
+        tools:layout="@layout/fragment_timer">
+
+        <deepLink
+            app:uri="smartalarm://timer/{timerId}" />
+
+        <argument
+            android:name="timerId"
+            app:argType="integer"
+            android:defaultValue="-1"/>
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/stopwatchFragment"
+        android:name="com.example.smartalarm.feature.stopwatch.presentation.view.StopwatchFragment"
+        android:label="@string/stopwatch"
+        tools:layout="@layout/fragment_stopwatch">
+
+        <deepLink app:uri="smartalarm://stopwatch/{stopwatchId}" />
+
+        <argument
+            android:name="stopwatchId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+
+</navigation>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- EditText -->
+    <dimen name="default_editText_maxWidth">488dp</dimen>
+
+    <!-- Buttons -->
+    <dimen name="default_button_maxWidth">320dp</dimen>
+
+    <!-- Fab Size   -->
+    <dimen name="fabLargeSize">60dp</dimen>
+
+    <!-- Card -->
+    <dimen name="timerCardHeight">200dp</dimen>
+
+    <!-- FloatingActionButton Size  -->
+    <dimen name="fab_size_large">60dp</dimen>
+
+
+    <!-- Alarm Screen Dimens   -->
+    <dimen name="empty_alarm_img_max_size">56dp</dimen>
+    <dimen name="alarm_item_mission_img_size">20dp</dimen>
+    <dimen name="edit_alarm_weekday_max_size">48dp</dimen>
+    <dimen name="video_preview_size">200dp</dimen>
+    <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.15</item>
+    <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.85</item>
+    <item name="memory_mission_grid_max_width_percent" format="float" type="dimen">0.25</item>
+    <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.0</item>
+    <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.12</item>
+
+
+    <!-- Timer Screen Dimens   -->
+    <item name="guideline_timer_top" format="float" type="dimen">0.05</item>
+    <item name="guideline_timer_start" format="float" type="dimen">0.05</item>
+    <item name="guideline_timer_end" format="float" type="dimen">0.95</item>
+    <item name="guideline_timer_bottom" format="float" type="dimen">0.95</item>
+
+
+    <!-- Show Timer Dimens -->
+    <dimen name="timer_item_card_height">350dp</dimen>
+
+
+    <!-- Stopwatch Screen Dimens   -->
+    <dimen name="stopwatch_seconds_tv_tran_textSize">16sp</dimen>
+    <dimen name="stopwatch_progress_indicator_thickness">1dp</dimen>
+    <item name="guideline_stopwatch_top" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_anim_top" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_start" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_anim_start" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_end" format="float" type="dimen">0.8</item>
+    <item name="guideline_stopwatch_anim_end" format="float" type="dimen">0.0</item>
+    <item name="guideline_stopwatch_bottom" format="float" type="dimen">1.0</item>
+    <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">1.0</item>
+
+</resources>
