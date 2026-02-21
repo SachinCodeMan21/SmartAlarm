@@ -8,7 +8,7 @@ import io.mockk.coVerify
 import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.clock.data.local.entity.PlaceEntity
 import com.example.smartalarm.feature.clock.data.mapper.PlaceMapper.toEntity
-import com.example.smartalarm.feature.clock.data.remote.dto.response.PlaceDto
+import com.example.smartalarm.feature.clock.data.remote.dto.PlaceDto
 import io.mockk.MockKAnnotations
 import io.mockk.coVerifySequence
 import io.mockk.impl.annotations.RelaxedMockK

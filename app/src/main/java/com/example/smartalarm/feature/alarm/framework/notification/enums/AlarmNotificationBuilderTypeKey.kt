@@ -25,5 +25,5 @@ enum class AlarmNotificationBuilderTypeKey : AppNotificationBuilderTypeKey {
     SNOOZED,
 
     /** Represents a currently ringing or scheduled alarm notification. */
-    SCHEDULED
+    RINGING
 }

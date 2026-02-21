@@ -1,65 +1,65 @@
 package com.example.smartalarm.feature.clock.data.datasource.impl
 
 import com.example.smartalarm.feature.clock.data.datasource.contract.PlaceRemoteDataSource
-import com.example.smartalarm.feature.clock.data.remote.api.GoogleApiService
-import com.example.smartalarm.feature.clock.data.remote.dto.response.PlaceDto
+import com.example.smartalarm.feature.clock.data.remote.api.GeoApifyApiService
+import com.example.smartalarm.feature.clock.data.remote.dto.PlaceDto
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
+
 /**
- * Implementation of [PlaceRemoteDataSource] that communicates with Google APIs via Retrofit.
+ * Implementation of [PlaceRemoteDataSource] that retrieves places and their
+ * timezone information from the GeoApify API in a single call.
  *
- * @property googleApiService Retrofit service to interact with Google Places and Time Zone APIs.
+ * This class exists to provide the user with search results that include:
+ * 1. The place details (formatted address, city, etc.).
+ * 2. The current time at that place based on its timezone.
+ *
+ * By combining these pieces of data, the app can show the user not only the
+ * place they searched for, but also the local time there, improving UX
+ * for features like scheduling, travel planning, or time-sensitive decisions.
+ *
+ * @property geoApifyApiService The API service used to fetch place predictions.
  */
 class PlaceRemoteDataSourceImpl @Inject constructor(
-    private val googleApiService: GoogleApiService
+    private val geoApifyApiService: GeoApifyApiService
 ) : PlaceRemoteDataSource {
 
     /**
-     * Fetches a list of [PlaceDto] by chaining multiple remote calls:
-     * - Autocomplete predictions
-     * - Place details
-     * - Time zone info
+     * Searches for places matching the provided [query] string and enriches
+     * them with timezone-based current time.
      *
-     * This method handles all network orchestration and returns structured place data.
+     * @param query The user's search keyword or phrase.
+     * @return A list of [PlaceDto] objects containing both place info and
+     *         the current local time.
      *
-     * @param query The search string entered by the user.
-     * @return A list of fully built [PlaceDto]s.
-     * @throws Exception if any of the remote responses fail.
+     * @throws Exception If the API call fails or the response cannot be parsed.
      */
     override suspend fun searchPlaces(query: String): List<PlaceDto> {
-        val predictions = googleApiService.getPlacePredictions(query)
+        val response = geoApifyApiService.getPlacePredictions(query)
 
-        if (predictions.status == "ZERO_RESULTS") return emptyList()
-        if (predictions.status != "OK") throw Exception("Prediction failed: ${predictions.status}")
+        return response.features.map { feature ->
+            val prop = feature.properties
+            val tz = prop.timezone
 
-        return predictions.predictions.map { prediction ->
-            val details = googleApiService.getPlaceDetails(prediction.placeId)
-            if (details.status != "OK") throw Exception("Details failed: ${details.status}")
-
-            val location = details.result.geometry.location
-            val timestamp = System.currentTimeMillis() / 1000
-
-            val timeZone = googleApiService.getTimeZone("${location.lat},${location.lng}", timestamp)
-            if (timeZone.status != "OK") throw Exception("Time zone failed: ${timeZone.status}")
+            val primaryName = prop.city ?: prop.formatted.split(",").firstOrNull() ?: "Unknown"
 
             val currentTime = try {
-                val zoneId = ZoneId.of(timeZone.timeZoneId)
+                val zoneId = ZoneId.of(tz.name)
                 ZonedDateTime.now(zoneId).format(DateTimeFormatter.ofPattern("hh:mm a"))
-            } catch (e: Exception) {
-                "Incorrect TimeZone"
+            } catch (_: Exception) {
+                "---"
             }
 
             PlaceDto(
-                fullName = prediction.description,
-                primaryName = prediction.structuredFormatting.primaryText,
-                timeZoneId = timeZone.timeZoneId,
-                offsetSeconds = timeZone.rawOffset + timeZone.dstOffset,
+                fullName = prop.formatted,
+                primaryName = primaryName,
+                timeZoneId = tz.name,
+                offsetSeconds = tz.offsetSeconds.toLong(),
                 currentTime = currentTime
             )
         }
     }
 }
-

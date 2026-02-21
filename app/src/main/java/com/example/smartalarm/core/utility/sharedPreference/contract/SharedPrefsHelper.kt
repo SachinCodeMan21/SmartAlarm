@@ -28,5 +28,17 @@ interface SharedPrefsHelper {
      */
     var hasStopwatchRequestedNotificationPermission: Boolean
 
+    /**
+     * Gets or sets the user's preferred snooze duration in minutes.
+     * Defaults to 5 minutes.
+     */
+    var alarmSnoozeDurationMinutesPref: Int
+
+    /**
+     * Gets or sets the user's preferred alarm timeout (auto-silence) in minutes.
+     * Defaults to 10 minutes.
+     */
+    var alarmTimeoutDurationMinutesPref: Int
+
 
 }

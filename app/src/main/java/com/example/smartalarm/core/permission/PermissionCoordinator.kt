@@ -1,14 +1,14 @@
-package com.example.smartalarm.core.permission.model
+package com.example.smartalarm.core.permission
 
 import android.app.Activity
 import android.content.Context
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.example.smartalarm.R
-import com.example.smartalarm.core.permission.PermissionChecker
-import com.example.smartalarm.core.permission.PermissionRequester
-import com.example.smartalarm.core.permission.onRationaleResult
-import com.example.smartalarm.core.permission.onSettingsResult
+import com.example.smartalarm.core.permission.model.AppPermission
+import com.example.smartalarm.core.permission.model.PermissionResult
+import com.example.smartalarm.core.permission.model.PermissionStatus
+import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.feature.home.presentation.dialog.PermissionRationaleDialog
 import com.example.smartalarm.feature.home.presentation.dialog.PermissionSettingsDialog
 
@@ -89,30 +89,42 @@ class PermissionCoordinator(
         requester.requestSinglePermission(permission) { result ->
 
             when (result) {
-                is PermissionResult.RuntimePermissionResult.Granted,
-                is PermissionResult.SpecialPermissionResult.Granted -> {
+
+                is PermissionResult.RuntimePermissionResult.Granted -> {
+                    context.showToast(context.getString(R.string.permission_granted_successfully))
                     onDone(true)
                 }
-
+                is PermissionResult.RuntimePermissionResult.Denied -> {
+                    showRationaleDialog(
+                        permission,
+                        onConfirm = { executeSystemRequest(permission, onDone) },
+                        onCancel = { onDone(false) }
+                    )
+                }
                 is PermissionResult.RuntimePermissionResult.PermanentlyDenied -> {
-
                     // Wait for DialogFragment Listener
                     showSettingsDialog(
                         permission,
                         onSettingsClicked = {
-                            requester.requestSinglePermission(permission) { finalResult ->
-                                val isGranted = finalResult is PermissionResult.SpecialPermissionResult.Granted || finalResult is PermissionResult.RuntimePermissionResult.Granted
-                                onDone(isGranted)
+                            // Use the explicit Settings call here
+                            requester.openAppSettings(permission) {
+                                onDone(checker.isGranted(permission))
                             }
                         },
                         onCancelClicked = { onDone(false) }
                     )
                 }
 
-                else -> onDone(false)
+                is PermissionResult.SpecialPermissionResult.Granted,
+                is PermissionResult.SpecialPermissionResult.Denied -> onDone(true)
+
             }
         }
     }
+
+
+
+
 
     // --- UI Methods (To be implemented by your DialogFragment logic) ---
 
@@ -129,15 +141,14 @@ class PermissionCoordinator(
         )
 
         // 2. Show the Dialog
-        PermissionRationaleDialog.newInstance(
+        PermissionRationaleDialog.Companion.newInstance(
             title = context.getString(
-                permission.rationaleTitleResId ?: R.string.permission_required_title
+                permission.defaultRationaleTitleResId
             ),
             message = context.getString(
-                permission.rationaleMessageResId
-                    ?: R.string.post_notification_permission_rationale_message
+                permission.defaultRationaleMessageResId
             )
-        ).show(fragmentManager, PermissionRationaleDialog.TAG)
+        ).show(fragmentManager, PermissionRationaleDialog.Companion.TAG)
     }
 
 
@@ -146,6 +157,7 @@ class PermissionCoordinator(
         onSettingsClicked: () -> Unit,
         onCancelClicked: () -> Unit
     ) {
+
         // 1. Setup the Receiver Extension
         fragmentManager.onSettingsResult(
             lifecycleOwner = lifecycleOwner,
@@ -158,9 +170,9 @@ class PermissionCoordinator(
         )
 
         // 2. Show the Dialog
-        PermissionSettingsDialog.newInstance(
-            permissionName = context.getString(permission.friendlyNameResId)
-        ).show(fragmentManager, PermissionSettingsDialog.TAG)
+        PermissionSettingsDialog.Companion.newInstance(
+            permissionName = context.getString(permission.labelResId)
+        ).show(fragmentManager, PermissionSettingsDialog.Companion.TAG)
     }
 
 }

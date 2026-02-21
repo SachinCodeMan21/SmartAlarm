@@ -1,5 +1,7 @@
 package com.example.smartalarm.feature.alarm.framework.notification.model
 
+import com.example.smartalarm.core.utility.Constants.PACKAGE
+
 
 /**
  * Contains constant keys used to group notifications related to alarms.
@@ -11,12 +13,15 @@ package com.example.smartalarm.feature.alarm.framework.notification.model
 object NotificationGroupKeys {
 
     /** Group key for upcoming alarm notifications. */
-    const val UPCOMING_ALARMS = "com.example.smartalarm.GROUP_UPCOMING_ALARMS"
+    const val UPCOMING_ALARMS = "$PACKAGE.GROUP_UPCOMING_ALARMS"
 
     /** Group key for missed alarm notifications. */
-    const val MISSED_ALARMS = "com.example.smartalarm.GROUP_MISSED_ALARMS"
+    const val MISSED_ALARMS = "$PACKAGE.GROUP_MISSED_ALARMS"
 
     /** Group key for snoozed alarm notifications. */
-    const val SNOOZED_ALARMS = "com.example.smartalarm.GROUP_SNOOZED_ALARMS"
+    const val SNOOZED_ALARMS = "$PACKAGE.GROUP_SNOOZED_ALARMS"
+
+    const val MISSED_TIMERS = "$PACKAGE.GROUP_MISSED_TIMERS"
+
 }
 

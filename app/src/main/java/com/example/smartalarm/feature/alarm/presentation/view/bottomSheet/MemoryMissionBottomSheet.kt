@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.extension.getParcelableCompat
@@ -119,6 +122,7 @@ class MemoryMissionBottomSheet : BaseMissionBottomSheet() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyBottomSystemInset(binding.root)
         setupUI()
         setupListeners()
     }
@@ -208,7 +212,7 @@ class MemoryMissionBottomSheet : BaseMissionBottomSheet() {
 
         previewBtn.setOnClickListener {
             val previewMission = mission.copy(difficulty = Difficulty.fromSliderValue(levelSlider.value), rounds = memoryRoundsPicker.value)
-            viewModel.handleUserEvent(AlarmEditorUserEvent.StartAlarmMissionPreview(previewMission))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Preview(previewMission))
             MissionPickerBottomSheet.dismissIfVisible(parentFragmentManager)
             dismiss()
         }
@@ -219,7 +223,7 @@ class MemoryMissionBottomSheet : BaseMissionBottomSheet() {
             val updatedMission = mission.copy(difficulty = newDifficulty, rounds = memoryRoundsPicker.value)
             val missionHolderPosition = arguments?.getInt(MISSION_ITEM_HOLDER_POSITION_KEY) ?: 0
 
-            viewModel.handleUserEvent(AlarmEditorUserEvent.UpdateAlarmMission(missionHolderPosition, updatedMission))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Updated(missionHolderPosition, updatedMission))
             MissionPickerBottomSheet.dismissIfVisible(parentFragmentManager)
             dismiss()
         }

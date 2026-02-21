@@ -39,12 +39,13 @@ class PermissionChecker @Inject constructor(
     private fun getRuntimePermissionStatus(runtimePermission: AppPermission.Runtime, activity: Activity): PermissionStatus.RuntimePermissionStatus {
 
         val granted = isGranted(runtimePermission)
-        val shouldShowRationale = activity.let { ActivityCompat.shouldShowRequestPermissionRationale(it, runtimePermission.permissionName) }
+        val shouldShowRationale = activity.let { ActivityCompat.shouldShowRequestPermissionRationale(it, runtimePermission.manifestName) }
         return when{
             granted -> PermissionStatus.RuntimePermissionStatus.Granted
             shouldShowRationale -> PermissionStatus.RuntimePermissionStatus.ShouldShowRationale
             else -> PermissionStatus.RuntimePermissionStatus.Denied
         }
+
     }
     private fun getSpecialPermissionStatus(specialPermission: AppPermission.Special): PermissionStatus.SpecialPermissionStatus {
         val isGranted = checkIsSpecialPermissionGranted(specialPermission)
@@ -58,7 +59,7 @@ class PermissionChecker @Inject constructor(
 
     // Helper Function
     private fun checkIsRuntimePermissionGranted(permission: AppPermission.Runtime): Boolean {
-        return ContextCompat.checkSelfPermission(context, permission.permissionName) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(context, permission.manifestName) == PackageManager.PERMISSION_GRANTED
     }
     private fun checkIsSpecialPermissionGranted(permission: AppPermission.Special): Boolean {
         return when (permission) {

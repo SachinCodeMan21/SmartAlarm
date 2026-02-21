@@ -20,6 +20,17 @@ class SharedPrefsHelperImpl @Inject constructor(
         const val LAST_SCHEDULED_ALARM_NOTIFICATION = "LAST_SCHEDULED_ALARM_NOTIFICATION"
 
         const val STOPWATCH_POST_NOTIFICATION_PERMISSION_REQUESTED = "STOPWATCH_POST_NOTIFICATION_PERMISSION_REQUESTED"
+
+
+        // New Keys for Alarms
+        const val PREF_ALARM_SNOOZE_DURATION_MINUTES = "ALARM_SNOOZE_DURATION_MINUTES"
+        const val PREF_ALARM_TIMEOUT_DURATION_MINUTES = "ALARM_TIMEOUT_DURATION_MINUTES"
+
+        // Defaults
+        private const val DEFAULT_SNOOZE_MINUTES = 10
+        private const val DEFAULT_TIMEOUT_MINUTES = 15
+
+
     }
 
     /**
@@ -52,6 +63,23 @@ class SharedPrefsHelperImpl @Inject constructor(
     override var hasStopwatchRequestedNotificationPermission: Boolean
         get() = getPref(STOPWATCH_POST_NOTIFICATION_PERMISSION_REQUESTED, false)
         set(value) = setPref(STOPWATCH_POST_NOTIFICATION_PERMISSION_REQUESTED, value)
+
+
+    /**
+     * Gets or sets the user's preferred snooze duration in minutes.
+     * Defaults to 5 minutes.
+     */
+    override var alarmSnoozeDurationMinutesPref: Int
+        get() = getPref(PREF_ALARM_SNOOZE_DURATION_MINUTES, DEFAULT_SNOOZE_MINUTES)
+        set(value) = setPref(PREF_ALARM_SNOOZE_DURATION_MINUTES, value)
+
+    /**
+     * Gets or sets the user's preferred alarm timeout (auto-silence) in minutes.
+     * Defaults to 10 minutes.
+     */
+    override var alarmTimeoutDurationMinutesPref: Int
+        get() = getPref(PREF_ALARM_TIMEOUT_DURATION_MINUTES, DEFAULT_TIMEOUT_MINUTES)
+        set(value) = setPref(PREF_ALARM_TIMEOUT_DURATION_MINUTES, value)
 
 
     /**

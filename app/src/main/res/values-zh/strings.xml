@@ -380,7 +380,7 @@
     <string name="add_1_min">添加1分钟</string>
     <string name="stop">停止</string>
     <string name="lap">圈次</string>
-    <string name="complete_task">完成任务</string>
+    <string name="complete_mission">完成任务</string>
 
     <!-- Notification Stopwatch Builder -->
     <string name="lap_time_format">#圈次 %1$s : %2$s</string>

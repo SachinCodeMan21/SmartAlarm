@@ -111,6 +111,13 @@
 
 
 
+
+    <!-- Clock Screen Dimens -->
+    <item name="guideline_clock_top" format="float" type="dimen">0.02</item>
+    <item name="guideline_clock_start" format="float" type="dimen">0.02</item>
+    <item name="guideline_clock_end" format="float" type="dimen">0.98</item>
+    <item name="guideline_clock_bottom" format="float" type="dimen">1</item>
+
     <!-- Timer Screen Dimens -->
     <item name="guideline_timer_top" format="float" type="dimen">0.15</item>
     <item name="guideline_timer_start" format="float" type="dimen">0.1</item>

@@ -11,7 +11,7 @@ import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNo
 import javax.inject.Inject
 
 /**
- * Builds a high-priority notification for scheduled alarms using the provided [AlarmNotification.Scheduled] data.
+ * Builds a high-priority notification for scheduled alarms using the provided [AlarmNotification.Ringing] data.
  *
  * This builder is responsible for constructing the notification UI when an alarm is currently ringing
  * or about to ring. It includes:
@@ -23,7 +23,7 @@ import javax.inject.Inject
  *
  * @constructor Injects the builder through Hilt.
  */
-class ScheduledAlarmNotificationBuilder @Inject constructor() : AppNotificationBuilder<AlarmNotification.Scheduled> {
+class RingingAlarmNotificationBuilder @Inject constructor() : AppNotificationBuilder<AlarmNotification.Ringing> {
 
     /**
      * Builds and returns a [Notification] object for a scheduled alarm.
@@ -37,7 +37,7 @@ class ScheduledAlarmNotificationBuilder @Inject constructor() : AppNotificationB
      * @param notificationType The notification wrapper containing alarm data to build the UI.
      * @return A fully configured [Notification] ready to be shown.
      */
-    override fun buildNotification(context: Context, notificationType: AlarmNotification.Scheduled): Notification {
+    override fun buildNotification(context: Context, notificationType: AlarmNotification.Ringing): Notification {
         val notificationData = notificationType.alarmData
 
         val builder = NotificationCompat.Builder(context, AppNotificationChannel.SCHEDULED_ALARM.channelId)

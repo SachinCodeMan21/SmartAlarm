@@ -21,10 +21,8 @@ sealed class HomeEvent {
     /**
      * Restores the last opened destination when the app is resumed.
      * Used to ensure the user returns to their previous screen.
-     *
-     * @param notificationDestinationId ID of the destination to restore (may come from a notification click).
      */
-    data class RestoreLastOpenedDestination(val notificationDestinationId: Int) : HomeEvent()
+    object RestoreLastOpenedDestination : HomeEvent()
 
 
     /**

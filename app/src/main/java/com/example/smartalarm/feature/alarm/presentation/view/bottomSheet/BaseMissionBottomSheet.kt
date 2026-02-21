@@ -3,6 +3,10 @@ package com.example.smartalarm.feature.alarm.presentation.view.bottomSheet
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.example.smartalarm.core.utility.Constants.PACKAGE
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -41,15 +45,25 @@ abstract class BaseMissionBottomSheet : BottomSheetDialogFragment() {
 
         dialog.setOnShowListener {
             val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            val behavior = BottomSheetBehavior.from(bottomSheet!!)
-
-            // This ensures it opens fully to the size of your content immediately
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-            // Optional: prevent it from being dragged down to a smaller "peek" state
-            behavior.skipCollapsed = true
+            bottomSheet?.let {
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.skipCollapsed = true
+            }
         }
         return dialog
     }
 
+    /**
+     * Helper to apply bottom system insets to any view.
+     * Call this from onViewCreated in subclasses.
+     */
+    protected fun applyBottomSystemInset(rootView: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
+        ViewCompat.requestApplyInsets(rootView)
+    }
 }

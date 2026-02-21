@@ -1,23 +1,23 @@
 package com.example.smartalarm.feature.clock.data.datasource.contract
 
-import com.example.smartalarm.feature.clock.data.remote.dto.response.PlaceDto
+import com.example.smartalarm.feature.clock.data.remote.dto.PlaceDto
 
 /**
- * Defines contract for accessing place-related remote data from APIs such as Google Places and Time Zone APIs.
+ * Remote data source responsible for fetching place-related data from a network API.
+ *
+ * This interface defines the contract for searching places using a remote service.
+ * Implementations are expected to handle network communication and map responses
+ * into [PlaceDto] objects.
  */
 interface PlaceRemoteDataSource {
 
     /**
-     * Fetches places based on a search query by performing:
-     * - Place autocomplete prediction
-     * - Place detail lookup
-     * - Time zone lookup
+     * Searches for places that match the given query string.
      *
-     * Combines results into a list of [PlaceDto].
+     * @param query The search keyword or phrase used to find matching places.
+     * @return A list of [PlaceDto] objects that match the search query.
      *
-     * @param query The search string entered by the user.
-     * @return A list of [PlaceDto] representing structured place information.
-     * @throws Exception if any network call or data extraction fails.
+     * @throws Exception If a network error or API error occurs during the request.
      */
     suspend fun searchPlaces(query: String): List<PlaceDto>
 }

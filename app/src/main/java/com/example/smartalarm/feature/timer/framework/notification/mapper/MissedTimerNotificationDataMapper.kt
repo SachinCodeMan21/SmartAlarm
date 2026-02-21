@@ -26,7 +26,7 @@ class MissedTimerNotificationDataMapper @Inject constructor(
 
         return TimerNotificationData(
             timer = model.timer,
-            formattedBigText = "⚠️ Missed Timer!.",
+            formattedBigText = "Missed Timer Time : ${timeFormatter.formatMillisToTimerTextFormat(model.timer.targetTime)}",
             id = model.timer.timerId,
             title = context.getString(R.string.missed_alarm),
             contentText = contentText,

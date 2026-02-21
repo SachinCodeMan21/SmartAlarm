@@ -344,7 +344,7 @@
     <string name="add_1_min">1分追加</string>
     <string name="stop">停止</string>
     <string name="lap">ラップ</string>
-    <string name="complete_task">ミッション完了</string>
+    <string name="complete_mission">ミッション完了</string>
 
     <string name="lap_time_format">#ラップ %1$s : %2$s</string>
     <string name="stop_all_completed">すべての完了タイマーを停止</string>

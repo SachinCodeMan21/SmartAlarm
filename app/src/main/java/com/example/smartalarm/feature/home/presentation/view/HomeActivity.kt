@@ -3,6 +3,7 @@ package com.example.smartalarm.feature.home.presentation.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,9 +17,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -225,14 +224,12 @@ class HomeActivity : AppCompatActivity() {
      */
     private fun setUpHomeEffectObserver() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.uiEffect.collect { effect ->
-                    when (effect) {
-                        is HomeEffect.NavigateToChildFragment -> selectNavigationItem(effect.destinationId)
-                        is HomeEffect.HandleNotificationNavigation -> handleNotificationNavigation(effect.notificationIntentData)
-                        is HomeEffect.RotateSelectedNavItemIcon -> rotateSelectedNavItemIcon(effect.bottomNavItemId)
-                        is HomeEffect.FinishActivity -> finish()
-                    }
+            homeViewModel.uiEffect.collect { effect ->
+                when (effect) {
+                    is HomeEffect.NavigateToChildFragment -> selectNavigationItem(effect.destinationId)
+                    is HomeEffect.HandleNotificationNavigation -> handleNotificationNavigation(effect.notificationIntentData)
+                    is HomeEffect.RotateSelectedNavItemIcon -> rotateSelectedNavItemIcon(effect.bottomNavItemId)
+                    is HomeEffect.FinishActivity -> finish()
                 }
             }
         }
@@ -274,7 +271,7 @@ class HomeActivity : AppCompatActivity() {
         }
         else {
             // Regular app launch: Restore last fragment
-            homeViewModel.handleEvent(RestoreLastOpenedDestination(0))
+            homeViewModel.handleEvent(RestoreLastOpenedDestination)
         }
 
         // Clean up intent to prevent re-triggering on screen rotation
@@ -376,6 +373,8 @@ class HomeActivity : AppCompatActivity() {
      * @param destinationId The destination that should be visually marked as active.
      */
     private fun selectNavigationItem(destinationId: Int) {
+
+        Log.d("TAG","selectNavigationItem destinationId = $destinationId = ${R.id.stopwatchFragment}")
 
         if (navController.currentDestination?.id == destinationId) return
 

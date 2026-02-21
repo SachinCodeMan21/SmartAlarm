@@ -1,4 +1,4 @@
-package com.example.smartalarm.feature.clock.data.remote.dto.response
+package com.example.smartalarm.feature.clock.data.remote.dto
 
 /**
  * Data Transfer Object representing a place fetched from the remote API.

@@ -20,7 +20,6 @@ class TimerReceiver : BroadcastReceiver() {
             }
         }
     }
-
     private fun handleAction(context: Context, intent: Intent) {
 
         val serviceIntent = Intent(context, ShowTimerService::class.java).apply {

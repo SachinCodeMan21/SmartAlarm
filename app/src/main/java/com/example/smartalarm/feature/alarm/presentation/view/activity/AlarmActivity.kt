@@ -1,14 +1,8 @@
 package com.example.smartalarm.feature.alarm.presentation.view.activity
 
-import android.annotation.SuppressLint
 import android.app.KeyguardManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
@@ -24,13 +18,11 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.smartalarm.R
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.Constants.PACKAGE
-import com.example.smartalarm.core.utility.extension.isSdk33AndAbove
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.databinding.ActivityAlarmBinding
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.framework.broadcasts.constants.AlarmKeys
-import com.example.smartalarm.feature.alarm.framework.services.AlarmService.Companion.ACTION_FINISH_ALARM_ACTIVITY
 import com.example.smartalarm.feature.alarm.presentation.effect.mission.AlarmMissionEffect
 import com.example.smartalarm.feature.alarm.presentation.event.mission.AlarmMissionEvent
 import com.example.smartalarm.feature.alarm.presentation.view.fragment.mission.ShowAlarmFragmentArgs
@@ -89,7 +81,6 @@ class AlarmActivity : AppCompatActivity() {
     private val binding get() = _binding?: error(BINDING_IS_NULL)
     private val viewModel: MyAlarmViewModel by viewModels()
     private lateinit var navController : NavController
-    private lateinit var alarmFinishReceiver: BroadcastReceiver
 
 
 
@@ -121,7 +112,6 @@ class AlarmActivity : AppCompatActivity() {
 
         turnScreenOnAndKeyguardOff()
         setupNavigationAndProgressBarVisibility()
-        setUpAlarmFinishReceiver()
         initializeNavGraphWithArguments()
         setUpMissionProgressObserver()
         setUpUIEffectObserver()
@@ -138,7 +128,6 @@ class AlarmActivity : AppCompatActivity() {
      */
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(alarmFinishReceiver)
         _binding = null
     }
 
@@ -201,6 +190,10 @@ class AlarmActivity : AppCompatActivity() {
         // Inflate the nav graph and set it with the provided start arguments
         val navGraph = navController.navInflater.inflate(R.navigation.mission_nav_graph)
         navController.setGraph(navGraph, startArgs.toBundle())
+
+        if (!isPreview) {
+            viewModel.observeAlarmState(alarmId)
+        }
     }
 
 
@@ -308,35 +301,6 @@ class AlarmActivity : AppCompatActivity() {
         viewModel.handleSharedEvent(AlarmMissionEvent.MissionCompleted)
     }
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    private fun setUpAlarmFinishReceiver() {
-
-        // Initialize the broadcast receiver
-        alarmFinishReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if(intent?.action == ACTION_FINISH_ALARM_ACTIVITY){
-                    // Finish the activity when receiving the broadcast
-                    Log.d("TAG","AlarmActivity onReceive Service Destroyed")
-                    finish()
-                }
-            }
-        }
-
-
-        // Register the receiver with the action to listen for the broadcast
-        val filter = IntentFilter(ACTION_FINISH_ALARM_ACTIVITY)
-
-        // Register the receiver based on SDK version
-        if (isSdk33AndAbove) {
-            // For Android 12 (API level 31) and above, use RECEIVER_NOT_EXPORTED flag.
-            registerReceiver(alarmFinishReceiver, filter,RECEIVER_NOT_EXPORTED)
-        } else {
-            // For lower versions, just register normally (no exported flag needed).
-            registerReceiver(alarmFinishReceiver, filter)
-        }
-    }
-
-
     private fun turnScreenOnAndKeyguardOff() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
@@ -352,7 +316,7 @@ class AlarmActivity : AppCompatActivity() {
         }
 
         // This wakes up the device if the screen is off
-        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
         keyguardManager.requestDismissKeyguard(this, null)
     }
 

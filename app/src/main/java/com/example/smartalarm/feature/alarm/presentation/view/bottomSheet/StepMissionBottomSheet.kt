@@ -124,6 +124,7 @@ class StepMissionBottomSheet : BaseMissionBottomSheet() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyBottomSystemInset(binding.root)
         setUpUI()
         setUpListener()
     }
@@ -265,7 +266,7 @@ class StepMissionBottomSheet : BaseMissionBottomSheet() {
             val updatedMission = mission.copy(rounds = selectedRounds)
             val missionHolderPosition = arguments?.getInt(MISSION_ITEM_HOLDER_POSITION_KEY) ?: 0
 
-            viewModel.handleUserEvent(AlarmEditorUserEvent.UpdateAlarmMission(missionHolderPosition, updatedMission))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Updated(missionHolderPosition, updatedMission))
             MissionPickerBottomSheet.dismissIfVisible(parentFragmentManager)
             dismiss()
         }
@@ -274,7 +275,7 @@ class StepMissionBottomSheet : BaseMissionBottomSheet() {
             val selectedIndex = stepRoundsPicker.value
             val selectedRounds = stepRoundsPicker.displayedValues[selectedIndex].toInt()
             val previewMission = mission.copy( rounds = selectedRounds)
-            viewModel.handleUserEvent(AlarmEditorUserEvent.StartAlarmMissionPreview(previewMission))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Preview(previewMission))
             MissionPickerBottomSheet.dismissIfVisible(parentFragmentManager)
             dismiss()
         }

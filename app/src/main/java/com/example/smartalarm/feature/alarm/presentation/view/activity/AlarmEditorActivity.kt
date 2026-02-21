@@ -44,7 +44,8 @@ import kotlinx.coroutines.launch
  * 4. **Back Press Handling**: Customizes the back navigation behavior, delegating it to the ViewModel or specific fragments.
  */
 @AndroidEntryPoint
-class AlarmEditorActivity : AppCompatActivity() {
+class AlarmEditorActivity : AppCompatActivity()
+{
 
     companion object {
 
@@ -179,7 +180,7 @@ class AlarmEditorActivity : AppCompatActivity() {
     private fun setUpBackPressedCallback() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                alarmEditorViewModel.handleUserEvent(AlarmEditorUserEvent.OnSystemBackPressed)
+                alarmEditorViewModel.handleUserEvent(AlarmEditorUserEvent.NavigationEvent.SystemBack)
             }
         })
     }
@@ -201,7 +202,7 @@ class AlarmEditorActivity : AppCompatActivity() {
             ?.childFragmentManager?.fragments?.firstOrNull()
 
         when (currentFragment) {
-            is AlarmEditorHomeFragment -> alarmEditorViewModel.handleUserEvent(AlarmEditorUserEvent.OnToolbarBackPressed)
+            is AlarmEditorHomeFragment -> alarmEditorViewModel.handleUserEvent(AlarmEditorUserEvent.NavigationEvent.ToolbarBack)
             is SnoozeAlarmFragment -> currentFragment.onToolbarBackPressed()
         }
 

@@ -10,15 +10,25 @@ import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.core.utility.extension.runCatchingResult
 import javax.inject.Inject
 
+
 /**
- * Repository implementation responsible for managing place data.
- * It follows a local-first strategy: attempts to retrieve data from the local database,
- * and falls back to remote API calls if not available.
+ * Repository implementation for managing place data using an **offline-first** approach.
  *
- * This class bridges the domain layer with both local and remote data sources.
+ * This class ensures that the app can provide fast, reliable search results even when
+ * the user is offline, while still fetching up-to-date information when connected.
  *
- * @property localDataSource Interface for local Room database access.
- * @property remoteDataSource Interface for accessing Google Places & Time Zone APIs.
+ * Key responsibilities:
+ * 1. **Offline-first search** – checks the local database first to quickly return cached results.
+ * 2. **Remote fallback** – fetches from the GeoApify API if no local matches are found.
+ * 3. **Cache update** – saves remote results to the local database for future offline access.
+ * 4. **Consistency guarantee** – queries the local DB again to ensure returned results are complete
+ *    and include enriched timezone information.
+ *
+ * This design improves user experience by minimizing network calls, providing instant
+ * search feedback, and always showing accurate local times for places.
+ *
+ * @property localDataSource Handles reading and writing place data to the local database.
+ * @property remoteDataSource Handles fetching place data and timezone information from the network.
  */
 class PlaceRepositoryImpl @Inject constructor(
     private val localDataSource: PlaceLocalDataSource,
@@ -26,34 +36,37 @@ class PlaceRepositoryImpl @Inject constructor(
 ) : PlaceRepository {
 
     /**
-     * Saves a single place to the local database.
+     * Saves a [place] to the local database.
      *
-     * @param place A [PlaceModel] representing the place to store.
-     * @return [Result.Success] if insertion succeeds, or [Result.Error] on failure.
+     * @param place The [PlaceModel] to save.
+     * @return [Result.Success] if saved successfully, or [Result.Error] on failure.
      */
-    override suspend fun savePlace(place: PlaceModel): Result<Unit> = runCatchingResult {
-        localDataSource.insertPlace(place.toEntity())
+    override suspend fun savePlace(place: PlaceModel): Result<Unit> {
+        return try {
+            localDataSource.insertPlace(place.toEntity())
+            Result.Success(Unit)
+        } catch (_: Exception) {
+            Result.Error(Exception())
+        }
     }
 
-
     /**
-     * Searches for places matching the given query.
+     * Searches for places matching the given [query] using **offline-first logic**.
      *
-     * This function implements an offline-first strategy:
-     * 1. Attempts to find matching places from the local database.
-     * 2. If no local results are found, fetches matching places from the remote data source.
-     * 3. Maps the remote data transfer objects (DTOs) to local entities and inserts them in bulk into the local database.
-     * 4. Queries the local database again to return the updated, consistent list of places.
+     * The search flow:
+     * 1. **Local check** – returns cached results if available, providing instant feedback.
+     * 2. **Remote fetch** – if local results are empty, fetches from the API including timezone info.
+     * 3. **Cache update** – inserts remote results into the local database for future offline queries.
+     * 4. **Consistency check** – queries local DB again to return a complete, consistent result set.
      *
-     * This approach ensures that remote data is cached locally for future queries, minimizing network calls.
+     * This approach ensures users always get fast, reliable results with accurate timezone
+     * information, even without network connectivity.
      *
-     * @param query The search string input by the user.
-     * @return A [Result] wrapping a list of [PlaceModel] on success, or a [Result.Error] if an exception occurs.
+     * @param query The user's search keyword or phrase.
+     * @return [Result.Success] with a list of [PlaceModel] or [Result.Error] if something goes wrong.
      */
     override suspend fun searchPlaces(query: String): Result<List<PlaceModel>> {
-
         return try {
-
             // Step 1: Check local
             val local = localDataSource.searchPlace("%$query%")
             if (local.isNotEmpty()) {
@@ -74,7 +87,5 @@ class PlaceRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.Error(e)
         }
-
     }
-
 }

@@ -29,14 +29,7 @@ sealed class StopwatchEvent {
      */
     data object RecordStopwatchLap : StopwatchEvent()
 
-
+    /** Event indicating the stopwatch should move to the background. */
     data object MoveToBackground : StopwatchEvent()
-
-
-    /** Event to start the foreground service (e.g., after configuration changes or process death).*/
-    data object StartForegroundService : StopwatchEvent()
-
-    /** Event to stop the foreground service.*/
-    data object StopwatchForegroundService : StopwatchEvent()
 
 }

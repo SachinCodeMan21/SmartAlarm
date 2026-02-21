@@ -55,10 +55,6 @@ class PostSaveOrUpdateAlarmUseCaseImpl @Inject constructor(
                 alarmScheduler.scheduleSmartAlarm(alarm.id, alarmTimeMillis)
 
                 // Post a notification to alert the user about the upcoming alarm
-//                alarmNotificationManager.postNotification(
-//                    alarm.id,
-//                    AlarmNotificationModel.UpcomingAlarmModel(alarm, alarmTimeMillis)
-//                )
                 alarmNotificationManager.postAlarmNotification(
                     alarm.id,
                     AlarmNotificationModel.UpcomingAlarmModel(alarm, alarmTimeMillis)

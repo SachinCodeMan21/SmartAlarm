@@ -1,8 +1,12 @@
 package com.example.smartalarm.feature.alarm.framework.notification.manager
 
+import android.Manifest
 import android.app.Notification
 import android.content.Context
+import android.content.pm.PackageManager
 import android.service.notification.StatusBarNotification
+import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.smartalarm.core.notification.manager.AppNotificationManager
@@ -14,10 +18,6 @@ import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNo
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-/**
- * Manages Alarm-specific notifications, including complex grouping logic
- * for upcoming, missed, and snoozed alarms.
- */
 class AlarmNotificationManager @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val builderFactory: AlarmNotificationBuilderFactory,
@@ -25,9 +25,6 @@ class AlarmNotificationManager @Inject constructor(
     private val mapperFactory: AlarmNotificationDataMapperFactory,
 ) : AppNotificationManager(context, notificationManager) {
 
-    /**
-     * Maps domain models to Android Notifications using the specialized factory and mapper.
-     */
     fun getAlarmNotification(model: AlarmNotificationModel): Notification {
         val mapper = mapperFactory.getMapper(model.getMapperKey())
         val data = mapper.map(context, model)
@@ -35,39 +32,25 @@ class AlarmNotificationManager @Inject constructor(
         return builderFactory.buildNotification(notificationType)
     }
 
-    /**
-     * Posts an alarm notification and updates the associated group summary if needed.
-     */
     fun postAlarmNotification(notificationId: Int, model: AlarmNotificationModel) {
 
-        // 1. Post the primary notification
-        val notification = getAlarmNotification(model)
-        postNotification(notificationId, notification)
+        postNotification(notificationId+100, getAlarmNotification(model))
 
-        // 2. Handle grouping logic if the model is groupable
         if (model is GroupableNotification) {
-            updateAlarmGroupSummaryNotification(model.groupKey)
+            // Tell the summary updater: "I just added this ID, count it!"
+            updateAlarmGroupSummaryNotification(model.groupKey, handledId = notificationId, isRemoving = false)
         }
     }
 
-    /**
-     * Cancels a notification and intelligently cleans up or updates the group header.
-     */
     fun cancelAlarmNotification(notificationId: Int) {
+        val groupKey = getActiveNotification(notificationId+100)?.notification?.group
+        cancelNotification(notificationId+100)
 
-        val removed = getActiveNotification(notificationId)
-        val groupKey = removed?.notification?.group
-
-        // 1. Cancel the child notification
-        cancelNotification(notificationId)
-
-        // 2. Update group summary if this notification belonged to a group
         if (groupKey != null) {
-            updateAlarmGroupSummaryNotification(groupKey)
+            // Tell the summary updater: "I just removed this ID, ignore it!"
+            updateAlarmGroupSummaryNotification(groupKey, handledId = notificationId+100, isRemoving = true)
         }
-
     }
-
 
 
     // --- Private Helper Methods ---
@@ -88,41 +71,72 @@ class AlarmNotificationManager @Inject constructor(
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
+    private fun updateAlarmGroupSummaryNotification(groupKey: String, handledId: Int? = null, isRemoving: Boolean = false) {
 
-    /**
-     * Ensures the group summary notification is in the correct state
-     * based on currently active child notifications.
-     */
-    private fun updateAlarmGroupSummaryNotification(groupKey: String) {
-
-        val active = notificationManager.activeNotifications
-
-        val childNotifications = active.filter {
-            it.notification.group == groupKey && it.id != groupKey.hashCode()
-        }
-
+        val active = notificationManager.activeNotifications.toList()
         val summaryId = groupKey.hashCode()
 
-        if (childNotifications.isEmpty()) {
-            // No children → remove summary
-            cancelNotification(summaryId)
-            return
+        // 1. Get current children (excluding summary)
+        val childrenInTray = active.filter {
+            it.notification.group == groupKey && it.id != summaryId
         }
 
-        // Children exist → ensure summary exists / is updated
-        val summaryNotification = getAlarmGroupSummaryNotification(groupKey)
-            ?: return
+        // 2. Calculate the REAL count
+        // If we are removing, we subtract the handledId.
+        // If we are posting, we ensure the handledId is counted even if the OS tray isn't updated yet.
+        val finalChildrenIds = childrenInTray.map { it.id }.toMutableSet()
 
-        postNotification(summaryId, summaryNotification)
+        if (isRemoving) {
+            handledId?.let { finalChildrenIds.remove(it) }
+        } else {
+            handledId?.let { finalChildrenIds.add(it) }
+        }
+
+        when {
+
+            // No children left -> Kill summary
+            finalChildrenIds.isEmpty() -> {
+                cancelNotification(summaryId)
+            }
+
+            // EXACTLY one child left -> Ungroup it so it doesn't vanish
+            finalChildrenIds.size == 1 -> {
+
+                val lastId = finalChildrenIds.first()
+                val lastChildSbn = childrenInTray.find { it.id == lastId }
+
+                if (lastChildSbn != null) {
+                    promoteToStandalone(lastChildSbn)
+                }
+
+                cancelNotification(summaryId)
+            }
+
+            // 2 or more children -> Post/Update summary
+            else -> {
+                val summary = getAlarmGroupSummaryNotification(groupKey) ?: return
+                postNotification(summaryId, summary)
+            }
+        }
     }
+    private fun promoteToStandalone(sbn: StatusBarNotification) {
+
+        // This preserves the title, text, icon, and pending intents automatically
+        val recoveredBuilder = NotificationCompat.Builder(context, sbn.notification)
+
+        // 2. The "Promotion" Magic:
+        // We explicitly set the group to null and groupSummary to false.
+        // This tells Android: "Show this as a normal, standalone notification now."
+        recoveredBuilder
+            .setGroup(null)
+            .setGroupSummary(false)
 
 
-    private fun getActiveNotification(id: Int): StatusBarNotification? {
-        return try {
-            notificationManager.activeNotifications.find { it.id == id }
-        } catch (_: Exception) {
-            null
-        }
+        // 3. Notify with the SAME ID
+        // Using the same ID ensures we update the existing one rather than making a duplicate
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) { return }
+        notificationManager.notify(sbn.id, recoveredBuilder.build())
+
     }
 
 }

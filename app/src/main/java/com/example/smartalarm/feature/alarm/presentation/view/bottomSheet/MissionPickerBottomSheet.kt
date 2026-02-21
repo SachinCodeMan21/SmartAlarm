@@ -34,7 +34,7 @@ import kotlin.getValue
  *
  * When a mission is selected, the result (the chosen [Mission] and the associated item
  * position) is sent to the [AlarmEditorViewModel] via
- * [AlarmEditorUserEvent.AlarmMissionSelected] for further processing.
+ * [AlarmEditorUserEvent.MissionEvent.Selected] for further processing.
  *
  * The bottom sheet manages its own view binding lifecycle to prevent memory leaks and
  * ensures a fully expanded modal behavior when displayed.
@@ -248,7 +248,7 @@ class MissionPickerBottomSheet() : BottomSheetDialogFragment() {
      *
      * The resulting [Mission], along with the associated item position
      * ([MISSION_ITEM_HOLDER_POSITION_KEY]), is sent to the [viewModel] via
-     * [AlarmEditorUserEvent.AlarmMissionSelected] for further processing.
+     * [AlarmEditorUserEvent.MissionEvent.Selected] for further processing.
      *
      * After handling the selection, the bottom sheet should be dismissed.
      *
@@ -263,7 +263,7 @@ class MissionPickerBottomSheet() : BottomSheetDialogFragment() {
         } else {
             currentMission
         }
-        viewModel.handleUserEvent(AlarmEditorUserEvent.AlarmMissionSelected(missionHolderPosition, selectedMission))
+        viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Selected(missionHolderPosition, selectedMission))
     }
 
 

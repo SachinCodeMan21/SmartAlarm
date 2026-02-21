@@ -206,7 +206,7 @@ class TimerViewModel @Inject constructor(
             startTime = systemClockHelper.getCurrentTime(),
             targetTime = timerDurationMillis,
             remainingTime = timerDurationMillis,
-            isTimerRunning = true,
+            isTimerRunning = false,
             state = TimerState.IDLE
         )
 

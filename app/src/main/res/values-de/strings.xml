@@ -420,7 +420,7 @@
     <string name="add_1_min">1 Min hinzufügen</string>
     <string name="stop">Stoppen</string>
     <string name="lap">Runde</string>
-    <string name="complete_task">Aufgabe abschließen</string>
+    <string name="complete_mission">Aufgabe abschließen</string>
 
     <!-- Notification Stopwatch Builder  -->
     <string name="lap_time_format">#Runde %1$s: %2$s</string>

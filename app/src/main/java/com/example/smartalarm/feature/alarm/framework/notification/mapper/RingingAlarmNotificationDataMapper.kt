@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 
 /**
- * Maps [AlarmNotificationModel.ScheduledAlarmModel] into [AlarmNotificationData] for scheduled alarm notifications.
+ * Maps [AlarmNotificationModel.RingingAlarmModel] into [AlarmNotificationData] for scheduled alarm notifications.
  *
  * This class constructs the notification data for alarms that are currently ringing or about to ring,
  * including:
@@ -31,12 +31,12 @@ import javax.inject.Inject
  *
  * @constructor Injects the mapper instance via dependency injection.
  */
-class ScheduledAlarmNotificationDataMapper @Inject constructor(
+class RingingAlarmNotificationDataMapper @Inject constructor(
     private val timeFormatter: TimeFormatter
-) : AppNotificationDataMapper<AlarmNotificationModel.ScheduledAlarmModel, AlarmNotificationData> {
+) : AppNotificationDataMapper<AlarmNotificationModel.RingingAlarmModel, AlarmNotificationData> {
 
     /**
-     * Maps a [AlarmNotificationModel.ScheduledAlarmModel] into an [AlarmNotificationData] object.
+     * Maps a [AlarmNotificationModel.RingingAlarmModel] into an [AlarmNotificationData] object.
      *
      * Constructs the alarm title, formatted time, actions (e.g., snooze, stop/complete), and content intent.
      *
@@ -44,7 +44,7 @@ class ScheduledAlarmNotificationDataMapper @Inject constructor(
      * @param model The scheduled alarm model to be mapped into notification data.
      * @return The [AlarmNotificationData] representing the UI for the scheduled alarm.
      */
-    override fun map(context: Context, model: AlarmNotificationModel.ScheduledAlarmModel): AlarmNotificationData {
+    override fun map(context: Context, model: AlarmNotificationModel.RingingAlarmModel): AlarmNotificationData {
         val alarm = model.alarm
         val label = context.getString(R.string.scheduled_alarm)
 
@@ -78,29 +78,33 @@ class ScheduledAlarmNotificationDataMapper @Inject constructor(
 
         val alarmActions = mutableListOf<NotificationAction>()
 
-        // Snooze (if allowed)
-        if (alarm.snoozeSettings.isSnoozeEnabled && alarm.snoozeSettings.snoozedCount > 0) {
-            alarmActions.add(
-                NotificationAction(
-                    id = alarm.id + 100,
-                    title = context.getString(R.string.snooze),
-                    icon = R.drawable.ic_alarm,
-                    pendingIntent = getCreateSnoozePendingIntent(context, alarm.id)
-                )
-            )
+        // Stop or Complete Task
+        val stopOrCompleteMissionTitle = context.getString(
+            if (alarm.missions.isNotEmpty()) R.string.complete_mission else R.string.stop
+        )
+        val stopOrCompleteMissionPendingIntent = if (alarm.missions.isNotEmpty()) {
+            getCreateContentPendingIntent(context,alarm.id)
+        } else{
+            getCreateStopPendingIntent(context, alarm.id)
         }
 
-        // Stop or Complete Task
-        val stopTitle = context.getString(
-            if (alarm.missions.isNotEmpty()) R.string.complete_task else R.string.stop
+
+
+        alarmActions.add(
+            NotificationAction(
+                id = alarm.id + 100,
+                title ="${alarm.snoozeSettings.snoozedCount} Snooze Left",
+                icon = R.drawable.ic_alarm,
+                pendingIntent = getCreateSnoozePendingIntent(context, alarm.id)
+            )
         )
 
         alarmActions.add(
             NotificationAction(
                 id = alarm.id + 200,
-                title = stopTitle,
+                title = stopOrCompleteMissionTitle,
                 icon = R.drawable.ic_delete,
-                pendingIntent = getCreateStopPendingIntent(context, alarm.id)
+                pendingIntent = stopOrCompleteMissionPendingIntent
             )
         )
 
@@ -140,6 +144,7 @@ class ScheduledAlarmNotificationDataMapper @Inject constructor(
      * @return A [PendingIntent] that triggers the stop alarm action.
      */
     private fun getCreateStopPendingIntent(context: Context, alarmId: Int): PendingIntent {
+
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             action = AlarmBroadCastAction.ACTION_STOP
             putExtra(AlarmKeys.ALARM_ID, alarmId)

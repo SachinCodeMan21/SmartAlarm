@@ -399,7 +399,7 @@
     <string name="add_1_min">Adicionar 1 Minuto</string>
     <string name="stop">Parar</string>
     <string name="lap">Volta</string>
-    <string name="complete_task">Completar Missão</string>
+    <string name="complete_mission">Completar Missão</string>
 
     <!-- Notification Stopwatch Builder  -->
     <string name="lap_time_format">#Volta %1$s : %2$s</string>

@@ -65,8 +65,8 @@ class SnoozeAlarmUseCaseImpl @Inject constructor(
                 is Result.Success -> {
 
                     // Stop any ongoing alarm sound and cancel any existing timeouts
-                    alarmRingtoneHelper.stopAlarmRingtone()
-                    vibrationManager.stopVibration()
+//                    alarmRingtoneHelper.stopAlarmRingtone()
+//                    vibrationManager.stopVibration()
                     alarmScheduler.cancelSmartAlarmTimeout(alarm.id)
 
                     // Schedule the next snooze based on the snooze interval
@@ -83,7 +83,7 @@ class SnoozeAlarmUseCaseImpl @Inject constructor(
                     )
 
                     // Reset the last active alarm notification preference
-                    sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
+                    //sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
 
                     // Return success result
                     Result.Success(Unit)

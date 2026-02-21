@@ -46,36 +46,3 @@ interface TimerRepository {
     suspend fun deleteTimerById(timerId: Int): Result<Unit>
 
 }
-
-
-///**
-// * Repository interface for managing timer data.
-// * Provides functionality to retrieve, save, and delete timers.
-// */
-//interface TimerRepository {
-//
-//    /**
-//     * Returns a stream of all timers as a [Flow], emitting updates whenever the timer list changes.
-//     *
-//     * @return A [Flow] emitting the list of [TimerModel] instances.
-//     */
-//    fun getTimerList(): Flow<List<TimerModel>>
-//
-//    /**
-//     * Saves a [TimerModel] instance to the data source.
-//     * If the timer already exists, it will be updated; otherwise, it will be created.
-//     *
-//     * @param timerModel The [TimerModel] to save.
-//     * @return A [Result] indicating success or containing an error on failure.
-//     */
-//    suspend fun persistTimer(timerModel: TimerModel): Result<Unit>
-//
-//    /**
-//     * Deletes a timer by its unique identifier.
-//     *
-//     * @param timerId The ID of the timer to delete.
-//     * @return A [Result] indicating success or containing an error on failure.
-//     */
-//    suspend fun deleteTimerById(timerId: Int): Result<Unit>
-//
-//}

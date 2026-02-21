@@ -56,13 +56,14 @@ class RingAlarmUseCaseImpl @Inject constructor(
             when (val updateResult = updateAlarmUseCase(updatedAlarm)) {
 
                 is Result.Success -> {
-                    // Play the alarm sound
-                    alarmRingtoneManager.playAlarmRingtone(alarm.alarmSound, alarm.volume)
 
-                    // Start vibration if enabled
-                    if (alarm.isVibrateEnabled) {
-                        vibrationManager.startVibration()
-                    }
+//                    // Play the alarm sound
+//                    alarmRingtoneManager.playAlarmRingtone(alarm.alarmSound, alarm.volume)
+//
+//                    // Start vibration if enabled
+//                    if (alarm.isVibrateEnabled) {
+//                        vibrationManager.startVibration()
+//                    }
 
                     // Schedule the alarm timeout after 1 minute
                     alarmScheduler.scheduleSmartAlarmTimeout(
@@ -71,7 +72,7 @@ class RingAlarmUseCaseImpl @Inject constructor(
                     )
 
                     // Save the ID of the last active alarm
-                    sharedPrefsHelper.lastActiveAlarmNotificationPref = alarm.id
+                    //sharedPrefsHelper.lastActiveAlarmNotificationPref = alarm.id
 
                     // Return the updated alarm for the foreground notification
                     Result.Success(updatedAlarm)

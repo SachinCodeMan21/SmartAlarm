@@ -154,7 +154,7 @@ class ClockFragment : Fragment() {
                 getItem = { clockAdapter.currentList[it] },
                 deleteIcon = R.drawable.ic_delete,
                 backgroundColor = R.color.swipe_background,
-                cornerRadius = 16f
+                cornerRadius = resources.getDimension(R.dimen.card_corner_radius_xlarge),
             )
         }
 

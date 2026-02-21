@@ -78,6 +78,7 @@ class ShowTimerAdapter(
             }
     }
 
+
     // ----------------------------------------------------
     // ViewHolder
     // ----------------------------------------------------
@@ -97,15 +98,10 @@ class ShowTimerAdapter(
         fun bind(item: ShowTimerUiModel) {
             currentItem = item
 
-            with(binding) {
-                timerItemTitle.text =
-                    item.targetTime.toFormattedTimerTime(context)
-            }
-
+            binding.timerItemTitle.text = item.targetTime.toFormattedTimerTime(context)
             updateTimerProgress(item)
             updateRunningAndSnoozeUI(item.isRunning)
             updateBackgroundColor(item.remainingTime > 0)
-
             setButtonListeners()
         }
 
@@ -136,8 +132,7 @@ class ShowTimerAdapter(
         // UI updates
         // ----------------------------------------------------
         private fun updateTimerProgress(item: ShowTimerUiModel) = with(binding) {
-            remainingTimerItemTime.text =
-                item.remainingTime.toFormattedTimerTime(context)
+            remainingTimerItemTime.text = item.remainingTime.toFormattedTimerTime(context)
             circularProgressBar.progress = item.getProgress()
         }
 
@@ -218,6 +213,7 @@ class ShowTimerAdapter(
     // ----------------------------------------------------
     // Adapter overrides
     // ----------------------------------------------------
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimerViewHolder {
         val binding = TimerItemLayoutBinding.inflate(
             LayoutInflater.from(parent.context),

@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.clock.framework.di
 
 import com.example.smartalarm.BuildConfig
-import com.example.smartalarm.feature.clock.data.remote.api.GoogleApiService
+import com.example.smartalarm.feature.clock.data.remote.api.GeoApifyApiService
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -15,34 +15,32 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+
+
 /**
- * Dagger-Hilt module that provides all necessary dependencies for remote API communication,
- * specifically for interacting with the Google Places and Time Zone APIs.
- *
- * Responsibilities:
- * - Provide configured [retrofit2.Retrofit] instance.
- * - Provide [okhttp3.OkHttpClient] with interceptors for logging and API key injection.
- * - Provide [com.google.gson.Gson] instance for JSON serialization/deserialization.
- * - Provide [com.example.smartalarm.feature.clock.data.remote.api.GoogleApiService] implementation for API interaction.
+ * Hilt Module that provides networking dependencies for the application.
+ * * This module configures [Retrofit], [OkHttpClient], and [Gson] to facilitate
+ * communication with the Geoapify APIs.
  */
 @Module
 @InstallIn(SingletonComponent::class)
 object RemoteModule {
 
-    private const val GOOGLE_BASE_API = "https://maps.googleapis.com/maps/api/"
+
+    private const val API_PARAM_KEY = "apiKey"
+    private const val GEO_APIFY_BASE_URL = "https://api.geoapify.com/"
+
 
     /**
-     * Provides a Gson instance used by Retrofit for parsing JSON responses.
+     * Provides a [Gson] instance used for JSON serialization and deserialization.
      */
     @Provides
     @Singleton
     fun provideGson(): Gson = GsonBuilder().create()
 
     /**
-     * Provides a logging interceptor that logs HTTP request and response data.
-     *
-     * Level.BODY logs request/response lines and their respective headers and bodies (if present).
-     * Useful for debugging network communication.
+     * Provides an [HttpLoggingInterceptor] to log HTTP request and response data
+     * in the Logcat. Useful for debugging network traffic.
      */
     @Provides
     @Singleton
@@ -52,66 +50,64 @@ object RemoteModule {
         }
 
     /**
-     * Provides an interceptor that automatically appends the Google API key
-     * to every outgoing request as a query parameter.
+     * Provides an [Interceptor] that automatically appends the Geoapify API key
+     * as a query parameter to every outgoing request.
+     * * This ensures that API calls are authenticated without needing to pass
+     * the key manually in the service methods.
      */
     @Provides
     @Singleton
-    fun provideGoogleApiKeyInterceptor(): Interceptor =
-        Interceptor { chain ->
-            val original = chain.request()
-            val originalHttpUrl = original.url
+    fun provideGeoApifyApiKeyInterceptor(): Interceptor = Interceptor { chain ->
+        val original = chain.request()
+        val originalHttpUrl = original.url
 
-            val newUrl = originalHttpUrl.newBuilder()
-                .addQueryParameter("key", BuildConfig.GOOGLE_API_KEY)
-                .build()
+        val newUrl = originalHttpUrl.newBuilder()
+            .addQueryParameter(API_PARAM_KEY, BuildConfig.GEO_APIFY_API_KEY)
+            .build()
 
-            val newRequest = original.newBuilder()
-                .url(newUrl)
-                .build()
+        val newRequest = original.newBuilder()
+            .url(newUrl)
+            .build()
 
-            chain.proceed(newRequest)
-        }
+        chain.proceed(newRequest)
+    }
 
     /**
-     * Provides a configured OkHttpClient with both the API key and logging interceptors attached.
+     * Provides a configured [OkHttpClient].
+     * * @param loggingInterceptor Logs network activity.
+     * @param apiKeyInterceptor Appends the necessary API authentication.
      */
     @Provides
     @Singleton
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         apiKeyInterceptor: Interceptor
-    ): OkHttpClient =
-        OkHttpClient.Builder()
-            .addInterceptor(apiKeyInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .build()
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(apiKeyInterceptor)
+        .addInterceptor(loggingInterceptor)
+        .build()
 
     /**
-     * Provides a Retrofit instance configured with:
-     * - Google Maps base API URL
-     * - Gson converter
-     * - Custom OkHttpClient
+     * Provides a [Retrofit] instance configured with the Geoapify base URL,
+     * the [OkHttpClient], and a [Gson] converter.
      */
     @Provides
     @Singleton
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         gson: Gson
-    ): Retrofit =
-        Retrofit.Builder()
-            .baseUrl(GOOGLE_BASE_API)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(okHttpClient)
-            .build()
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(GEO_APIFY_BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .client(okHttpClient)
+        .build()
 
     /**
-     * Provides the implementation of [com.example.smartalarm.feature.clock.data.remote.api.GoogleApiService] using the configured Retrofit instance.
+     * Provides the [GeoApifyApiService] implementation generated by Retrofit.
+     * * This service is used to fetch place predictions and time zone data.
      */
     @Provides
     @Singleton
-    fun provideGoogleApiService(
-        retrofit: Retrofit
-    ): GoogleApiService =
-        retrofit.create(GoogleApiService::class.java)
+    fun provideGeoApifyApiService(retrofit: Retrofit): GeoApifyApiService =
+        retrofit.create(GeoApifyApiService::class.java)
 }

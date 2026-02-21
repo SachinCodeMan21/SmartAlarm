@@ -62,6 +62,7 @@ class MissedAlarmUseCaseImpl @Inject constructor(
             when (val updateResult = updateAlarmUseCase(missedAlarm)) {
 
                 is Result.Success -> {
+
                     // If the alarm is repeating, schedule the next occurrence
                     if (isRepeatingAlarm) {
                         scheduleRepeatingAlarm(missedAlarm)
@@ -76,7 +77,7 @@ class MissedAlarmUseCaseImpl @Inject constructor(
                         AlarmNotificationModel.MissedAlarmModel(missedAlarm)
                     )
 
-                    sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
+//                    sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
 
 
                     // Return a success result

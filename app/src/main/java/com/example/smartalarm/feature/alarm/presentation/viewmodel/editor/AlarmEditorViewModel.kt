@@ -21,7 +21,6 @@ import com.example.smartalarm.feature.alarm.presentation.mapper.AlarmUiMapper
 import com.example.smartalarm.feature.alarm.presentation.model.editor.AlarmEditorHomeUiModel
 import com.example.smartalarm.feature.alarm.presentation.view.statemanager.contract.AlarmEditorHomeStateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -68,7 +67,6 @@ class AlarmEditorViewModel @Inject constructor(
     private val alarmUiMapper: AlarmUiMapper,
     private val permissionManager: PermissionManager,
     private val numberFormatter: NumberFormatter,
-    @param:DefaultDispatcher val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel()
 {
 
@@ -102,7 +100,6 @@ class AlarmEditorViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
 
-
     // ---------------------------------------------------------------------
     //  UI Effect Update Methods
     // ---------------------------------------------------------------------
@@ -121,26 +118,111 @@ class AlarmEditorViewModel @Inject constructor(
 
 
     // ---------------------------------------------------------------------
-    // Editor Home Fragment System Event Handler
+    // Editor Home Fragment System & User Event Dispatcher Methods
     // ---------------------------------------------------------------------
 
-    /**
-     * Handles system events related to alarm editing.
-     *
-     * This method processes different system events (e.g., initialization, permission grants, snooze updates)
-     * and triggers the appropriate actions, ensuring the alarm editor state is updated accordingly.
-     * It streamlines the handling of various events to ensure a smooth user experience and state consistency.
-     */
     fun handleSystemEvent(event: AlarmEditorSystemEvent) {
         when (event) {
             is AlarmEditorSystemEvent.InitializeAlarmEditorState -> initEditorHomeAlarm(event.existingAlarmId)
-            is AlarmEditorSystemEvent.ExactAlarmPermissionGranted,
-            is AlarmEditorSystemEvent.PostNotificationPermissionGranted,
-            is AlarmEditorSystemEvent.RetryPendingSaveAction -> handleUserEvent(AlarmEditorUserEvent.SaveOrUpdateAlarmClick)
             is AlarmEditorSystemEvent.SnoozeUpdated -> alarmEditorStateManager.updateSnooze(event.snoozeSettings)
         }
     }
 
+    fun handleUserEvent(event: AlarmEditorUserEvent) {
+        when (event) {
+            is AlarmEditorUserEvent.AlarmEvent -> handleAlarmEvent(event)
+            is AlarmEditorUserEvent.MissionEvent -> handleMissionEvent(event)
+            is AlarmEditorUserEvent.SoundEvent -> handleSoundEvent(event)
+            is AlarmEditorUserEvent.ActionEvent -> handleActionEvent(event)
+            is AlarmEditorUserEvent.NavigationEvent -> handleNavigationEvent(event)
+        }
+    }
+
+
+
+    // ---------------------------------------------------------------------
+    // Editor Home Fragment User Event Sub Dispatcher Methods
+    // ---------------------------------------------------------------------
+    private fun handleAlarmEvent(event: AlarmEditorUserEvent.AlarmEvent) {
+        with(alarmEditorStateManager) {
+            when (event) {
+                is AlarmEditorUserEvent.AlarmEvent.LabelChanged -> updateLabel(event.label)
+                is AlarmEditorUserEvent.AlarmEvent.TimeChanged -> updateTime(event.hour, event.minute, event.amPm)
+                is AlarmEditorUserEvent.AlarmEvent.IsDailyChanged -> updateIsDaily(event.isDaily)
+                is AlarmEditorUserEvent.AlarmEvent.DayToggled -> toggleDay(event.dayIndex)
+            }
+        }
+    }
+    private fun handleMissionEvent(event: AlarmEditorUserEvent.MissionEvent) {
+        val state = alarmEditorStateManager.getAlarmState.value
+
+        when (event) {
+            is AlarmEditorUserEvent.MissionEvent.PlaceholderClicked ->
+                postEffect(
+                    ShowMissionPickerBottomSheet(
+                        position = event.position,
+                        existingMission = null,
+                        usedMissions = state.missions
+                    )
+                )
+
+            is AlarmEditorUserEvent.MissionEvent.ItemClicked ->
+                postEffect(
+                    ShowMissionPickerBottomSheet(
+                        position = event.position,
+                        existingMission = event.mission,
+                        usedMissions = state.missions.filterIndexed { i, _ -> i != event.position }
+                    )
+                )
+
+            is AlarmEditorUserEvent.MissionEvent.RemoveClicked ->
+                alarmEditorStateManager.removeMissionAt(event.position)
+
+            is AlarmEditorUserEvent.MissionEvent.Selected ->
+                postEffect(ShowSelectedMissionBottomSheet(event.position, event.mission))
+
+            is AlarmEditorUserEvent.MissionEvent.Updated ->
+                alarmEditorStateManager.updateMission(event.position, event.mission)
+
+            is AlarmEditorUserEvent.MissionEvent.Preview -> startAlarmMissionPreview(event.mission)
+        }
+    }
+    private fun handleSoundEvent(event: AlarmEditorUserEvent.SoundEvent) {
+        val state = alarmEditorStateManager.getAlarmState.value
+
+        when (event) {
+            is AlarmEditorUserEvent.SoundEvent.VolumeChanged -> alarmEditorStateManager.updateVolume(event.volume)
+
+            is AlarmEditorUserEvent.SoundEvent.VibrationToggled -> alarmEditorStateManager.updateVibration(event.enabled)
+
+            AlarmEditorUserEvent.SoundEvent.LaunchPicker -> postEffect(LaunchAlarmSoundPicker(state.alarmSound))
+
+            is AlarmEditorUserEvent.SoundEvent.RingtoneSelected -> alarmEditorStateManager.updateRingtone(event.uri)
+        }
+    }
+    private fun handleActionEvent(event: AlarmEditorUserEvent.ActionEvent) {
+        val state = alarmEditorStateManager.getAlarmState.value
+
+        when (event) {
+            AlarmEditorUserEvent.ActionEvent.EditSnooze ->
+                postEffect(NavigateToSnoozeAlarmFragment(state.snoozeSettings))
+
+            AlarmEditorUserEvent.ActionEvent.SaveOrUpdate ->
+                saveOrUpdateAlarm()
+        }
+    }
+    private fun handleNavigationEvent(event: AlarmEditorUserEvent.NavigationEvent) {
+        when (event) {
+            AlarmEditorUserEvent.NavigationEvent.SystemBack,
+            AlarmEditorUserEvent.NavigationEvent.ToolbarBack -> postEffect(FinishEditorActivity)
+        }
+    }
+
+
+
+    // ---------------------------------------------------------------------
+    // Editor Home Fragment Event Handler Methods
+    // ---------------------------------------------------------------------
 
     /**
      * Initializes the alarm editor state, loading existing alarm data if an ID is provided.
@@ -150,95 +232,19 @@ class AlarmEditorViewModel @Inject constructor(
      * when fetching the alarm data, ensuring the UI reflects the correct state.
      */
     private fun initEditorHomeAlarm(existingAlarmId: Int) {
-        if (existingAlarmId != 0) {
-            viewModelScope.launch {
-                when (val result = getAlarmByIdUseCase(existingAlarmId)) {
-                    is Result.Success -> alarmEditorStateManager.setAlarm(result.data)
-                    is Result.Error ->  postEffect(ShowToastMessage(result.exception.message.toString()))
-                }
-            }
-        }
-        else{
+
+        if (existingAlarmId == 0) {
             alarmEditorStateManager.initAlarmState()
+            return
         }
-    }
 
-
-    // ---------------------------------------------------------------------
-    // Editor Home Fragment User Event Handler
-    // ---------------------------------------------------------------------
-
-    /**
-     * Handles various user events triggered in the alarm editor.
-     *
-     * This method processes different types of user events, such as changing the alarm label,
-     * adjusting the alarm time, toggling days of the week, managing alarm missions, and
-     * configuring sound and vibration settings. Each event results in updating the alarm state
-     * or triggering a UI effect (e.g., showing a bottom sheet, navigating to another screen).
-     *
-     * @param event The user event that triggered this method, which can be of various types
-     *              such as label changes, mission handling, sound adjustments, or navigation actions.
-     */
-    fun handleUserEvent(event: AlarmEditorUserEvent) {
-        when (event) {
-
-            // Represents events related to editing the alarm label, time, daily recurrence, and toggling days of the week.
-            is AlarmEditorUserEvent.LabelChanged -> alarmEditorStateManager.updateLabel(event.label)
-            is AlarmEditorUserEvent.TimeChanged -> alarmEditorStateManager.updateTime(event.hour, event.minute, event.amPm)
-            is AlarmEditorUserEvent.IsDailyChanged -> alarmEditorStateManager.updateIsDaily(event.isDaily)
-            is AlarmEditorUserEvent.DayToggled -> alarmEditorStateManager.toggleDay(event.toggleDayIndex)
-
-            // Represents events related to interacting with alarm missions (e.g., handling clicks on mission items).
-            is AlarmEditorUserEvent.HandleMissionItemPlaceHolderClick -> {
-                postEffect(
-                    ShowMissionPickerBottomSheet(
-                        position = event.position,
-                        existingMission = null,
-                        usedMissions = alarmEditorStateManager.getAlarmState.value.missions
-                    )
-                )
-            }
-            is AlarmEditorUserEvent.HandleMissionItemClick -> {
-                postEffect(
-                    ShowMissionPickerBottomSheet(
-                        position = event.position,
-                        existingMission = event.existingMission,
-                        usedMissions = alarmEditorStateManager.getAlarmState.value.missions.filterIndexed { index, _ -> index != event.position }
-                    )
-                )
-            }
-            is AlarmEditorUserEvent.HandleRemoveMissionClick -> alarmEditorStateManager.removeMissionAt(event.position)
-
-            // Represents events for [ showing dummy mission preview ,  selecting or updating an alarm mission ].
-            is AlarmEditorUserEvent.AlarmMissionSelected -> {
-                postEffect(ShowSelectedMissionBottomSheet(event.position, event.selectedMission))
-            }
-            is AlarmEditorUserEvent.StartAlarmMissionPreview -> startAlarmMissionPreview(event.previewMission)
-            is AlarmEditorUserEvent.UpdateAlarmMission -> alarmEditorStateManager.updateMission(event.position, event.mission)
-
-            // Represents events related to alarm sound settings (volume and vibration), and selecting ringtones.
-            is AlarmEditorUserEvent.VolumeChanged -> alarmEditorStateManager.updateVolume(event.volume)
-            is AlarmEditorUserEvent.VibrationToggled ->  alarmEditorStateManager.updateVibration(event.isEnabled)
-
-            is AlarmEditorUserEvent.LaunchAlarmSoundPicker -> {
-                postEffect(LaunchAlarmSoundPicker(alarmEditorStateManager.getAlarmState.value.alarmSound))
-            }
-            is AlarmEditorUserEvent.RingtoneSelected -> alarmEditorStateManager.updateRingtone(event.uri)
-
-            // Represents navigation to snooze screen ,  saving / updating  the alarm.
-            is AlarmEditorUserEvent.EditSnoozeClick -> {
-                postEffect(NavigateToSnoozeAlarmFragment(alarmEditorStateManager.getAlarmState.value.snoozeSettings))
-            }
-            is AlarmEditorUserEvent.SaveOrUpdateAlarmClick -> saveOrUpdateAlarm()
-
-            // Represents back click events in the alarm editor.
-            is AlarmEditorUserEvent.OnSystemBackPressed,
-            is AlarmEditorUserEvent.OnToolbarBackPressed -> {
-                postEffect(FinishEditorActivity)
+        viewModelScope.launch {
+            when (val result = getAlarmByIdUseCase(existingAlarmId)) {
+                is Result.Success -> alarmEditorStateManager.setAlarm(result.data)
+                is Result.Error -> {}
             }
         }
     }
-
 
     /**
      * Saves or updates the current alarm based on its state.
@@ -247,44 +253,28 @@ class AlarmEditorViewModel @Inject constructor(
      * It handles both new and existing alarms, showing a loading indicator during the process and
      * handling success or error results. After the operation, it triggers appropriate UI updates or error messages.
      */
-    private fun saveOrUpdateAlarm() {
+    private fun saveOrUpdateAlarm() = viewModelScope.launch {
 
+        val alarm = alarmEditorStateManager.getAlarmState.value
 
-        checkPermissionsAndExecute {
+        postEffect(ShowSaveUpdateLoadingIndicator(true))
+        delay(SAVE_UPDATE_ALARM_PROGRESS_DELAY)
 
-            val alarm = alarmEditorStateManager.getAlarmState.value
-
-            viewModelScope.launch {
-
-                postEffect(ShowSaveUpdateLoadingIndicator(true))
-                delay(SAVE_UPDATE_ALARM_PROGRESS_DELAY)
-
-                if (alarm.id == 0) {
-                    when (val result = saveAlarmUseCase(alarm)) {
-                        is Result.Success -> {
-                            handlePostSaveOrUpdateAlarm(alarm.copy(id = result.data))
-                        }
-
-                        is Result.Error -> {
-                            postEffect(ShowSaveUpdateLoadingIndicator(false))
-                            postEffect(ShowError(result.exception.message.toString()))
-                        }
-                    }
+        if (alarm.id == 0) {
+            when (val result = saveAlarmUseCase(alarm)) {
+                is Result.Success -> handlePostSaveOrUpdateAlarm(alarm.copy(id = result.data))
+                is Result.Error -> {
+                    postEffect(ShowSaveUpdateLoadingIndicator(false))
+                    //postEffect(ShowError(result.exception.message.toString()))
                 }
-                else {
-                    when (val result = updateAlarmUseCase(alarm.copy(isEnabled = true))) {
-                        is Result.Success -> {
-                            handlePostSaveOrUpdateAlarm(alarm)
-                        }
-
-                        is Result.Error -> {
-                            postEffect(ShowSaveUpdateLoadingIndicator(false))
-                            postEffect(ShowError(result.exception.message.toString()))
-                        }
-                    }
+            }
+        } else {
+            when (val result = updateAlarmUseCase(alarm.copy(isEnabled = true))) {
+                is Result.Success -> handlePostSaveOrUpdateAlarm(alarm)
+                is Result.Error -> {
+                    postEffect(ShowSaveUpdateLoadingIndicator(false))
+                    //postEffect(ShowError(result.exception.message.toString()))
                 }
-
-
             }
         }
     }
@@ -298,20 +288,13 @@ class AlarmEditorViewModel @Inject constructor(
      * it displays an error message to the user.
      */
     private fun handlePostSaveOrUpdateAlarm(alarm: AlarmModel) {
-
         postEffect(ShowSaveUpdateLoadingIndicator(false))
-
         when (val result = postSaveOrUpdateAlarmUseCase(alarm)) {
-
             is Result.Success -> {
                 postEffect(ShowToastMessage(result.data))
                 postEffect(FinishEditorActivity)
-
             }
-
-            is Result.Error -> {
-                postEffect(ShowError(result.exception.message.toString()))
-            }
+            is Result.Error -> {}
         }
     }
 
@@ -333,39 +316,9 @@ class AlarmEditorViewModel @Inject constructor(
 
 
 
-
     // ---------------------------------------------------------------------
     // Helper Methods
     // ---------------------------------------------------------------------
-
-
-    /**
-     * Checks for necessary permissions before executing a given action.
-     *
-     * This method ensures that the required permissions for posting notifications, displaying fullscreen notifications,
-     * and scheduling exact alarms are granted before executing the provided action. If any permission is missing,
-     * it triggers the appropriate permission request.
-     *
-     * @param onAllPermissionGranted A callback to execute when all necessary permissions are granted.
-     */
-    private fun checkPermissionsAndExecute(onAllPermissionGranted: () -> Unit) {
-        when {
-            !permissionManager.isPostNotificationPermissionGranted() -> postEffect(
-                LaunchPostNotificationPermissionRequest
-            )
-
-            !permissionManager.isFullScreenNotificationPermissionGranted() -> postEffect(
-                LaunchFullScreenNotificationPermissionRequest
-            )
-
-            !permissionManager.isScheduleExactAlarmPermissionGranted() -> postEffect(
-                LaunchExactAlarmPermissionRequest
-            )
-
-            else -> onAllPermissionGranted()
-        }
-    }
-
 
     /**
      * Converts an integer into a localized string representation.

@@ -3,7 +3,7 @@ package com.example.smartalarm.feature.alarm.framework.di.modules
 import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
 import com.example.smartalarm.feature.alarm.framework.di.annotations.AlarmNotificationBuilderMapKey
 import com.example.smartalarm.feature.alarm.framework.notification.builder.MissedAlarmNotificationBuilder
-import com.example.smartalarm.feature.alarm.framework.notification.builder.ScheduledAlarmNotificationBuilder
+import com.example.smartalarm.feature.alarm.framework.notification.builder.RingingAlarmNotificationBuilder
 import com.example.smartalarm.feature.alarm.framework.notification.builder.SnoozedAlarmNotificationBuilder
 import com.example.smartalarm.feature.alarm.framework.notification.builder.UpcomingAlarmNotificationBuilder
 import com.example.smartalarm.feature.alarm.framework.notification.enums.AlarmNotificationBuilderTypeKey
@@ -74,7 +74,7 @@ object AlarmNotificationBuilderModule {
     ): AppNotificationBuilder<*> = builder
 
     /**
-     * Provides the [ScheduledAlarmNotificationBuilder] bound to the [AlarmNotificationBuilderTypeKey.SCHEDULED] key.
+     * Provides the [RingingAlarmNotificationBuilder] bound to the [AlarmNotificationBuilderTypeKey.RINGING] key.
      *
      * @param builder The builder instance to be provided.
      * @return The [AppNotificationBuilder] instance for scheduled alarms.
@@ -82,8 +82,8 @@ object AlarmNotificationBuilderModule {
     @Provides
     @Singleton
     @IntoMap
-    @AlarmNotificationBuilderMapKey(AlarmNotificationBuilderTypeKey.SCHEDULED)
+    @AlarmNotificationBuilderMapKey(AlarmNotificationBuilderTypeKey.RINGING)
     fun provideScheduledAlarmBuilder(
-        builder: ScheduledAlarmNotificationBuilder
+        builder: RingingAlarmNotificationBuilder
     ): AppNotificationBuilder<*> = builder
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +16,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartalarm.R
+import com.example.smartalarm.core.permission.PermissionChecker
+import com.example.smartalarm.core.permission.PermissionCoordinator
+import com.example.smartalarm.core.permission.PermissionRequester
+import com.example.smartalarm.core.permission.model.AppPermission
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.databinding.FragmentAlarmBinding
@@ -31,6 +36,9 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+
 
 @AndroidEntryPoint
 class AlarmFragment : Fragment() {
@@ -59,6 +67,9 @@ class AlarmFragment : Fragment() {
 
     // Adapter for displaying alarm items in the RecyclerView
     private lateinit var alarmsAdapter: AlarmAdapter
+    @Inject lateinit var permissionChecker: PermissionChecker
+    private lateinit var permissionCoordinator: PermissionCoordinator
+
 
 
     // ---------------------------------------------------------------------
@@ -76,6 +87,7 @@ class AlarmFragment : Fragment() {
         setupRecyclerView()
         setUpUIStateObserver()
         setUpUIEffectsObserver()
+        setUpPermissionCoordinator()
     }
 
     override fun onDestroy() {
@@ -91,7 +103,10 @@ class AlarmFragment : Fragment() {
 
     private fun setUpAddAlarmButton() {
         binding.addAlarmBtn.setOnClickListener {
-            alarmViewModel.handleEvent(AlarmEvent.AddNewAlarm)
+            val permissions = listOf(AppPermission.Runtime.PostNotifications, AppPermission.Special.FullScreenNotification, AppPermission.Special.ScheduleExactAlarm)
+            permissionCoordinator.runPermissionGatekeeper(permissions,requireActivity()){
+                alarmViewModel.handleEvent(AlarmEvent.AddNewAlarm)
+            }
         }
     }
 
@@ -110,6 +125,7 @@ class AlarmFragment : Fragment() {
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val lm = if (isPhone && isPortrait) LinearLayoutManager(requireContext()) else GridLayoutManager(requireContext(), 2)
 
+
         binding.alarmRv.apply {
             layoutManager = lm
             adapter = alarmsAdapter
@@ -122,6 +138,7 @@ class AlarmFragment : Fragment() {
 
 
 
+
     // ---------------------------------------------------------------------
     // Observers Methods
     // ---------------------------------------------------------------------
@@ -130,6 +147,7 @@ class AlarmFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 alarmViewModel.uiState.collectLatest { state ->
+
                     binding.apply {
                         alarmProgressBar.isVisible = state is AlarmUiState.Loading
                         emptyStateGroup.isVisible = state is AlarmUiState.Empty
@@ -138,6 +156,7 @@ class AlarmFragment : Fragment() {
                             alarmsAdapter.submitList(state.alarms)
                         }
                     }
+
                 }
             }
         }
@@ -163,6 +182,32 @@ class AlarmFragment : Fragment() {
             }
         }
     }
+
+    private fun setUpPermissionCoordinator() {
+
+        val requester = PermissionRequester(
+            caller = this,
+            lifecycleOwner = this,
+            context = requireContext(),
+            permissionChecker = permissionChecker,
+            rationaleProvider = { permissionName ->
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    permissionName
+                )
+            }
+        )
+
+        permissionCoordinator = PermissionCoordinator(
+            context = requireContext(),
+            requester = requester,
+            checker = permissionChecker,
+            fragmentManager = childFragmentManager,
+            lifecycleOwner = viewLifecycleOwner
+        )
+
+    }
+
 
 
 

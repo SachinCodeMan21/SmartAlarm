@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.smartalarm.core.permission.model.AppPermission
-import com.example.smartalarm.core.permission.model.PermissionLauncherType
 import com.example.smartalarm.core.permission.model.PermissionResult
 
 class PermissionRequester(
@@ -19,14 +18,12 @@ class PermissionRequester(
     lifecycleOwner: LifecycleOwner,
     private val context : Context,
     private val permissionChecker: PermissionChecker,
-    private val requiredLaunchers: List<PermissionLauncherType> = listOf(PermissionLauncherType.SINGLE_PERMISSION),
     private val rationaleProvider: (String) -> Boolean
 ) : DefaultLifecycleObserver {
 
 
     private var lastRequestedPermission: AppPermission? = null
     private var onPermissionResult: ((PermissionResult) -> Unit)? = null
-
     private var singlePermissionLauncher: ActivityResultLauncher<String>? = null
     private var settingsPermissionLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -38,36 +35,33 @@ class PermissionRequester(
 
     private fun registerPermissionLaunchers(){
 
-        // We only register what the Activity actually needs
-        if (requiredLaunchers.contains(PermissionLauncherType.SINGLE_PERMISSION)) {
+        singlePermissionLauncher = caller.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
 
-            singlePermissionLauncher = caller.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            // Pure type safety: The caller tells us if we should show rationale
+            val shouldShowRationale = lastRequestedPermission?.let { rationaleProvider(it.manifestName) } ?: false
 
-                // Pure type safety: The caller tells us if we should show rationale
-                val shouldShowRationale = lastRequestedPermission?.let { rationaleProvider(it.permissionName) } ?: false
-
-                val result = when {
-                    isGranted -> PermissionResult.RuntimePermissionResult.Granted
-                    shouldShowRationale -> PermissionResult.RuntimePermissionResult.Denied
-                    else -> PermissionResult.RuntimePermissionResult.PermanentlyDenied
+            val result = when {
+                isGranted -> PermissionResult.RuntimePermissionResult.Granted
+                else -> {
+                    if (shouldShowRationale){
+                        PermissionResult.RuntimePermissionResult.Denied
+                    }
+                    else{
+                        PermissionResult.RuntimePermissionResult.PermanentlyDenied
+                    }
                 }
-                onPermissionResult?.invoke(result)
             }
-
+            onPermissionResult?.invoke(result)
         }
 
-        if (requiredLaunchers.contains(PermissionLauncherType.SPECIAL_PERMISSION)) {
-
-            settingsPermissionLauncher = caller.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                // Settings don't return a 'granted' boolean; the app must manually re-verify
-                val isGranted = lastRequestedPermission?.let { permissionChecker.isGranted(it) } ?: false
-                val result = when{
-                    isGranted -> PermissionResult.SpecialPermissionResult.Granted
-                    else -> PermissionResult.SpecialPermissionResult.Denied
-                }
-                onPermissionResult?.invoke(result)
+        settingsPermissionLauncher = caller.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // Settings don't return a 'granted' boolean; the app must manually re-verify
+            val isGranted = lastRequestedPermission?.let { permissionChecker.isGranted(it) } ?: false
+            val result = when{
+                isGranted -> PermissionResult.SpecialPermissionResult.Granted
+                else -> PermissionResult.SpecialPermissionResult.Denied
             }
-
+            onPermissionResult?.invoke(result)
         }
 
     }
@@ -81,7 +75,7 @@ class PermissionRequester(
         prepareRequest(permission, onResult)
         when(permission){
             is AppPermission.Runtime -> {
-                singlePermissionLauncher?.launch(permission.permissionName)
+                singlePermissionLauncher?.launch(permission.manifestName)
                     ?: error("Single launcher not registered")
             }
             is AppPermission.Special -> {
@@ -99,6 +93,21 @@ class PermissionRequester(
                 }
             }
         }
+    }
+
+    /**
+     * Force-opens the App Info/Settings page for the user to manually enable permissions.
+     */
+    fun openAppSettings(permission: AppPermission, onResult: (PermissionResult) -> Unit) {
+        prepareRequest(permission, onResult)
+
+        // We target the Application Details page specifically for this app
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", context.packageName, null)
+        }
+
+        settingsPermissionLauncher?.launch(intent)
+            ?: error("Settings launcher not registered. Ensure SPECIAL_PERMISSION is in requiredLaunchers.")
     }
 
     private fun prepareRequest(permission: AppPermission, onResult: (PermissionResult) -> Unit) {

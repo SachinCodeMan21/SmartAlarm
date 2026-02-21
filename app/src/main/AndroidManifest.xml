@@ -20,6 +20,7 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- Declare the attribution tag globally -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
 
     <attribution
         android:label="@string/alarm_playback_attribution"
@@ -98,7 +99,12 @@
 
         <service
             android:name=".feature.timer.framework.service.ShowTimerService"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="timer_management_and_ringtone" />
+        </service>
 
 
         <!-- Broadcast Receivers Section -->
@@ -111,11 +117,11 @@
         <receiver
             android:name=".feature.timer.framework.broadcast.receiver.TimerReceiver"
             android:exported="false" />
-
         <receiver
             android:name=".core.broadcast.AppBootReceiver"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false"
+            android:directBootAware="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

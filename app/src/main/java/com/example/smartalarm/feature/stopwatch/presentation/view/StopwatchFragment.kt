@@ -19,7 +19,7 @@ import com.example.smartalarm.R
 import com.example.smartalarm.core.permission.PermissionChecker
 import com.example.smartalarm.core.permission.PermissionRequester
 import com.example.smartalarm.core.permission.model.AppPermission
-import com.example.smartalarm.core.permission.model.PermissionCoordinator
+import com.example.smartalarm.core.permission.PermissionCoordinator
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.databinding.FragmentStopwatchBinding
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchBroadCastAction
@@ -75,17 +75,18 @@ class StopwatchFragment : Fragment() {
     /** Animator handling dynamic layout changes and transitions for the stopwatch UI. */
     private var stopWatchAnimator: StopwatchLayoutAnimator? = null
 
-    /** Stores the previous number of recorded laps to manage animations and scrolling. */
-    private var previousLapsCount = 0
-
     /** Adapter for displaying stopwatch lap times in a RecyclerView  */
     private lateinit var stopWatchLapAdapter: StopWatchLapAdapter
+
 
 
     @Inject
     lateinit var checker: PermissionChecker
 
     private lateinit var permissionCoordinator: PermissionCoordinator
+
+    /** Stores the previous number of recorded laps to manage animations and scrolling. */
+    private var previousLapsCount = 0
 
 
 
@@ -126,32 +127,6 @@ class StopwatchFragment : Fragment() {
         setUpPermissionCoordinator()
     }
 
-    private fun setUpPermissionCoordinator() {
-
-        val requester = PermissionRequester(
-            caller = this,
-            lifecycleOwner = this,
-            context = requireContext(),
-            permissionChecker = checker,
-            rationaleProvider = { permissionName ->
-                ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    permissionName
-                )
-            }
-        )
-
-        permissionCoordinator = PermissionCoordinator(
-            context = requireContext(),
-            requester = requester,
-            checker = checker,
-            fragmentManager = childFragmentManager,
-            lifecycleOwner = viewLifecycleOwner
-        )
-
-    }
-
-
     /**
      * Hands off stopwatch execution to a foreground service when the UI is no longer visible.
      *
@@ -176,6 +151,8 @@ class StopwatchFragment : Fragment() {
     }
 
 
+
+
     // ---------------------------------------------------------------------
     // UI Setup Methods
     // ---------------------------------------------------------------------
@@ -193,17 +170,21 @@ class StopwatchFragment : Fragment() {
      * delegates execution to the ViewModel.
      */
     private fun setUpButtonClickListeners() = with(binding) {
+
         resetStopwatchBtn.setOnClickListener {
             stopWatchViewModel.handleEvent(StopwatchEvent.ResetStopwatch)
         }
+
         toggleStopwatchBtn.setOnClickListener {
             permissionCoordinator.runPermissionGatekeeper(listOf(AppPermission.Runtime.PostNotifications),requireActivity()){
                 stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
             }
         }
+
         recordLapStopwatchBtn.setOnClickListener {
             stopWatchViewModel.handleEvent(StopwatchEvent.RecordStopwatchLap)
         }
+
     }
 
 
@@ -249,9 +230,7 @@ class StopwatchFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             stopWatchViewModel.uiEffect.collect { effect ->
                 when (effect) {
-                    is StopwatchEffect.BlinkVisibilityChanged -> binding.stopwatchTimeTextGroup.isVisible =
-                        effect.isVisible
-
+                    is StopwatchEffect.BlinkVisibilityChanged -> binding.stopwatchTimeTextGroup.isVisible = effect.isVisible
                     is StopwatchEffect.ShowError -> requireContext().showToast(effect.message)
                     is StopwatchEffect.StartForegroundService -> startStopwatchService()
                     is StopwatchEffect.StopForegroundService -> stopStopwatchService()
@@ -261,18 +240,60 @@ class StopwatchFragment : Fragment() {
     }
 
 
+    /**
+     * Initializes the PermissionCoordinator for handling runtime permissions in this fragment.
+     *
+     * This sets up a centralized mechanism to:
+     *  - Check whether permissions are granted,
+     *  - Request permissions when needed, and
+     *  - Provide rationales to the user if the system indicates it is necessary.
+     *
+     * Using a coordinator ensures permission logic is consistent, decoupled from UI code,
+     * and lifecycle-aware, preventing memory leaks and redundant permission requests.
+     */
+    private fun setUpPermissionCoordinator() {
+
+        val requester = PermissionRequester(
+            caller = this,
+            lifecycleOwner = this,
+            context = requireContext(),
+            permissionChecker = checker,
+            rationaleProvider = { permissionName ->
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    permissionName
+                )
+            }
+        )
+
+        permissionCoordinator = PermissionCoordinator(
+            context = requireContext(),
+            requester = requester,
+            checker = checker,
+            fragmentManager = childFragmentManager,
+            lifecycleOwner = viewLifecycleOwner
+        )
+
+    }
+
+
+
+
+
     // ---------------------------------------------------------------------
     // UI Update Methods
     // ---------------------------------------------------------------------
 
     /**
-     * Maps [StopwatchUiModel] state to the fragment's views.
+     * Synchronizes the stopwatch screen with the latest UI state.
      *
-     * Pure UI update method: does not perform business logic.
-     *
-     * @param uiModel Current state of the stopwatch UI.
+     * This keeps the visual representation (time, progress, controls, and laps)
+     * fully aligned with the underlying stopwatch state, ensuring the UI
+     * accurately reflects whether the stopwatch is running or paused
+     * and maintains a consistent, predictable user experience.
      */
     private fun updateUi(uiModel: StopwatchUiModel) = with(binding) {
+
         val toggleIcon = if (uiModel.isRunning) R.drawable.ic_pause else R.drawable.ic_play
 
         // Update stopwatch time and progress
@@ -291,11 +312,12 @@ class StopwatchFragment : Fragment() {
 
 
     /**
-     * Synchronizes the lap list with current stopwatch state.
+     * Updates the lap list UI to reflect the current stopwatch state.
      *
-     * Animates layout changes and scrolls to the latest lap when added.
-     *
-     * @param lapsTimesList List of lap times to display.
+     * This ensures the lap section is only visible when laps exist,
+     * keeps the layout visually balanced through orientation-aware animations,
+     * and automatically scrolls to the newest lap to maintain focus on
+     * the most recent user action.
      */
     private fun updateRecyclerView(lapsTimesList: List<StopwatchLapUiModel>) = with(binding) {
         val hasLaps = lapsTimesList.isNotEmpty()
@@ -324,21 +346,43 @@ class StopwatchFragment : Fragment() {
     }
 
 
+
+
+
+
+
     // ---------------------------------------------------------------------
     // Effect Handler Methods
     // ---------------------------------------------------------------------
 
-
+    /**
+     * Starts the StopwatchService in foreground mode when the stopwatch begins running.
+     *
+     * This ensures the stopwatch continues running reliably in the background
+     * and is not killed by the system while active.
+     */
     private fun startStopwatchService() {
         val intent = createStopwatchServiceIntent(StopWatchBroadCastAction.START_FOREGROUND)
         ContextCompat.startForegroundService(requireContext(), intent)
     }
 
+    /**
+     * Stops the foreground state of StopwatchService when the stopwatch is no longer running.
+     *
+     * This prevents unnecessary background execution and releases system resources
+     * once the stopwatch has been restarted or stopped.
+     */
     private fun stopStopwatchService() {
         val intent = createStopwatchServiceIntent(StopWatchBroadCastAction.STOP_FOREGROUND)
         requireContext().startService(intent)
     }
 
+
+    /**
+     * Creates an intent used to communicate start/stop actions to StopwatchService.
+     *
+     * Centralizing intent creation avoids duplication and keeps service interaction consistent.
+     */
     private fun createStopwatchServiceIntent(action: String): Intent {
         return Intent(context, StopwatchService::class.java).apply {
             this.action = action

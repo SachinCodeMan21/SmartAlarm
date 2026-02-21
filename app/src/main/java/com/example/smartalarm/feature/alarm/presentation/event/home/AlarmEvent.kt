@@ -55,12 +55,6 @@ package com.example.smartalarm.feature.alarm.presentation.event.home
 
 sealed class AlarmEvent {
 
-
-    /**
-     * Event to request retrieval of all alarms.
-     */
-    object GetAllAlarms : AlarmEvent()
-
     /**
      * Event to initiate the creation of a new alarm.
      */

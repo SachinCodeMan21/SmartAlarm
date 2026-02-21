@@ -89,14 +89,14 @@ sealed class AlarmNotificationModel : AppNotificationModel<
      *
      * @property alarm The domain-layer alarm data.
      */
-    data class ScheduledAlarmModel(val alarm: AlarmModel) : AlarmNotificationModel() {
+    data class RingingAlarmModel(val alarm: AlarmModel) : AlarmNotificationModel() {
 
         /** Returns the mapper key for scheduled alarms. */
         override fun getMapperKey(): AlarmNotificationDataMapperKey =
             AlarmNotificationDataMapperKey.SCHEDULED
 
-        /** Converts the mapped data into an [AlarmNotification.Scheduled] instance. */
+        /** Converts the mapped data into an [AlarmNotification.Ringing] instance. */
         override fun toNotification(data: AlarmNotificationData): AlarmNotification =
-            AlarmNotification.Scheduled(data)
+            AlarmNotification.Ringing(data)
     }
 }

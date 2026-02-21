@@ -58,19 +58,32 @@ android {
             )
 
             // Inject a build-time constant (API key) for the production environment, accessible via BuildConfig.GOOGLE_API_KEY_PROD
+//            buildConfigField(
+//                "String",
+//                "GOOGLE_API_KEY_PROD",
+//                localProperties.getProperty("GOOGLE_API_KEY_PROD")
+//            )
+
+            // Inject a build-time constant (API key) for the production environment, accessible via BuildConfig.GOOGLE_API_KEY_PROD
             buildConfigField(
                 "String",
-                "GOOGLE_API_KEY_PROD",
-                localProperties.getProperty("GOOGLE_API_KEY_PROD")
+                "GEO_APIFY_API_KEY_PROD",
+                localProperties.getProperty("GEO_APIFY_API_KEY_PROD")
             )
         }
 
         debug {
             // Inject a build-time constant (API key) for the debug environment, accessible via BuildConfig.GOOGLE_API_KEY
+//            buildConfigField(
+//                "String",
+//                "GOOGLE_API_KEY",
+//                localProperties.getProperty("GOOGLE_API_KEY")
+//            )
+
             buildConfigField(
                 "String",
-                "GOOGLE_API_KEY",
-                localProperties.getProperty("GOOGLE_API_KEY")
+                "GEO_APIFY_API_KEY",
+                localProperties.getProperty("GEO_APIFY_API_KEY")
             )
 
             getByName("debug") {

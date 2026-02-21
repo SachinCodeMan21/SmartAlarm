@@ -62,9 +62,9 @@ sealed class AlarmNotification : AppNotification {
      *
      * @property alarmData Data required to build and display the scheduled alarm notification.
      */
-    data class Scheduled(val alarmData: AlarmNotificationData) : AlarmNotification() {
+    data class Ringing(val alarmData: AlarmNotificationData) : AlarmNotification() {
         /** Key used by the factory to retrieve the correct builder for this notification type. */
-        override val key = AlarmNotificationBuilderTypeKey.SCHEDULED
+        override val key = AlarmNotificationBuilderTypeKey.RINGING
     }
 
 }

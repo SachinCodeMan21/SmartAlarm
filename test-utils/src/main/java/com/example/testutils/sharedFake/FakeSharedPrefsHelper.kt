@@ -47,5 +47,11 @@ class FakeSharedPrefsHelper @Inject constructor() : SharedPrefsHelper {
     override var hasStopwatchRequestedNotificationPermission: Boolean
         get() = prefs[SharedPrefsHelperImpl.STOPWATCH_POST_NOTIFICATION_PERMISSION_REQUESTED] as? Boolean ?: false
         set(value) {prefs[SharedPrefsHelperImpl.STOPWATCH_POST_NOTIFICATION_PERMISSION_REQUESTED] = value}
+    override var alarmSnoozeDurationMinutesPref: Int
+        get() = 2
+        set(value) {}
+    override var alarmTimeoutDurationMinutesPref: Int
+        get() = 3
+        set(value) {}
 }
 

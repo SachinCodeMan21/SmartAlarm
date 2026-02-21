@@ -28,6 +28,12 @@
     <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.0</item>
     <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.12</item>
 
+    <!-- Clock Screen Dimens -->
+    <item name="guideline_clock_top" format="float" type="dimen">0.02</item>
+    <item name="guideline_clock_start" format="float" type="dimen">0.02</item>
+    <item name="guideline_clock_end" format="float" type="dimen">0.9</item>
+    <item name="guideline_clock_bottom" format="float" type="dimen">1</item>
+
 
     <!-- Timer Screen Dimens   -->
     <item name="guideline_timer_top" format="float" type="dimen">0.05</item>

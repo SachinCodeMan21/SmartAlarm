@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.home.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R

@@ -134,8 +134,8 @@ class ShowAlarmViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = snoozeAlarmUseCase(alarm)) {
                 is Result.Success -> {
-                    alarmServiceController.stopAlarmService()
-                    postEffect(ShowAlarmEffect.FinishActivity)
+                    //alarmServiceController.stopAlarmService()
+                    //postEffect(ShowAlarmEffect.FinishActivity)
                 }
                 is Result.Error -> postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
             }
@@ -153,8 +153,8 @@ class ShowAlarmViewModel @Inject constructor(
             if (alarm.missions.isEmpty()) {
                 when (val result = stopAlarmUseCase(alarm)) {
                     is Result.Success -> {
-                        alarmServiceController.stopAlarmService()
-                        postEffect(ShowAlarmEffect.FinishActivity)
+                        //alarmServiceController.stopAlarmService()
+                        //postEffect(ShowAlarmEffect.FinishActivity)
                     }
                     is Result.Error -> postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
                 }

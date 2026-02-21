@@ -37,4 +37,7 @@ interface TimerScheduler {
     //---------------------------------------------------------------
 
     fun cancelAllScheduledTimers(timerId: Int)
+
+    fun scheduleServiceStart()
+
 }

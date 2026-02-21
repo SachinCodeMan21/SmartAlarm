@@ -202,14 +202,18 @@ class AlarmEditorHomeFragment : Fragment() {
 
         // Setting up the mission adapter
         missionAdapter = AlarmMissionAdapter(
+
             onMissionItemPlaceholderClick = {
-                viewModel.handleUserEvent(AlarmEditorUserEvent.HandleMissionItemPlaceHolderClick(it))
+                removeLabelFocus()
+                viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.PlaceholderClicked(it))
             },
             onMissionItemClick = { position, mission ->
-                viewModel.handleUserEvent(AlarmEditorUserEvent.HandleMissionItemClick(position, mission))
+                removeLabelFocus()
+                viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.ItemClicked(position, mission))
             },
             onRemoveMissionClick = {
-                viewModel.handleUserEvent(AlarmEditorUserEvent.HandleRemoveMissionClick(it))
+                removeLabelFocus()
+                viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.RemoveClicked(it))
             }
         )
 
@@ -234,13 +238,14 @@ class AlarmEditorHomeFragment : Fragment() {
     private fun setUpListeners() = with(binding) {
 
         alarmLabelET.doAfterTextChanged {
-            viewModel.handleUserEvent(AlarmEditorUserEvent.LabelChanged(it?.trim().toString()))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.AlarmEvent.LabelChanged(it?.trim().toString()))
         }
 
         timePickerBlock.apply {
             val notifyTimeChanged = {
+                removeLabelFocus()
                 viewModel.handleUserEvent(
-                    AlarmEditorUserEvent.TimeChanged(hoursPicker.value, minutePicker.value, amPmPicker.value)
+                    AlarmEditorUserEvent.AlarmEvent.TimeChanged(hoursPicker.value, minutePicker.value, amPmPicker.value)
                 )
             }
             listOf(hoursPicker, minutePicker, amPmPicker).forEach { picker ->
@@ -251,11 +256,15 @@ class AlarmEditorHomeFragment : Fragment() {
         weekdaysBlock.apply {
 
             isDailyCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.handleUserEvent(AlarmEditorUserEvent.IsDailyChanged(isChecked))
+                removeLabelFocus()
+                viewModel.handleUserEvent(AlarmEditorUserEvent.AlarmEvent.IsDailyChanged(isChecked))
             }
 
             weekdayViews.forEachIndexed { index, dayView ->
-                dayView.setOnClickListener { viewModel.handleUserEvent(AlarmEditorUserEvent.DayToggled(index)) }
+                dayView.setOnClickListener {
+                    removeLabelFocus()
+                    viewModel.handleUserEvent(AlarmEditorUserEvent.AlarmEvent.DayToggled(index))
+                }
             }
 
         }
@@ -264,30 +273,35 @@ class AlarmEditorHomeFragment : Fragment() {
 
             alarmVolumeSeekBar.onProgressChangedListener { progress, _ ->
                 if (!isInitialSeekBarTriggerFlag){
-                    viewModel.handleUserEvent(AlarmEditorUserEvent.VolumeChanged(progress))
+                    viewModel.handleUserEvent(AlarmEditorUserEvent.SoundEvent.VolumeChanged(progress))
                 }
+                removeLabelFocus()
                 isInitialSeekBarTriggerFlag = false
             }
 
             vibrateSwitch.setOnCheckedChangeListener { _, isChecked ->
                 if (!isInitialSwitchTriggerFlag){
-                    viewModel.handleUserEvent(AlarmEditorUserEvent.VibrationToggled(isChecked))
+                    viewModel.handleUserEvent(AlarmEditorUserEvent.SoundEvent.VibrationToggled(isChecked))
                 }
+                removeLabelFocus()
                 isInitialSwitchTriggerFlag = false
             }
 
             alarmSoundTv.setOnClickListener {
-                viewModel.handleUserEvent(AlarmEditorUserEvent.LaunchAlarmSoundPicker)
+                removeLabelFocus()
+                viewModel.handleUserEvent(AlarmEditorUserEvent.SoundEvent.LaunchPicker)
             }
 
         }
 
         snoozeBlock.alarmSnoozeTv.setOnClickListener {
-            viewModel.handleUserEvent(AlarmEditorUserEvent.EditSnoozeClick)
+            removeLabelFocus()
+            viewModel.handleUserEvent(AlarmEditorUserEvent.ActionEvent.EditSnooze)
         }
 
         saveOrUpdateAlarmBtn.setOnClickListener {
-            viewModel.handleUserEvent(AlarmEditorUserEvent.SaveOrUpdateAlarmClick)
+            removeLabelFocus()
+            viewModel.handleUserEvent(AlarmEditorUserEvent.ActionEvent.SaveOrUpdate)
         }
 
     }
@@ -366,13 +380,7 @@ class AlarmEditorHomeFragment : Fragment() {
      * required during the alarm editing process (e.g., exact alarm, post notification permissions).
      * This handler ensures that permissions are requested and managed properly.
      */
-    private fun setUpAlarmEditorPermissionHandler() {
-        alarmEditorPermissionHandler = PermissionHandler(
-            fragment = this,
-            myPermissionManager = permissionManager,
-            onPostNotificationGranted = { viewModel.handleSystemEvent(AlarmEditorSystemEvent.RetryPendingSaveAction) },
-        )
-    }
+    private fun setUpAlarmEditorPermissionHandler() {}
 
     /**
      * Registers the alarm sound picker launcher to allow the user to pick a ringtone
@@ -384,7 +392,7 @@ class AlarmEditorHomeFragment : Fragment() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.getParcelableExtraCompat<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
                 uri?.let {
-                    viewModel.handleUserEvent(AlarmEditorUserEvent.RingtoneSelected(it.toString()))
+                    viewModel.handleUserEvent(AlarmEditorUserEvent.SoundEvent.RingtoneSelected(it.toString()))
                 }
             }
         }
@@ -479,10 +487,9 @@ class AlarmEditorHomeFragment : Fragment() {
     /** Toggles the visibility of the save progress bar and button based on the loading state. */
     private fun handleShowSaveUpdateLoading(isLoading: Boolean) {
         binding.saveProgressBar.isVisible = isLoading
-        binding.saveOrUpdateAlarmBtn.isVisible = !isLoading
+        binding.saveOrUpdateAlarmBtn.visibility = if (isLoading) View.INVISIBLE else View.VISIBLE
     }
 
-    /** Displays a toast message with the provided text.*/
     private fun showToastMessage(toastMessage: String){
         requireContext().showToast(toastMessage)
     }
@@ -527,13 +534,11 @@ class AlarmEditorHomeFragment : Fragment() {
     //  5] Helper Method
     // ---------------------------------------------------------------------
 
-    /**
-     * Creates an Intent to launch the ringtone picker for selecting a new alarm sound.
-     * Allows the user to choose a new ringtone, use the default, or keep the existing one.
-     *
-     * @param existingAlarmSound URI of the current ringtone, or `null` if none exists.
-     * @return Configured Intent to open the ringtone picker.
-     */
+    private fun removeLabelFocus(){
+        if (binding.alarmLabelET.isFocused)
+            binding.alarmLabelET.clearFocus()
+    }
+
     fun createRingtonePickerIntent(existingAlarmSound: String): Intent {
         return Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
             putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)

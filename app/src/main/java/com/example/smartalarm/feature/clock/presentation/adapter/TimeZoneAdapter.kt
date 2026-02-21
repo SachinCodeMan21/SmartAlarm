@@ -7,6 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartalarm.databinding.ItemTimezoneLayoutBinding
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import kotlin.math.abs
 
 
 /**
@@ -77,8 +81,42 @@ class TimeZoneAdapter : ListAdapter<PlaceModel, TimeZoneAdapter.ViewHolder>(Diff
         holder.binding.apply {
             name.text = place.primaryName
             clockTimeTv.text = place.currentTime
+            timeDiffTv.text = getTimeDifferenceString(place.offsetSeconds)
         }
 
+    }
+
+    fun getTimeDifferenceString(targetOffsetSeconds: Long): String {
+        val systemZone = ZoneId.systemDefault()
+        val currentOffsetSeconds = systemZone.rules.getOffset(Instant.now()).totalSeconds.toLong()
+
+        // Difference in seconds
+        val diffSeconds = targetOffsetSeconds - currentOffsetSeconds
+        val diffHours = diffSeconds / 3600.0
+        val absoluteHours = abs(diffHours)
+
+        val timeLabel = when {
+            diffHours == 0.0 -> "Same time"
+            diffHours > 0 -> "${formatHours(absoluteHours)} ahead"
+            else -> "${formatHours(absoluteHours)} behind"
+        }
+
+        // Day comparison
+        val targetTime = ZonedDateTime.now(ZoneId.of("UTC")).plusSeconds(targetOffsetSeconds)
+        val localTime = ZonedDateTime.now()
+
+        val dayLabel = when {
+            targetTime.dayOfYear > localTime.dayOfYear -> "Tomorrow"
+            targetTime.dayOfYear < localTime.dayOfYear -> "Yesterday"
+            else -> "Today"
+        }
+
+        return "$dayLabel, $timeLabel"
+    }
+
+    // Helper to show "5.5h" or "5h" nicely
+    private fun formatHours(hours: Double): String {
+        return if (hours % 1 == 0.0) "${hours.toInt()}h" else "${hours}h"
     }
 
 }

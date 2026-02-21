@@ -191,9 +191,4 @@ class ClockViewModel @Inject constructor(
         }
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun setInitialUiModelForTesting(model: ClockModel) {
-        _uiModel.value = model
-    }
-
 }

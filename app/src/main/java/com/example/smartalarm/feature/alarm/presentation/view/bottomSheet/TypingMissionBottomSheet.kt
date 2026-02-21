@@ -115,6 +115,7 @@ class TypingMissionBottomSheet : BaseMissionBottomSheet() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyBottomSystemInset(binding.root)
         setupUI()
         setUpListeners()
     }
@@ -189,14 +190,14 @@ class TypingMissionBottomSheet : BaseMissionBottomSheet() {
             val updatedMission = mission.copy(rounds = typingRoundsPicker.value)
             val missionHolderPosition = arguments?.getInt(MISSION_ITEM_HOLDER_POSITION_KEY) ?: 0
 
-            viewModel.handleUserEvent(AlarmEditorUserEvent.UpdateAlarmMission(missionHolderPosition, updatedMission))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Updated(missionHolderPosition, updatedMission))
             MissionPickerBottomSheet.dismissIfVisible(parentFragmentManager)
             dismiss()
         }
 
         previewBtn.setOnClickListener {
             val previewMission = mission.copy( rounds = typingRoundsPicker.value)
-            viewModel.handleUserEvent(AlarmEditorUserEvent.StartAlarmMissionPreview(previewMission))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Preview(previewMission))
             MissionPickerBottomSheet.dismissIfVisible(parentFragmentManager)
             dismiss()
         }

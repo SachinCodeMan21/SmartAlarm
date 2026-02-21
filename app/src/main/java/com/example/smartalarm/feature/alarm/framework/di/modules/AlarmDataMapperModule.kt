@@ -4,7 +4,7 @@ import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.feature.alarm.framework.di.annotations.AlarmNotificationMapDataMapperKey
 import com.example.smartalarm.feature.alarm.framework.notification.enums.AlarmNotificationDataMapperKey
 import com.example.smartalarm.feature.alarm.framework.notification.mapper.MissedAlarmNotificationDataMapper
-import com.example.smartalarm.feature.alarm.framework.notification.mapper.ScheduledAlarmNotificationDataMapper
+import com.example.smartalarm.feature.alarm.framework.notification.mapper.RingingAlarmNotificationDataMapper
 import com.example.smartalarm.feature.alarm.framework.notification.mapper.SnoozedAlarmNotificationDataMapper
 import com.example.smartalarm.feature.alarm.framework.notification.mapper.UpcomingAlarmNotificationDataMapper
 import dagger.Module
@@ -70,7 +70,7 @@ object AlarmDataMapperModule {
     ): AppNotificationDataMapper<*, *> = mapper
 
     /**
-     * Provides the [ScheduledAlarmNotificationDataMapper] bound to the [AlarmNotificationDataMapperKey.SCHEDULED] key.
+     * Provides the [RingingAlarmNotificationDataMapper] bound to the [AlarmNotificationDataMapperKey.SCHEDULED] key.
      *
      * @param mapper The data mapper instance to be provided.
      * @return The [AppNotificationDataMapper] instance for scheduled alarm notifications.
@@ -80,6 +80,6 @@ object AlarmDataMapperModule {
     @Singleton
     @AlarmNotificationMapDataMapperKey(AlarmNotificationDataMapperKey.SCHEDULED)
     fun provideScheduledAlarmNotificationDataMapper(
-        mapper: ScheduledAlarmNotificationDataMapper
+        mapper: RingingAlarmNotificationDataMapper
     ): AppNotificationDataMapper<*, *> = mapper
 }

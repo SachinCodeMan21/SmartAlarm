@@ -392,7 +392,7 @@
     <string name="add_1_min">Añadir 1 min</string>
     <string name="stop">Detener</string>
     <string name="lap">Vuelta</string>
-    <string name="complete_task">Completar misión</string>
+    <string name="complete_mission">Completar misión</string>
 
     <!-- Notification Stopwatch Builder -->
     <string name="lap_time_format">#Vuelta %1$s: %2$s</string>

@@ -109,10 +109,24 @@ class MathMissionBottomSheet : BaseMissionBottomSheet() {
         savedInstanceState: Bundle?
     ): View {
         _binding = MathMissionBottomsheetBinding.inflate(inflater, container, false)
-        setupUI()
-        setupListeners()
         return binding.root
     }
+
+
+    /**
+     * Called immediately after the fragment's view has been created.
+     *
+     * This method initializes the UI components and sets up event listeners
+     * for user interactions. It ensures that all view-related logic is
+     * configured after the view hierarchy is ready.
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        applyBottomSystemInset(binding.root)
+        setupUI()
+        setupListeners()
+    }
+
 
     /**
      * Restores the state of the fragment's UI components after the view hierarchy
@@ -124,6 +138,7 @@ class MathMissionBottomSheet : BaseMissionBottomSheet() {
      */
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
+        applyBottomSystemInset(binding.root)
         savedInstanceState?.let {
             val restoredRounds = it.getInt(ROUNDS_VALUE_KEY, mission.rounds)
             binding.mathRoundsPicker.value = restoredRounds
@@ -194,14 +209,14 @@ class MathMissionBottomSheet : BaseMissionBottomSheet() {
         completeBtn.setOnClickListener {
             val updatedMission = mission.copy(difficulty = Difficulty.fromSliderValue(levelSlider.value), rounds = mathRoundsPicker.value)
             val missionHolderPosition = arguments?.getInt(MISSION_ITEM_HOLDER_POSITION_KEY) ?: 0
-            viewModel.handleUserEvent(AlarmEditorUserEvent.UpdateAlarmMission(missionHolderPosition, updatedMission))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Updated(missionHolderPosition, updatedMission))
             MissionPickerBottomSheet.dismissIfVisible(parentFragmentManager)
             dismiss()
         }
 
         previewBtn.setOnClickListener {
             val previewMission = mission.copy(difficulty = Difficulty.fromSliderValue(levelSlider.value), rounds = mathRoundsPicker.value)
-            viewModel.handleUserEvent(AlarmEditorUserEvent.StartAlarmMissionPreview(previewMission))
+            viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Preview(previewMission))
             MissionPickerBottomSheet.dismissIfVisible(parentFragmentManager)
             dismiss()
         }

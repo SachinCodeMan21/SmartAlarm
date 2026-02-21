@@ -37,10 +37,80 @@ abstract class AppNotificationManager(
         notificationManager.notify(notificationId, notification)
     }
 
+    protected fun postGroupNotification(notificationId: Int, notification: Notification, groupKey: String) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) { return }
+        notificationManager.notify(notificationId, notification)
+        updateGroupSummary(groupKey, notificationId, isRemoving = false)
+    }
+
     /**
      * Cancels an active notification by its ID.
      */
     protected fun cancelNotification(notificationId: Int) {
         notificationManager.cancel(notificationId)
     }
+
+    protected fun cancelGroupedNotification(notificationId: Int, groupKey: String) {
+        notificationManager.cancel(notificationId)
+        updateGroupSummary(groupKey, notificationId, isRemoving = true)
+    }
+
+
+    /**
+     * Optional: Override this ONLY if the feature supports notification grouping.
+     * If this returns null, grouping logic is bypassed for this manager.
+     */
+    protected open fun getGroupSummaryNotification(groupKey: String): Notification? = null
+
+    private fun updateGroupSummary(groupKey: String, handledId: Int, isRemoving: Boolean) {
+        // If the feature manager doesn't provide a summary, we don't manage groups here
+        val summaryNotification = getGroupSummaryNotification(groupKey) ?: return
+
+        val active = notificationManager.activeNotifications.toList()
+        val summaryId = groupKey.hashCode()
+
+        // 1. Get current children (excluding the summary itself)
+        val childrenInTray = active.filter {
+            it.notification.group == groupKey && it.id != summaryId
+        }
+
+        // 2. Calculate the final state of IDs
+        val finalChildrenIds = childrenInTray.map { it.id }.toMutableSet()
+        if (isRemoving) finalChildrenIds.remove(handledId) else finalChildrenIds.add(handledId)
+
+        when {
+            // Case A: No children left -> Kill the summary
+            finalChildrenIds.isEmpty() -> notificationManager.cancel(summaryId)
+
+            // Case B: Exactly 1 child left -> Ungroup it so it stays visible as a single item
+            finalChildrenIds.size == 1 -> {
+                val lastId = finalChildrenIds.first()
+                childrenInTray.find { it.id == lastId }?.let { promoteToStandalone(it) }
+                notificationManager.cancel(summaryId)
+            }
+
+            // Case C: Multiple children -> Update/Post the summary
+            else -> {
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    notificationManager.notify(summaryId, summaryNotification)
+                }
+            }
+        }
+    }
+
+    private fun promoteToStandalone(sbn: StatusBarNotification) {
+        val recoveredBuilder = NotificationCompat.Builder(context, sbn.notification)
+            .setGroup(null)
+            .setGroupSummary(false)
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            notificationManager.notify(sbn.id, recoveredBuilder.build())
+        }
+    }
+
+    protected open fun getActiveNotification(id: Int): StatusBarNotification? {
+        return try { notificationManager.activeNotifications.find { it.id == id } } catch (_: Exception) { null }
+    }
+
+
 }

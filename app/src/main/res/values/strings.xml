@@ -482,7 +482,7 @@
     <string name="add_1_min">Add 1 Min</string>
     <string name="stop">Stop</string>
     <string name="lap">Lap</string>
-    <string name="complete_task">Complete Mission</string>
+    <string name="complete_mission">Complete Mission</string>
 
     <!-- Notification Stopwatch Builder  -->
     <string name="lap_time_format">#Lap %1$s : %2$s</string>

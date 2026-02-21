@@ -372,7 +372,7 @@
     <string name="add_1_min">1분 추가</string>
     <string name="stop">정지</string>
     <string name="lap">랩</string>
-    <string name="complete_task">미션 완료</string>
+    <string name="complete_mission">미션 완료</string>
 
     <string name="lap_time_format">#랩 %1$s : %2$s</string>
     <string name="stop_all_completed">모든 완료 타이머 정지</string>

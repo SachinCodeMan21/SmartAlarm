@@ -65,11 +65,11 @@ class StopAlarmUseCaseImpl @Inject constructor(
                     alarmScheduler.cancelSmartAlarmTimeout(alarm.id)
 
                     // Stop the alarm sound
-                    alarmRingtoneHelper.stopAlarmRingtone()
-                    vibrationManager.stopVibration()
+//                    alarmRingtoneHelper.stopAlarmRingtone()
+//                    vibrationManager.stopVibration()
 
                     // Reset the last active alarm notification preference
-                    sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
+                    //sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
 
                     // Return success result
                     Result.Success(Unit)

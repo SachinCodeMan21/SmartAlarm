@@ -421,7 +421,7 @@
     <string name="add_1_min">+1 min</string>
     <string name="stop">Arrêter</string>
     <string name="lap">Tour</string>
-    <string name="complete_task">Terminer la mission</string>
+    <string name="complete_mission">Terminer la mission</string>
 
     <!-- Notification Stopwatch Builder  -->
     <string name="lap_time_format">#Tour %1$s : %2$s</string>

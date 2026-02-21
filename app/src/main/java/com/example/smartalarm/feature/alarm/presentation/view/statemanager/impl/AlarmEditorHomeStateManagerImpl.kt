@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.alarm.presentation.view.statemanager.impl
 
+import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
 import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.model.Mission
@@ -26,9 +27,9 @@ import javax.inject.Inject
  */
 class AlarmEditorHomeStateManagerImpl @Inject constructor(
     private val alarmRingtoneHelper: AlarmRingtoneManager,
-    private val alarmTimeHelper: AlarmTimeHelper
-) : AlarmEditorHomeStateManager
-{
+    private val alarmTimeHelper: AlarmTimeHelper,
+    private val sharedPrefsHelper: SharedPrefsHelper
+) : AlarmEditorHomeStateManager {
 
     private val _alarmState =  MutableStateFlow(AlarmModel())
 
@@ -54,9 +55,11 @@ class AlarmEditorHomeStateManagerImpl @Inject constructor(
      * Also resets the previously selected days to an empty set.
      */
     override fun initAlarmState() {
+        val globalAlarmSnoozeTime = sharedPrefsHelper.alarmSnoozeDurationMinutesPref
         _alarmState.value = AlarmModel(
             time = LocalTime.now().withSecond(0).withNano(0),
             alarmSound = alarmRingtoneHelper.getDefaultRingtoneUri().toString(),
+            snoozeSettings = SnoozeSettings(snoozeIntervalMinutes = globalAlarmSnoozeTime)
         )
         previousSelectedDays = emptySet()
     }

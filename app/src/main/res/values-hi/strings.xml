@@ -415,7 +415,7 @@
     <string name="add_1_min">1 मिनट जोड़ें</string>
     <string name="stop">रोकें</string>
     <string name="lap">लैप</string>
-    <string name="complete_task">मिशन पूरा करें</string>
+    <string name="complete_mission">मिशन पूरा करें</string>
 
     <!-- Notification Stopwatch Builder -->
     <string name="lap_time_format">#लैप %1$s : %2$s</string>

@@ -28,6 +28,7 @@ class AlarmIntentFactory @Inject constructor(
     //---------------------------------------------------------------
     // Creating Different Pending Intent For Different Alarm Action
     //---------------------------------------------------------------
+
     /**
      * Creates a PendingIntent that triggers the main alarm action.
      *
@@ -78,9 +79,12 @@ class AlarmIntentFactory @Inject constructor(
             putExtra(AlarmKeys.ALARM_ID, alarmId)
         }
 
+        // Combine ID and Action to ensure uniqueness across different states of the same alarm
+        val requestCode = (alarmId.toString() + action).hashCode()
+
         return PendingIntent.getBroadcast(
             context,
-            alarmId,
+            requestCode,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

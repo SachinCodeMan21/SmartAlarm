@@ -2,26 +2,20 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartalarm.core.di.annotations.IoDispatcher
 import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.core.permission.PermissionManager
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.DeleteAlarmUseCase
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAllAlarmsUseCase
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.SaveAlarmUseCase
+import com.example.smartalarm.feature.alarm.domain.usecase.AlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SwipedAlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.ToggleAlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.UndoAlarmUseCase
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
 import com.example.smartalarm.feature.alarm.presentation.effect.home.AlarmEffect
 import com.example.smartalarm.feature.alarm.presentation.effect.home.AlarmEffect.*
 import com.example.smartalarm.feature.alarm.presentation.event.home.AlarmEvent
 import com.example.smartalarm.feature.alarm.presentation.mapper.AlarmUiMapper
 import com.example.smartalarm.feature.alarm.presentation.uiState.AlarmUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -45,31 +39,15 @@ import javax.inject.Inject
  *
  * Permissions are handled before performing certain actions (e.g., scheduling alarms, posting notifications),
  * ensuring that required permissions are granted before executing the desired action.
- *
- * @param getAllAlarmsUseCase Use case for retrieving all alarms from the data source.
- * @param saveAlarmUseCase Use case for saving a new alarm.
- * @param updateAlarmUseCase Use case for updating an existing alarm.
- * @param deleteAlarmUseCase Use case for deleting an alarm.
- * @param toggleAlarmUseCase Use case for toggling the enabled state of an alarm.
- * @param undoAlarmUseCase Use case for undoing the deletion of an alarm.
- * @param swipedAlarmUseCase Use case for handling swiped alarms (i.e., delete actions).
+ * @param alarmUseCase Provides use cases for managing alarms.
  * @param resourceProvider Provides resources (like strings) for error handling and messages.
  * @param alarmMapper Maps domain models to UI models for display.
- * @param dispatcher Coroutine dispatcher for background operations.
  */
 @HiltViewModel
 class AlarmViewModel @Inject constructor(
-    private val getAllAlarmsUseCase: GetAllAlarmsUseCase,
-    private val saveAlarmUseCase: SaveAlarmUseCase,
-    private val updateAlarmUseCase: UpdateAlarmUseCase,
-    private val deleteAlarmUseCase: DeleteAlarmUseCase,
-    private val toggleAlarmUseCase: ToggleAlarmUseCase,
-    private val undoAlarmUseCase: UndoAlarmUseCase,
-    private val swipedAlarmUseCase: SwipedAlarmUseCase,
+    private val alarmUseCase: AlarmUseCase,
     private val resourceProvider: ResourceProvider,
     private val alarmMapper: AlarmUiMapper,
-    private val permissionManager: PermissionManager,
-    @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel()
 {
 
@@ -77,7 +55,7 @@ class AlarmViewModel @Inject constructor(
     private val alarmCache: MutableMap<Int, AlarmModel> = mutableMapOf()
 
     // State flow representing the UI state of the alarm feature.
-    val uiState: StateFlow<AlarmUiState> = getAllAlarmsUseCase()
+    val uiState: StateFlow<AlarmUiState> = alarmUseCase.getAllAlarmsUseCase()
         .onEach { alarms ->
             // Update your domain cache for toggle/undo etc.
             alarmCache.clear()
@@ -137,7 +115,6 @@ class AlarmViewModel @Inject constructor(
      */
     fun handleEvent(event: AlarmEvent) {
         when (event) {
-            is AlarmEvent.GetAllAlarms -> {}//getAllAlarms()
             is AlarmEvent.AddNewAlarm ->  navigateToEditAlarm()
             is AlarmEvent.ToggleAlarm -> onAlarmToggle(event)
             is AlarmEvent.UndoDeletedAlarm -> undoDelete()
@@ -169,7 +146,7 @@ class AlarmViewModel @Inject constructor(
      * If an error occurs, an error toast message is displayed.
      *
      * @param event The [AlarmEvent.ToggleAlarm] containing the alarm ID and new enabled state.
-     * @see toggleAlarmUseCase
+     * @see ToggleAlarmUseCase
      * @see postEffect
      */
     private fun onAlarmToggle(event: AlarmEvent.ToggleAlarm) {
@@ -178,10 +155,9 @@ class AlarmViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            when (val result = toggleAlarmUseCase(currentAlarm, event.isEnabled)) {
+            when (val result = alarmUseCase.toggleAlarmUseCase(currentAlarm, event.isEnabled)) {
 
                 is Result.Success -> {
-
                     if (!event.isEnabled) {
                         if (currentAlarm.alarmState == AlarmState.RINGING) {
                             postEffect(StopAlarmService)
@@ -189,7 +165,6 @@ class AlarmViewModel @Inject constructor(
                     } else {
                         postEffect(ShowToastMessage(result.data))
                     }
-
                 }
 
                 is Result.Error -> {
@@ -205,12 +180,12 @@ class AlarmViewModel @Inject constructor(
      * Deletes an alarm based on its ID and handles the result of the deletion process.
      *
      * This method retrieves the alarm to be deleted from the cache using the provided [deletedAlarmId].
-     * If the alarm exists, it proceeds with the deletion using [swipedAlarmUseCase].
+     * If the alarm exists, it proceeds with the deletion using [SwipedAlarmUseCase].
      * On success, a snackBar message is shown to confirm the action.
      * If an error occurs, an error state is updated.
      *
      * @param deletedAlarmId The ID of the alarm to be deleted.
-     * @see swipedAlarmUseCase
+     * @see SwipedAlarmUseCase
      * @see postEffect
      */
     private fun deleteAlarm(deletedAlarmId: Int) {
@@ -223,7 +198,7 @@ class AlarmViewModel @Inject constructor(
 
             viewModelScope.launch {
 
-                when (val result = swipedAlarmUseCase(it.id, it.alarmState)) {
+                when (val result = alarmUseCase.swipedAlarmUseCase(it.id, it.alarmState)) {
 
                     is Result.Success -> {
                         postEffect(ShowSnackBarMessage(swipedAlarmId = deletedAlarmId))
@@ -243,10 +218,10 @@ class AlarmViewModel @Inject constructor(
      * Undoes the deletion of an alarm, restoring it to the upcoming state.
      *
      * This method attempts to restore a recently deleted alarm by copying its details and resetting its state to `UPCOMING`.
-     * It then calls [undoAlarmUseCase] to perform the undo action. If successful, a toast message is shown, and the
+     * It then calls [UndoAlarmUseCase] to perform the undo action. If successful, a toast message is shown, and the
      * recently deleted alarm is cleared. In case of an error, a toast message with the error is displayed.
      *
-     * @see undoAlarmUseCase
+     * @see UndoAlarmUseCase
      * @see postEffect
      */
     private fun undoDelete() {
@@ -255,7 +230,7 @@ class AlarmViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            when (val result = undoAlarmUseCase(undoAlarm)) {
+            when (val result = alarmUseCase.undoAlarmUseCase(undoAlarm)) {
                 is Result.Success -> {
                     postEffect(ShowToastMessage(result.data))
                     recentlyDeletedAlarm = null
@@ -269,6 +244,8 @@ class AlarmViewModel @Inject constructor(
         }
 
     }
+
+
 
 
     // ---------------------------------------------------------------------

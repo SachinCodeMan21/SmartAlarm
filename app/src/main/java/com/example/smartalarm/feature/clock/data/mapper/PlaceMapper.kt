@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.clock.data.mapper
 
 import com.example.smartalarm.feature.clock.data.local.entity.PlaceEntity
-import com.example.smartalarm.feature.clock.data.remote.dto.response.PlaceDto
+import com.example.smartalarm.feature.clock.data.remote.dto.PlaceDto
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
 
 
