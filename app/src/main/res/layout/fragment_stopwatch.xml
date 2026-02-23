@@ -8,6 +8,9 @@
     android:background="@color/colorSurface"
     tools:context=".feature.stopwatch.presentation.view.StopwatchFragment">
 
+
+   <!-- # 1. [Guideline Section] #  -->
+
     <!-- StopWatch Top Guideline -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/stopwatch_guideline_top"
@@ -41,9 +44,10 @@
         app:layout_constraintGuide_percent="@dimen/guideline_stopwatch_bottom" />
 
 
-    <!-- Stopwatch ProgressBar Indicator -->
 
-    <!-- Stopwatch Seconds Time Text -->
+    <!-- # 2. [Stopwatch ProgressBar Section] #  -->
+
+    <!-- Stopwatch ProgressBar Indicator -->
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/stopwatch_progress_bar_indicator"
         android:layout_width="0dp"
@@ -59,12 +63,18 @@
         app:layout_constraintVertical_bias="0.4"
         app:trackThickness="@dimen/stopwatch_progress_indicator_thickness" />
 
+
+
+    <!-- # 3. [Stopwatch Time Display Section]  #  -->
+
+    <!-- Stopwatch Seconds Time Text -->
     <TextView
         android:id="@+id/stopwatch_seconds_text"
-        style="@style/TextAppearance.SmartAlarm.TitleMedium"
+        style="@style/TextAppearance.SmartAlarm.HeadlineLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        android:textSize="@dimen/stopwatch_elapsed_time_size"
         app:layout_constraintBottom_toBottomOf="@id/stopwatch_progress_bar_indicator"
         app:layout_constraintEnd_toEndOf="@id/stopwatch_progress_bar_indicator"
         app:layout_constraintStart_toStartOf="@id/stopwatch_progress_bar_indicator"
@@ -74,7 +84,7 @@
     <!-- Stopwatch MilliSeconds Time Text -->
     <TextView
         android:id="@+id/stopwatch_milliSeconds_text"
-        style="@style/TextAppearance.SmartAlarm.BodyLarge"
+        style="@style/TextAppearance.SmartAlarm.BodyMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_m"
@@ -91,6 +101,10 @@
         android:visibility="visible"
         app:constraint_referenced_ids="stopwatch_seconds_text,stopwatch_milliSeconds_text" />
 
+
+
+    <!-- # 4. [Stopwatch Lap Time Display Section]  #  -->
+
     <!-- Stopwatch RecordLap Times RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stopwatch_lap_rv"
@@ -105,6 +119,9 @@
         app:layout_constraintBottom_toTopOf="@id/stopwatch_guideline_bottom"
         tools:listitem="@layout/stop_watch_item"/>
 
+
+
+    <!-- # 5. [Stopwatch Action Section]  #  -->
 
     <!-- FAB Reset,Play/Pause,Lap Buttons -->
 

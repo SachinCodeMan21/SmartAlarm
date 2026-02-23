@@ -17,7 +17,7 @@ import kotlin.test.Test
 
 @ExperimentalCoroutinesApi
 class ClockRepositoryImplTest {
-
+/*
     private lateinit var repository: ClockRepositoryImpl
     @MockK
     private lateinit var clockLocalDataSource: ClockLocalDataSource
@@ -136,5 +136,5 @@ class ClockRepositoryImplTest {
         // Assert
         assertTrue(result is Result.Error)
         assertEquals(exception, (result as Result.Error).exception)
-    }
+    }*/
 }

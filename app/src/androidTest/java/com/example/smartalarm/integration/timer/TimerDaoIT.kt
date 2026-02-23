@@ -7,7 +7,7 @@ import com.example.smartalarm.feature.timer.data.local.dao.TimerDao
 import com.example.smartalarm.feature.timer.data.local.entity.TimerEntity
 import com.example.smartalarm.feature.timer.data.mapper.TimerMapper.toEntity
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerState
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -67,18 +67,18 @@ class TimerDaoIT {
     fun testGetTimers() = runTest {
         // Arrange
         val timerEntity = TimerEntity(
-            startTime = System.currentTimeMillis(),
-            remainingTime = 60000,
-            endTime = System.currentTimeMillis() + 60000,
-            targetTime = System.currentTimeMillis() + 60000,
+            startTimeMillis = System.currentTimeMillis(),
+            remainingMillis = 60000,
+            endTimeMillis = System.currentTimeMillis() + 60000,
+            targetDurationMillis = System.currentTimeMillis() + 60000,
             isTimerRunning = true,
             isTimerSnoozed = false,
-            snoozedTargetTime = 0,
-            state = TimerState.RUNNING.name
+            snoozedTargetDurationMillis = 0,
+            state = TimerStatus.RUNNING.name
         )
 
         // Act
-        timerDao.saveTimer(timerEntity)
+        timerDao.persistTimer(timerEntity)
 
         // Assert
         val timers = timerDao.getTimerList().first() // Get the first emission of the Flow
@@ -95,23 +95,23 @@ class TimerDaoIT {
     fun testDeleteTimer() = runTest {
         // Arrange
         val timerEntity = TimerEntity(
-            startTime = System.currentTimeMillis(),
-            remainingTime = 60000,
-            endTime = System.currentTimeMillis() + 60000,
-            targetTime = System.currentTimeMillis() + 60000,
+            startTimeMillis = System.currentTimeMillis(),
+            remainingMillis = 60000,
+            endTimeMillis = System.currentTimeMillis() + 60000,
+            targetDurationMillis = System.currentTimeMillis() + 60000,
             isTimerRunning = true,
             isTimerSnoozed = false,
-            snoozedTargetTime = 0,
-            state = TimerState.RUNNING.name
+            snoozedTargetDurationMillis = 0,
+            state = TimerStatus.RUNNING.name
         )
 
         // Act
-        timerDao.saveTimer(timerEntity)
-        timerDao.deleteTimerById(timerEntity.timerId)
+        timerDao.persistTimer(timerEntity)
+        timerDao.deleteTimerById(timerEntity.id)
 
         // Assert
         val timers = timerDao.getTimerList().first()
-        Assert.assertTrue(timers.none { it.timerId == timerEntity.timerId }) // Assert that no timer with that ID exists
+        Assert.assertTrue(timers.none { it.id == timerEntity.id }) // Assert that no timer with that ID exists
     }
 
     /**
@@ -132,12 +132,12 @@ class TimerDaoIT {
             isTimerRunning = true,
             isTimerSnoozed = false,
             snoozedTargetTime = 0,
-            state = TimerState.RUNNING
+            status = TimerStatus.RUNNING
         )
 
         // Act
         val timerEntity = timerModel.toEntity() // Convert TimerModel to TimerEntity
-        timerDao.saveTimer(timerEntity)
+        timerDao.persistTimer(timerEntity)
 
         // Assert
         val timers = timerDao.getTimerList().first()
@@ -149,12 +149,12 @@ class TimerDaoIT {
         // Assert the conversion from model to entity was done correctly
         Assert.assertNotEquals(
             timerModel.timerId,
-            savedTimer.timerId
+            savedTimer.id
         ) // Auto-generated ID in DB will not match
-        Assert.assertEquals(timerModel.startTime, savedTimer.startTime)
-        Assert.assertEquals(timerModel.remainingTime, savedTimer.remainingTime)
+        Assert.assertEquals(timerModel.startTime, savedTimer.startTimeMillis)
+        Assert.assertEquals(timerModel.remainingTime, savedTimer.remainingMillis)
         Assert.assertEquals(
-            timerModel.state.name,
+            timerModel.status.name,
             savedTimer.state
         ) // Ensure state is converted properly
     }

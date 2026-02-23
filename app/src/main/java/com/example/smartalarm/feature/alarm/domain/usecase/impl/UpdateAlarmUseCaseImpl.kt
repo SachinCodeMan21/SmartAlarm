@@ -1,6 +1,7 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
 import com.example.smartalarm.R
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
@@ -49,7 +50,8 @@ class UpdateAlarmUseCaseImpl @Inject constructor(
             // If the update operation fails, return an error result with a localized error message
             is Result.Error -> {
                 Result.Error(
-                    Exception(resourceProvider.getString(R.string.failed_to_update_the_alarm_details))
+                    //Exception(resourceProvider.getString(R.string.failed_to_update_the_alarm_details))
+                    result.error
                 )
             }
         }

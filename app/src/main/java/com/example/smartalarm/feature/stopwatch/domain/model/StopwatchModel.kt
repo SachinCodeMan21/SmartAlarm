@@ -6,7 +6,6 @@ package com.example.smartalarm.feature.stopwatch.domain.model
  * Encapsulates stopwatch timing information, running state, and lap records.
  * Used in the business logic layer and mapped to UI models as needed.
  *
- * @property id Unique identifier for this stopwatch instance.
  * @property startTime Timestamp (in milliseconds) when the stopwatch was started.
  * @property endTime Timestamp (in milliseconds) when the stopwatch was paused or stopped.
  * @property elapsedTime Total elapsed time (in milliseconds) of the stopwatch session.
@@ -15,12 +14,11 @@ package com.example.smartalarm.feature.stopwatch.domain.model
  * @property lapCount Total number of recorded laps.
  */
 data class StopwatchModel(
-    val id: Int = 1,
     val startTime: Long = 0L,
     val elapsedTime: Long = 0L,
     val endTime: Long = 0L,
     val isRunning: Boolean = false,
-    val lapTimes: List<StopWatchLapModel> = emptyList(),
+    val lapTimes: List<StopwatchLapModel> = emptyList(),
     val lapCount: Int = 0,
 ) {
 
@@ -33,7 +31,7 @@ data class StopwatchModel(
      */
     val getLastLapDuration: Long get() {
         return when {
-            lapTimes.size >= 2 -> lapTimes[lapTimes.size - 2].lapElapsedTime
+            lapTimes.size >= 2 -> lapTimes[lapTimes.size - 2].lapElapsedTimeMillis
             lapTimes.size == 1 -> elapsedTime
             else -> 0L
         }
@@ -47,7 +45,7 @@ data class StopwatchModel(
      */
     val getIndicatorProgress: Int get() {
             val lastDuration = getLastLapDuration.takeIf { it > 0L } ?: return 0
-            val currentStart = lapTimes.maxByOrNull { it.lapIndex }?.lapStartTime ?: 0L
+            val currentStart = lapTimes.maxByOrNull { it.lapIndex }?.lapStartTimeMillis ?: 0L
             val elapsed = elapsedTime - currentStart
             return ((elapsed * 100) / lastDuration).toInt().coerceIn(0, 100)
         }

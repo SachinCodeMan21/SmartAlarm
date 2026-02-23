@@ -501,4 +501,70 @@
     <string name="failed_to_perform_post_update_action">Failed to perform alarm post update scheduling. Please try again later.</string>
 
 
+    <!-- Exception Strings -->
+    <string name="error_timeout">Network timeout</string>
+    <string name="error_server">Server error (Code: %1$d)</string>
+    <string name="error_db_unavailable">Database unavailable</string>
+    <string name="error_db_corrupted">Database is corrupted</string>
+    <string name="error_db_constraint_violation">Database constraint violation</string>
+    <string name="error_db_not_found">Data not found</string>
+    <string name="error_db_migration_failed">Database migration failed</string>
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="error_generic">An error occurred</string>
+
+
+
+    <!-- Data Error Exceptions -->
+
+    <!--  Local / Database Errors -->
+    <string name="error_storage_full">Your device storage is full. Please free up space.</string>
+    <string name="error_hardware_failure">A storage hardware error occurred.</string>
+    <string name="error_database_busy">The database is busy. Please try again in a moment.</string>
+    <string name="error_database_corrupted">Database file is damaged. You may need to reinstall.</string>
+    <string name="error_data_conflict">The item could not be saved due to a data conflict.</string>
+    <string name="error_item_not_found">The requested data was not found.</string>
+    <string name="error_app_update_issue">There was an issue updating your data after the app update.</string>
+    <string name="error_generic_database">An error occurred while accessing local data.</string>
+
+    <!--  Remote / Network Errors -->
+    <string name="error_no_internet">No internet connection. Please check your settings.</string>
+    <string name="error_unauthorized">Session expired. Please log in again.</string>
+    <string name="error_forbidden">You do not have permission to access this resource.</string>
+    <string name="error_server_not_found">The requested server resource was not found.</string>
+    <string name="error_network_timeout">The server took too long to respond. Try again.</string>
+    <string name="error_file_too_large">The data you are trying to send is too large.</string>
+    <string name="error_server_down">Our servers are currently having trouble. Please wait.</string>
+    <string name="error_generic_network">A network error occurred.</string>
+
+    <string name="error_unexpected_system">An unexpected system error occurred. Please try again or contact support.</string>
+
+
+
+   <!--  Help Section  -->
+    <string name="help_support_title">Help &amp; Support</string>
+    <string name="section_system_reliability">System Reliability</string>
+    <string name="section_faq">Frequently Asked Questions</string>
+    <string name="section_missions_snoozing">Missions &amp; Snoozing</string>
+    <string name="section_world_clock">World Clock</string>
+    <string name="section_timer">Timer</string>
+    <string name="section_stopwatch">Stopwatch</string>
+
+    <string name="title_required_permissions">Required Permissions</string>
+    <string name="desc_required_permissions">• Exact Alarm: Ensures missions trigger on time.\n• Full Screen Notification: Allows missions to show over the lock screen.\n• Activity Recognition: Required for Walking/Shaking missions.\n• Battery Optimization: Set to \'Unrestricted\' so the app never sleeps.</string>
+
+    <string name="title_scheduling_dismissing">Scheduling &amp; Dismissing</string>
+    <string name="desc_scheduling_dismissing">Create an alarm by tapping \'+\'. In the edit screen, you can add up to 5 unique missions. Note: The alarm will automatically dismiss ONLY when all chosen missions are completed.</string>
+    <string name="title_why_snooze_disappeared">Why did the Snooze button disappear?</string>
+    <string name="desc_why_snooze_disappeared">If you set a Snooze Limit, the button will be disabled once the limit is reached, forcing you to complete your missions to stop the sound.</string>
+
+    <string name="title_global_time">Global Time Tracking</string>
+    <string name="desc_global_time">Tap \'+\' to add global cities. Your local time is pinned at the top for instant comparison with added timezones.</string>
+    <string name="title_managing_countdowns">Managing Countdowns</string>
+    <string name="desc_managing_countdowns">Set a duration and tap start. Your timer will continue to run in the background even if you close the app or lock your screen.</string>
+    <string name="title_laps_splits">Laps and Split Times</string>
+    <string name="desc_laps_splits">Use the \'Lap\' button while the stopwatch is running to record specific intervals. Perfect for tracking exercise sets.</string>
+
+    <string name="btn_email_support">Email Support</string>
+
+
 </resources>

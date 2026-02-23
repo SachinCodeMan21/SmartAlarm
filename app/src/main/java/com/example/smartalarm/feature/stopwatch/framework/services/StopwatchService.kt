@@ -3,6 +3,10 @@ package com.example.smartalarm.feature.stopwatch.framework.services
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchBroadCastAction
 import com.example.smartalarm.feature.stopwatch.domain.usecase.StopwatchUseCases
@@ -34,16 +38,17 @@ class StopwatchService : Service() {
         private const val NOTIFICATION_ID = 104
     }
 
-    @Inject
-    lateinit var stopWatchNotificationManager: StopwatchNotificationManager
-    @Inject
-    lateinit var stopWatchUseCase: StopwatchUseCases
+    @Inject lateinit var stopWatchUseCase: StopwatchUseCases
 
-    private var lastNotificationUpdateTime: Long = 0L
-    private var lastStateWasRunning: Boolean? = null
+    @Inject lateinit var systemClockHelper: SystemClockHelper
+    @Inject lateinit var stopWatchNotificationManager: StopwatchNotificationManager
+
+
     private var lastLapCount = 0
-
     private var isStopwatchReset = false
+    private var lastStateWasRunning: Boolean? = null
+    private var lastNotificationUpdateTime: Long = 0L
+
 
     private var tickerJob : Job? = null
     private var serviceScope: CoroutineScope? = null
@@ -55,8 +60,36 @@ class StopwatchService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+        observeStopwatchState()
+    }
 
-        serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            StopWatchBroadCastAction.START_FOREGROUND -> showStopWatchForegroundNotification()
+            StopWatchBroadCastAction.PAUSE -> pauseStopWatchNotification()
+            StopWatchBroadCastAction.RESUME -> resumeStopWatchNotification()
+            StopWatchBroadCastAction.RESET -> resetStopWatchNotification()
+            StopWatchBroadCastAction.LAP -> recordLapStopWatchNotification()
+            StopWatchBroadCastAction.STOP_FOREGROUND -> stopStopWatchNotification()
+        }
+        return START_STICKY
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Cancels the coroutine scope and its children
+        serviceScope?.cancel()
+    }
+
+
+    // ---------------------------------------------------------------------
+    // Stopwatch State Observer
+    // ---------------------------------------------------------------------
+
+    private fun observeStopwatchState() {
 
         serviceScope?.launch {
 
@@ -66,7 +99,7 @@ class StopwatchService : Service() {
                 if (isStopwatchReset) return@collect
 
                 // THRESHOLD LOGIC:
-                val currentTime = System.currentTimeMillis()
+                val currentTime = systemClockHelper.getCurrentTime()
                 val isStatusChanged = lastStateWasRunning != state.isRunning
                 val lapCountChanged = lastLapCount != state.lapCount
 
@@ -88,38 +121,10 @@ class StopwatchService : Service() {
         }
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            StopWatchBroadCastAction.BOOT_RESTORE -> restoreStopwatchStateFromDatabase()
-            StopWatchBroadCastAction.START_FOREGROUND -> showStopWatchForegroundNotification()
-            StopWatchBroadCastAction.PAUSE -> pauseStopWatchNotification()
-            StopWatchBroadCastAction.RESUME -> resumeStopWatchNotification()
-            StopWatchBroadCastAction.RESET -> resetStopWatchNotification()
-            StopWatchBroadCastAction.LAP -> recordLapStopWatchNotification()
-            StopWatchBroadCastAction.STOP_FOREGROUND -> stopStopWatchNotification()
-        }
-        return START_STICKY
-    }
-
-    override fun onBind(intent: Intent?): IBinder? = null
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // Cancels the coroutine scope and its children
-        serviceScope?.cancel()
-    }
-
 
     // ---------------------------------------------------------------------
     // Stopwatch Event Handlers
     // ---------------------------------------------------------------------
-
-    fun restoreStopwatchStateFromDatabase() = serviceScope?.launch {
-        // If the stopwatch was running before reboot, restart foreground notification
-        if (stopWatchUseCase.getCurrentStopwatch().isRunning) {
-            showStopWatchForegroundNotification()
-        }
-    }
 
     // Promotes the service to foreground and starts notification updates if the stopwatch is currently running
     private fun showStopWatchForegroundNotification() = serviceScope?.launch {
@@ -127,34 +132,34 @@ class StopwatchService : Service() {
         val currentStopwatch = stopWatchUseCase.getCurrentStopwatch()
         showForegroundNotification()
 
-        if (currentStopwatch.isRunning) {
-            startTicker()
-        }
+        if (currentStopwatch.isRunning) { startTicker() }
 
     }
 
     // Pauses the stopwatch, stops update jobs, and refreshes the notification state
     private fun pauseStopWatchNotification() = serviceScope?.launch {
-        //stopTicker()
-        stopWatchUseCase.pauseStopwatch()
+        val result = stopWatchUseCase.pauseStopwatch()
+        handleUseCaseError(result, "Pause Failed")
     }
 
     // Resumes the stopwatch, updates the notification, and restarts update jobs
     private fun resumeStopWatchNotification() = serviceScope?.launch {
-        stopWatchUseCase.startStopwatch()
+        val result = stopWatchUseCase.startStopwatch()
+        handleUseCaseError(result, "Resume Failed")
     }
 
     // Resets the stopwatch, removes the foreground notification, and stops the service lifecycle
     private fun resetStopWatchNotification() = serviceScope?.launch {
-        stopWatchUseCase.deleteStopwatch()
+        val result = stopWatchUseCase.deleteStopwatch()
         isStopwatchReset = true
-        stopForeground(STOP_FOREGROUND_REMOVE)
-        stopSelf()
+        handleUseCaseError(result, "Reset Database Failed")
+        stopStopWatchNotification()
     }
 
     // Records a lap for the active stopwatch and updates state Stops the service if the operation fails
     private fun recordLapStopWatchNotification() = serviceScope?.launch {
-        stopWatchUseCase.lapStopwatch()
+        val result = stopWatchUseCase.lapStopwatch()
+        handleUseCaseError(result, "Lap Failed")
     }
 
     // Cleans up all stopwatch-related work and terminates the foreground service
@@ -163,6 +168,8 @@ class StopwatchService : Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
+
+
 
     // ---------------------------------------------------------------------
     // Notification  Helper Methods
@@ -184,8 +191,8 @@ class StopwatchService : Service() {
     }
 
 
-    // Job Manager Methods
 
+    // Job Manager Methods
     private fun startTicker() {
         if (tickerJob != null) return
         tickerJob = serviceScope?.launch(Dispatchers.Default) {
@@ -199,6 +206,38 @@ class StopwatchService : Service() {
     private fun stopTicker() {
         tickerJob?.cancel()
         tickerJob = null
+    }
+
+    // ---------------------------------------------------------------------
+    // Error Handling Helper
+    // ---------------------------------------------------------------------
+
+    private fun handleUseCaseError(result: MyResult<Unit, DataError>, logTag: String) {
+        if (result is MyResult.Error) {
+
+            val error = result.error
+
+            // Option 1: Detailed Logging
+            // Since Unexpected carries a throwable, we can log the actual stack trace
+            when (error) {
+                is DataError.Unexpected -> {
+                    Log.e(logTag, "Unexpected system error", error.throwable)
+                    // FirebaseCrashlytics.getInstance().recordException(error.throwable)
+                }
+                else -> Log.e(logTag, "$logTag Error: $error")
+            }
+
+            // Option 2: Safety Shutdown Logic
+            // Check for specific database-critical states that require stopping the service
+            val isCriticalLocalError = error is DataError.Local && (
+                    error == DataError.Local.DISK_FULL || error == DataError.Local.CORRUPTED)
+
+            if (isCriticalLocalError) {
+                stopStopWatchNotification()
+                // Optional: You might also want to toggle a "Service Error" state
+                // in your repository so the UI knows the timer stopped due to a crash.
+            }
+        }
     }
 
 

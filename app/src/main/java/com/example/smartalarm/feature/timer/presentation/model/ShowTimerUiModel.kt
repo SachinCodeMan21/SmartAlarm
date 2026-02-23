@@ -1,7 +1,6 @@
 package com.example.smartalarm.feature.timer.presentation.model
 
-import com.example.smartalarm.feature.timer.domain.model.TimerState
-import com.example.smartalarm.feature.timer.utility.toFormattedTimerTime
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 
 
 data class ShowTimerUiModel(
@@ -13,7 +12,7 @@ data class ShowTimerUiModel(
     val isRunning : Boolean = false,
     val isSnoozed : Boolean = false,
     val snoozedTargetTime: Long = 0,
-    val state : TimerState
+    val state : TimerStatus
 ){
     fun getProgress() : Int {
         val total = if (isSnoozed) snoozedTargetTime else targetTime

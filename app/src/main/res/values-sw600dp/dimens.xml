@@ -103,7 +103,7 @@
 
 
     <!-- Stopwatch Screen Dimens   -->
-    <dimen name="stopwatch_seconds_tv_tran_textSize">24sp</dimen>
+    <dimen name="stopwatch_elapsed_time_trans_size">24sp</dimen>
     <dimen name="stopwatch_progress_indicator_thickness">1dp</dimen>
     <item name="guideline_stopwatch_top" format="float" type="dimen">0.0</item>
     <item name="guideline_stopwatch_anim_top" format="float" type="dimen">0.0</item>

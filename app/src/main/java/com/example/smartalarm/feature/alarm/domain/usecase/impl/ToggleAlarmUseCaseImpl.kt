@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
@@ -47,7 +48,7 @@ class ToggleAlarmUseCaseImpl @Inject constructor(
         // Attempt to update the alarm and schedule or cancel based on the updated state.
         return when (val result = updateAlarmUseCase(updatedAlarm)) {
             is Result.Success -> if (updatedAlarm.isEnabled) scheduleAlarm(updatedAlarm) else cancelAlarm(updatedAlarm)
-            is Result.Error -> Result.Error(result.exception)
+            is Result.Error -> Result.Error(result.error)
         }
     }
 
@@ -77,7 +78,7 @@ class ToggleAlarmUseCaseImpl @Inject constructor(
                 Result.Success("")  // Return an empty string if the alarm is disabled.
             }
         } catch (exception: Exception) {
-            Result.Error(exception)  // Return error in case of failure.
+            Result.Error(ExceptionMapper.map(exception))  // Return error in case of failure.
         }
     }
 
@@ -102,7 +103,7 @@ class ToggleAlarmUseCaseImpl @Inject constructor(
 
             Result.Success("")  // Return an empty string upon successful cancellation.
         } catch (exception: Exception) {
-            Result.Error(exception)  // Return error in case of failure.
+            Result.Error(ExceptionMapper.map(exception))  // Return error in case of failure.
         }
     }
 }

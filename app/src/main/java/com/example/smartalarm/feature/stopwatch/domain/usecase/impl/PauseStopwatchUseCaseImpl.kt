@@ -1,9 +1,9 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase.impl
 
-import com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository
 import com.example.smartalarm.feature.stopwatch.domain.usecase.contract.PauseStopwatchUseCase
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.core.utility.extension.runCatchingResult
 import javax.inject.Inject
 
 /**
@@ -12,7 +12,7 @@ import javax.inject.Inject
  * Pauses the stopwatch if running, or returns the current state if already paused.
  */
 class PauseStopwatchUseCaseImpl @Inject constructor(
-    private val repository: StopWatchRepository
+    private val repository: StopwatchRepository
 ) : PauseStopwatchUseCase {
 
     /**
@@ -20,15 +20,18 @@ class PauseStopwatchUseCaseImpl @Inject constructor(
      *
      * Returns the current state if already paused.
      */
-    override suspend fun invoke(): Result<Unit> {
+    override suspend fun invoke(): MyResult<Unit, DataError> {
+
         val stopwatch = repository.getCurrentStopwatchState()
 
-        if (!stopwatch.isRunning) return Result.Success(Unit)
+        // If the stopwatch is not running, return early
+        if (!stopwatch.isRunning) return MyResult.Success(Unit)
 
+        // Pause the stopwatch by updating the state
         val paused = stopwatch.copy(isRunning = false)
 
-        return runCatchingResult {
-            repository.persistStopwatch(paused)
-        }
+        // Persist the updated state
+        return repository.persistStopwatch(paused)
+
     }
 }

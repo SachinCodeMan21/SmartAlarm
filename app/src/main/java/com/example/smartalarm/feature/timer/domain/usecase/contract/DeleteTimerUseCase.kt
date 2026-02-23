@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.timer.domain.usecase.contract
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.core.model.Result
 
 
 /**
@@ -12,7 +13,7 @@ fun interface DeleteTimerUseCase {
      * Deletes the given timer.
      *
      * @param timer The [TimerModel] to delete.
-     * @return A [Result] indicating success or failure.
+     * @return A [MyResult] indicating success or failure.
      */
-    suspend operator fun invoke(timer: TimerModel): Result<Unit>
+    suspend operator fun invoke(timer: TimerModel): MyResult<Unit, DataError>
 }

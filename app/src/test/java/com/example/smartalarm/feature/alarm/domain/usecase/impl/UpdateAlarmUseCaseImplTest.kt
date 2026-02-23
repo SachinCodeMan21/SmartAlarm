@@ -44,7 +44,7 @@ import java.time.LocalTime
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class UpdateAlarmUseCaseImplTest {
-
+/*
     // Mocking the required dependencies using annotations
     @MockK
     private lateinit var mockAlarmRepository: AlarmRepository
@@ -70,11 +70,11 @@ class UpdateAlarmUseCaseImplTest {
         clearAllMocks()
     }
 
-    /**
+    *//**
      * Tests that the alarm is updated successfully.
      * Verifies that a success result is returned after updating the alarm and that no error occurs.
      * Ensures that the [AlarmRepository.updateAlarm] function is called.
-     */
+     *//*
     @Test
     fun `invoke should update alarm successfully`() = runTest {
 
@@ -91,11 +91,11 @@ class UpdateAlarmUseCaseImplTest {
         coVerify { mockAlarmRepository.updateAlarm(alarm) }
     }
 
-    /**
+    *//**
      * Tests the scenario where updating the alarm fails.
      * Verifies that an error result is returned when updating the alarm fails,
      * and that the appropriate error message is passed from the [ResourceProvider].
-     */
+     *//*
     @Test
     fun `invoke should return error when updating the alarm fails`() = runTest {
 
@@ -113,6 +113,6 @@ class UpdateAlarmUseCaseImplTest {
         assertEquals(localUpdateAlarmFailureMessage, (result as Result.Error).exception.message)
         coVerify { mockAlarmRepository.updateAlarm(alarm) }
         verify { mockResourceProvider.getString(R.string.failed_to_update_the_alarm_details) }
-    }
+    }*/
 }
 

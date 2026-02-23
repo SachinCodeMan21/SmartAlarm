@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.smartalarm.R
 import android.view.LayoutInflater
+import com.example.smartalarm.core.exception.asUiText
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.FragmentTimerBinding
@@ -205,7 +206,7 @@ class TimerFragment : Fragment() {
      * Observes one-time UI effects from the [TimerViewModel] and performs corresponding UI actions.
      *
      * - Navigates to the show timers list screen when [TimerEffect.NavigateToShowTimerScreen] is received.
-     * - Displays a SnackBar with a message when [TimerEffect.ShowSnackBar] is received.
+     * - Displays a SnackBar with a message when [TimerEffect.ShowError] is received.
      */
     private fun setUpUiEffectObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -213,7 +214,10 @@ class TimerFragment : Fragment() {
                 timerViewModel.uiEffect.collect { effect ->
                     when (effect) {
                         is TimerEffect.NavigateToShowTimerScreen -> startActivity(Intent(requireContext(), ShowTimerActivity::class.java))
-                        is TimerEffect.ShowSnackBar -> binding.root.showSnackBar(effect.message, Snackbar.LENGTH_SHORT)
+                        is TimerEffect.ShowError -> {
+                            val message = effect.error.asUiText().asString(requireContext())
+                            binding.root.showSnackBar(message, Snackbar.LENGTH_SHORT)
+                        }
                     }
                 }
             }

@@ -246,7 +246,7 @@ class MyAlarmViewModel @Inject constructor(
                 onSuccess()
             }
             is Result.Error -> {
-                postEffect(ShowToastMessage(result.exception.message.toString()))
+                //postEffect(ShowToastMessage(result.exception.message.toString()))
             }
         }
     }

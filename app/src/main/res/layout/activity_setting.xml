@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
     tools:context=".feature.setting.activity.SettingActivity">
 
     <!-- Setting Appbar Layout -->
@@ -20,25 +21,41 @@
             android:id="@+id/settingToolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_default_height"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="?attr/colorOnSurface"
             app:title="@string/settings"
-            app:navigationIcon="@drawable/ic_back"/>
+            app:titleTextColor="?attr/colorOnSurface" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/setting_guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guideline_setting_start" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/setting_guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guideline_setting_end" />
+
 
     <!-- CardView to change language -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardLanguage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_m"
-        android:layout_marginTop="@dimen/margin_l"
-        android:layout_marginEnd="@dimen/margin_m"
-        android:backgroundTint="?android:attr/colorBackground"
+        android:layout_marginTop="@dimen/spacing_l"
+        android:backgroundTint="?attr/colorSurfaceContainerHigh"
         android:clickable="true"
         android:focusable="true"
-        android:padding="@dimen/margin_m"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="@dimen/spacing_m"
+        app:layout_constraintEnd_toStartOf="@+id/setting_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/setting_guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/settingAppBarLayout">
 
         <LinearLayout
@@ -53,7 +70,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
                 android:contentDescription="@string/change_language"
-                android:src="@drawable/ic_language" />
+                android:src="@drawable/ic_language"
+                app:tint="?attr/colorOnSurface" />
 
             <TextView
                 android:id="@+id/LanguageTv"
@@ -63,7 +81,8 @@
                 android:layout_weight="3"
                 android:padding="@dimen/padding_m"
                 android:text="@string/language"
-                android:textSize="@dimen/text_xxl" />
+                android:textSize="@dimen/text_size_l"
+                android:textColor="?attr/colorOnSurface"/>
 
         </LinearLayout>
 
@@ -75,15 +94,13 @@
         android:id="@+id/cardAbout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_m"
-        android:layout_marginTop="@dimen/margin_m"
-        android:layout_marginEnd="@dimen/margin_m"
-        android:backgroundTint="?android:attr/colorBackground"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:backgroundTint="?attr/colorSurfaceContainerHigh"
         android:clickable="true"
         android:focusable="true"
-        android:padding="@dimen/margin_m"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="@dimen/spacing_m"
+        app:layout_constraintEnd_toStartOf="@+id/setting_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/setting_guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/cardLanguage">
 
         <LinearLayout
@@ -98,7 +115,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
                 android:contentDescription="@string/about"
-                android:src="@drawable/ic_info" />
+                android:src="@drawable/ic_info"
+                app:tint="?attr/colorOnSurface" />
 
             <TextView
                 android:id="@+id/aboutTv"
@@ -106,12 +124,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="3"
-                android:padding="@dimen/padding_m"
+                android:padding="@dimen/spacing_m"
                 android:text="@string/about"
-                android:textSize="18sp" />
+                android:textSize="@dimen/text_size_l"
+                android:textColor="?attr/colorOnSurface"/>
 
         </LinearLayout>
-
 
 
     </com.google.android.material.card.MaterialCardView>
@@ -121,15 +139,13 @@
         android:id="@+id/cardHelp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_m"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/margin_m"
-        android:backgroundTint="?android:attr/colorBackground"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:backgroundTint="?attr/colorSurfaceContainerHigh"
         android:clickable="true"
         android:focusable="true"
-        android:padding="@dimen/margin_m"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="@dimen/spacing_m"
+        app:layout_constraintEnd_toStartOf="@+id/setting_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/setting_guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/cardAbout">
 
         <LinearLayout
@@ -144,7 +160,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
                 android:contentDescription="@string/help"
-                android:src="@drawable/ic_help" />
+                android:src="@drawable/ic_help"
+                app:tint="?attr/colorOnSurface" />
 
             <TextView
                 android:id="@+id/helpTv"
@@ -152,14 +169,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="3"
-                android:padding="@dimen/padding_m"
+                android:padding="@dimen/spacing_m"
                 android:text="@string/help"
-                android:textSize="18sp" />
+                android:textSize="@dimen/text_size_l"
+                android:textColor="?attr/colorOnSurface"/>
 
         </LinearLayout>
 
 
     </com.google.android.material.card.MaterialCardView>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

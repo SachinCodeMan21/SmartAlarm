@@ -1,16 +1,16 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase.impl
 
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
-import com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository
+import com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository
 import com.example.smartalarm.feature.stopwatch.domain.usecase.contract.GetCurrentStopwatchStateUseCase
 import javax.inject.Inject
 
 /**
  * Implementation of [GetCurrentStopwatchStateUseCase] that retrieves the current stopwatch state
- * from the [StopWatchRepository].
+ * from the [StopwatchRepository].
  */
 class GetCurrentStopwatchStateUseCaseImpl @Inject constructor(
-    private val repository: StopWatchRepository
+    private val repository: StopwatchRepository
 ) : GetCurrentStopwatchStateUseCase {
 
     /**

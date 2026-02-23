@@ -1,34 +1,31 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase
 
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
-import com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository
+import com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository
 import com.example.smartalarm.feature.stopwatch.domain.usecase.impl.StartStopwatchUseCaseImpl
+import com.google.common.truth.Truth.assertThat
 import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import io.mockk.unmockkAll
+import com.example.smartalarm.core.model.Result
+import io.mockk.slot
 import io.mockk.verify
-import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert
 import org.junit.Before
-import org.junit.Test
-import kotlin.test.assertEquals
+import kotlin.test.Test
 
 /**
  * Unit tests for the [com.example.smartalarm.feature.stopwatch.domain.usecase.impl.StartStopwatchUseCaseImpl] class. This class is responsible for managing the
  * starting and stopping of a stopwatch in the application.
  *
  * The tests mock the necessary dependencies, such as the [com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper] for time retrieval
- * and the [com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository] for storing the stopwatch data. The tests ensure that the stopwatch
+ * and the [com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository] for storing the stopwatch data. The tests ensure that the stopwatch
  * behaves correctly in different scenarios, including:
  *
  * 1. When the stopwatch is already running (it should return the same stopwatch).
@@ -41,102 +38,82 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class StartStopwatchUseCaseImplTest {
 
-/*    @MockK
+    @MockK
     private lateinit var clockProvider: SystemClockHelper
 
     @MockK
-    private lateinit var repository: StopWatchRepository
+    private lateinit var repository: StopwatchRepository
 
-    @InjectMockKs
     private lateinit var startStopwatchUseCase: StartStopwatchUseCaseImpl
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        startStopwatchUseCase = StartStopwatchUseCaseImpl(clockProvider,repository)
     }
 
-    @After
-    fun tearDown() {
-        unmockkAll()
-    }
-
-
-    //====================================================
+    // ====================================================
     // StartStopwatchUseCase Test Scenarios
-    //====================================================
+    // ====================================================
 
     @Test
-    fun invoke_whenStopwatchIsAlreadyRunning_shouldReturn_successWithSameStopwatch() = runTest {
+    fun `invoke when already running should return Success and not modify repository`() = runTest {
         // Arrange
-        val runningStopwatch = StopwatchModel(
-            startTime = 1234L,
-            elapsedTime = 1000L,
-            isRunning = true
-        )
+        val runningStopwatch = StopwatchModel(isRunning = true)
+        every { repository.getCurrentStopwatchState() } returns runningStopwatch
 
         // Act
-        val result = startStopwatchUseCase.invoke(runningStopwatch)
+        val result = startStopwatchUseCase.invoke()
 
         // Assert
-        TestCase.assertEquals(Result.Success(runningStopwatch), result)
+        assertThat(result).isInstanceOf(Result.Success::class.java)
         verify { clockProvider wasNot Called }
-        verify { repository wasNot Called }
+        coVerify(exactly = 0) { repository.persistStopwatch(any()) }
     }
 
-
     @Test
-    fun invoke_whenStopwatchIsNotRunning_shouldStartStopwatchAndReturn_successWithUpdatedStopwatch() =
-        runTest {
-            // Arrange
-            val currentTime = 6000L
-            val stopwatch = StopwatchModel(
-                startTime = 0L,
-                elapsedTime = 2000L,
-                isRunning = false
-            )
-
-            val expectedStartTime = currentTime - stopwatch.elapsedTime
-            val startedStopwatch = stopwatch.copy(
-                startTime = expectedStartTime,
-                isRunning = true
-            )
-
-            every { clockProvider.elapsedRealtime() } returns currentTime
-            coEvery { repository.saveStopwatch(any()) } returns Result.Success(Unit)
-
-            // Act
-            val result = startStopwatchUseCase.invoke(stopwatch)
-
-            // Assert
-            TestCase.assertEquals(Result.Success(startedStopwatch), result)
-            coVerify(exactly = 1) { repository.saveStopwatch(any()) }
-            verify(exactly = 1) { clockProvider.elapsedRealtime() }
-        }
-
-
-    @Test
-    fun invoke_whenRepositorySaveFails_shouldReturn_errorResult() = runTest {
-
+    fun `invoke when not running should calculate start time correctly and persist`() = runTest {
         // Arrange
-        val currentTime = 6000L
-        val stopwatch = StopwatchModel(
-            startTime = 0L,
-            elapsedTime = 2000L,
-            isRunning = false
+        val currentTime = 10000L
+        val previousElapsed = 2000L
+        val initialStopwatch = StopwatchModel(
+            isRunning = false,
+            elapsedTime = previousElapsed
         )
 
-        val exception = RuntimeException("Failed to save started stopwatch")
-        every { clockProvider.elapsedRealtime() } returns currentTime
-        coEvery { repository.saveStopwatch(any()) } throws exception
+        every { repository.getCurrentStopwatchState() } returns initialStopwatch
+        every { clockProvider.getCurrentTime() } returns currentTime
+        coEvery { repository.persistStopwatch(any()) } returns MyResult.Success(Unit)
 
         // Act
-        val result = startStopwatchUseCase.invoke(stopwatch)
+        val result = startStopwatchUseCase.invoke()
 
         // Assert
-        Assert.assertTrue(result is Result.Error)
-        assertEquals(exception, (result as Result.Error).exception)
-        coVerify(exactly = 1) { repository.saveStopwatch(any()) }
-        verify(exactly = 1) { clockProvider.elapsedRealtime() }
-    }*/
+        val capturedStopwatch = slot<StopwatchModel>()
+        coVerify(exactly = 1) { repository.persistStopwatch(capture(capturedStopwatch)) }
 
+        // Logic Check: startTime = current - elapsed (10000 - 2000 = 8000)
+        assertThat(capturedStopwatch.captured.startTime).isEqualTo(8000L)
+        assertThat(capturedStopwatch.captured.isRunning).isTrue()
+        assertThat(result).isInstanceOf(Result.Success::class.java)
+    }
+
+    @Test
+    fun `invoke when repository save fails should return mapped error`() = runTest {
+        // Arrange
+        val stopwatch = StopwatchModel(isRunning = false)
+        every { repository.getCurrentStopwatchState() } returns stopwatch
+        every { clockProvider.getCurrentTime() } returns 5000L
+
+        val exception = RuntimeException("Disk I/O error")
+        coEvery { repository.persistStopwatch(any()) } throws exception
+
+        // Act
+        val result = startStopwatchUseCase.invoke()
+
+        // Assert
+        assertThat(result).isInstanceOf(Result.Error::class.java)
+        // Verify mapper logic was triggered (Result.Error contains the mapped result)
+        coVerify(exactly = 1) { repository.persistStopwatch(any()) }
+    }
 }

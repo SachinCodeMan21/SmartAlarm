@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.timer.domain.repository
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.core.model.Result
 import kotlinx.coroutines.flow.StateFlow
 
 
@@ -35,7 +36,7 @@ interface TimerRepository {
      * @param timerModel The timer model to be saved.
      * @return Result indicating success or failure.
      */
-    suspend fun persistTimer(timerModel: TimerModel): Result<Unit>
+    suspend fun persistTimer(timerModel: TimerModel): MyResult<Unit, DataError>
 
     /**
      * Deletes a timer from the local data source by its ID.
@@ -43,6 +44,6 @@ interface TimerRepository {
      * @param timerId The ID of the timer to be deleted.
      * @return Result indicating success or failure.
      */
-    suspend fun deleteTimerById(timerId: Int): Result<Unit>
+    suspend fun deleteTimerById(timerId: Int): MyResult<Unit, DataError>
 
 }

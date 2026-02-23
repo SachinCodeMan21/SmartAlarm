@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.example.smartalarm.feature.stopwatch.framework.services.StopwatchService
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchBroadCastAction
-import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchKey
 
 /**
  * BroadcastReceiver to handle stopwatch-related broadcast intents.
@@ -36,7 +35,7 @@ class StopwatchReceiver : BroadcastReceiver() {
      * Handles the stopwatch action by forwarding the intent to [StopwatchService].
      *
      * 1. Creates a new intent targeting [StopwatchService] with the same action and stopwatch ID from the input intent.
-     * 2. If the action is START, starts the service as a foreground service using [ContextCompat.startForegroundService].
+     * 2. If the action is START_FOREGROUND, starts the service as a foreground service using [ContextCompat.startForegroundService].
      * 3. For all other actions, starts the service normally with [Context.startService].
      *
      * @param context The context used to start the service.
@@ -46,7 +45,6 @@ class StopwatchReceiver : BroadcastReceiver() {
 
         val serviceIntent = Intent(context, StopwatchService::class.java).apply {
             this.action = intent.action
-            putExtra(StopWatchKey.ID,intent.getIntExtra(StopWatchKey.ID,0))
         }
 
         if (intent.action == StopWatchBroadCastAction.START_FOREGROUND) {

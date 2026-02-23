@@ -1,19 +1,15 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase
 
+import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository
+import com.example.smartalarm.feature.stopwatch.domain.usecase.impl.PauseStopwatchUseCaseImpl
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.google.common.truth.Truth.assertThat
+import io.mockk.*
+import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.test.runTest
 import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
-import com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository
-import com.example.smartalarm.feature.stopwatch.domain.usecase.impl.PauseStopwatchUseCaseImpl
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
-import io.mockk.unmockkAll
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -27,99 +23,90 @@ import org.junit.Test
  *
  * The tests use the [io.mockk.impl.annotations.MockK] library for mocking dependencies and the [kotlinx.coroutines.test.runTest] function for coroutine testing.
  */
+
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class PauseStopwatchUseCaseImplTest {
 
-/*    @MockK
-    private lateinit var repository: StopWatchRepository
+    @MockK
+    private lateinit var repository: StopwatchRepository
 
-    @InjectMockKs
     private lateinit var pauseStopwatchUseCase: PauseStopwatchUseCaseImpl
-
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(repository)
     }
 
-    @After
-    fun tearDown() {
-        unmockkAll()
-    }
-
-
-    //====================================================
+    // ====================================================
     // PauseStopwatchUseCase Test Scenarios
-    //====================================================
+    // ====================================================
 
     @Test
-    fun invoke_whenStopwatchIsAlreadyPaused_shouldReturn_successWithSameStopwatch() = runTest {
-        // Arrange
+    fun `invoke when stopwatch is already paused should return success and not persist`() = runTest {
+        // Arrange: Repository returns a stopwatch that is already isRunning = false
         val pausedStopwatch = createStopwatch(isRunning = false)
+        every { repository.getCurrentStopwatchState() } returns pausedStopwatch
 
         // Act
-        val result = pauseStopwatchUseCase.invoke(pausedStopwatch)
+        val result = pauseStopwatchUseCase.invoke()
 
         // Assert
-        Assert.assertEquals(Result.Success(pausedStopwatch), result)
-        coVerify(exactly = 0) { repository.saveStopwatch(any()) }
+        assertThat(result).isInstanceOf(Result.Success::class.java)
+        // Verify we checked the state but never called save because it was already paused
+        coVerify(exactly = 0) { repository.persistStopwatch(any()) }
     }
 
     @Test
-    fun invoke_whenStopwatchIsRunning_shouldPauseAndReturn_successWithUpdatedStopwatch() = runTest {
-        // Arrange
+    fun `invoke when stopwatch is running should pause and persist updated state`() = runTest {
+        // Arrange: Repository returns a running stopwatch
         val startedStopwatch = createStopwatch(isRunning = true)
-        val pausedStopwatch = startedStopwatch.copy(isRunning = false)
-
-        coEvery { repository.saveStopwatch(any()) } returns Result.Success(Unit)
+        every { repository.getCurrentStopwatchState() } returns startedStopwatch
+        coEvery { repository.persistStopwatch(any()) } returns MyResult.Success(Unit)
 
         // Act
-        val result = pauseStopwatchUseCase.invoke(startedStopwatch)
+        val result = pauseStopwatchUseCase.invoke()
 
         // Assert
-        Assert.assertEquals(Result.Success(pausedStopwatch), result)
-        coVerify(exactly = 1) { repository.saveStopwatch(any()) }
+        val capturedStopwatch = slot<StopwatchModel>()
+        coVerify(exactly = 1) { repository.persistStopwatch(capture(capturedStopwatch)) }
+
+        // Verify the captured state has isRunning = false
+        assertThat(capturedStopwatch.captured.isRunning).isFalse()
+        assertThat(result).isInstanceOf(Result.Success::class.java)
     }
 
     @Test
-    fun invoke_whenRepositorySaveFails_shouldReturn_errorResult() = runTest {
+    fun `invoke when repository save fails should return mapped error`() = runTest {
         // Arrange
         val startedStopwatch = createStopwatch(isRunning = true)
-        val pausedStopwatch = startedStopwatch.copy(isRunning = false)
-        val exception = RuntimeException("Fails to pause stopwatch")
+        every { repository.getCurrentStopwatchState() } returns startedStopwatch
 
-        coEvery { repository.saveStopwatch(any()) } throws exception
+        // Simulate a database failure
+        coEvery { repository.persistStopwatch(any()) } throws RuntimeException("Persistence failed")
 
         // Act
-        val result = pauseStopwatchUseCase.invoke(startedStopwatch)
+        val result = pauseStopwatchUseCase.invoke()
 
         // Assert
-        Assert.assertTrue(result is Result.Error)
-        Assert.assertEquals(exception, (result as Result.Error).exception)
-        coVerify(exactly = 1) { repository.saveStopwatch(any()) }
+        assertThat(result).isInstanceOf(Result.Error::class.java)
+        coVerify(exactly = 1) { repository.persistStopwatch(any()) }
     }
 
-
-
-    //====================================================
+    // ====================================================
     // Helper Method
-    //====================================================
+    // ====================================================
 
-    *//**
-     * Creates a [com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel] with specified attributes.
-     *//*
     private fun createStopwatch(
         isRunning: Boolean,
-        startTime: Long = 0L,
-        elapsedTime: Long = 0L,
-        endTime: Long? = null
+        startTime: Long = 1000L,
+        elapsedTime: Long = 5000L
     ) = StopwatchModel(
-        id = 1,
         startTime = startTime,
         elapsedTime = elapsedTime,
         isRunning = isRunning,
         lapTimes = emptyList(),
-        lapCount = 0,
-        endTime = endTime ?: 0L
-    )*/
+        lapCount = 0
+    )
 }

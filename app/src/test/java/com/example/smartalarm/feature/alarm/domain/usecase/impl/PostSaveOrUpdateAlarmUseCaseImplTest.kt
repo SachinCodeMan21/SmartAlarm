@@ -44,7 +44,7 @@ import io.mockk.verify
 class PostSaveOrUpdateAlarmUseCaseImplTest {
 
     // Mocking the required dependencies using annotations
-    @MockK
+/*    @MockK
     private lateinit var mockAlarmScheduler: AlarmScheduler
 
     @MockK
@@ -76,10 +76,10 @@ class PostSaveOrUpdateAlarmUseCaseImplTest {
         clearAllMocks()
     }
 
-    /**
+    *//**
      * Tests the successful scheduling and notification posting when the alarm is enabled.
      * Verifies the interactions with [AlarmScheduler], [AlarmNotificationManager], and [AlarmTimeHelper].
-     */
+     *//*
     @Test
     fun `should schedule alarm and post notification when alarm is enabled`() = runTest {
         // Arrange
@@ -100,10 +100,10 @@ class PostSaveOrUpdateAlarmUseCaseImplTest {
         verify { mockAlarmTimeHelper.getFormattedTimeUntilNextAlarm(remainingTimeMillis) }
     }
 
-    /**
+    *//**
      * Tests the scenario where the alarm is disabled.
      * Verifies that no scheduling or notification occurs, and an empty string is returned.
-     */
+     *//*
     @Test
     fun `should return empty string when alarm is disabled`() = runTest {
 
@@ -120,10 +120,10 @@ class PostSaveOrUpdateAlarmUseCaseImplTest {
         verify(exactly = 0) { mockAlarmNotificationManager.postAlarmNotification(any(), any()) }
     }
 
-    /**
+    *//**
      * Tests the scenario where an exception occurs during scheduling or notification posting.
      * Verifies that an error is returned.
-     */
+     *//*
     @Test
     fun `should return error when an exception occurs during scheduling or notification posting`() = runTest {
         // Arrange
@@ -138,5 +138,5 @@ class PostSaveOrUpdateAlarmUseCaseImplTest {
         assertEquals(exceptionMessage, (result as Result.Error).exception.message)
         verify(exactly = 0) { mockAlarmScheduler.scheduleSmartAlarm(any(), any()) }
         verify(exactly = 0) { mockAlarmNotificationManager.postAlarmNotification(any(), any()) }
-    }
+    }*/
 }

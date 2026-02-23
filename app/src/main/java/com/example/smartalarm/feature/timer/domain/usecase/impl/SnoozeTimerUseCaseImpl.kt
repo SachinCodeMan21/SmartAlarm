@@ -1,12 +1,13 @@
 package com.example.smartalarm.feature.timer.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerState
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.domain.usecase.contract.SnoozeTimerUseCase
 import com.example.smartalarm.feature.timer.utility.TimerTimeHelper
 import java.util.concurrent.TimeUnit
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.timer.framework.scheduler.TimerScheduler
 import javax.inject.Inject
 
@@ -34,7 +35,7 @@ class SnoozeTimerUseCaseImpl @Inject constructor(
      * @param timer The timer to snooze.
      * @return A [Result] indicating success or failure of the operation.
      */
-    override suspend fun invoke(timer: TimerModel): Result<Unit> {
+    override suspend fun invoke(timer: TimerModel): MyResult<Unit, DataError> {
         // Define the snooze duration (e.g., 1 minute)
         val snoozeDuration = TimeUnit.MINUTES.toMillis(1)
         val remaining = timer.remainingTime + snoozeDuration
@@ -46,12 +47,12 @@ class SnoozeTimerUseCaseImpl @Inject constructor(
             isTimerSnoozed = true,
             remainingTime = remaining,
             snoozedTargetTime = remaining,
-            state = TimerState.RUNNING
+            status = TimerStatus.RUNNING
         )
 
         // Save the updated timer to the repository (in-memory state will be updated)
         return when (val saveResult = timerRepository.persistTimer(updatedTimer)) {
-            is Result.Success -> {
+            is MyResult.Success -> {
                 // Clean up any old alarms (to prevent multiple alarms)
                 timerScheduler.cancelAllScheduledTimers(timer.timerId)
 
@@ -59,9 +60,9 @@ class SnoozeTimerUseCaseImpl @Inject constructor(
                 timerScheduler.scheduleSnoozeTimer(timer.timerId, snoozeDuration)
                 timerScheduler.scheduleTimerTimeout(timer.timerId, remaining)
 
-                Result.Success(Unit) // No need to return the updated model
+                MyResult.Success(Unit) // No need to return the updated model
             }
-            is Result.Error -> Result.Error(saveResult.exception)
+            is MyResult.Error -> MyResult.Error(saveResult.error)
         }
     }
 }

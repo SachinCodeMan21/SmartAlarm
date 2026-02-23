@@ -3,19 +3,16 @@ package com.example.smartalarm.feature.timer.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.core.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.data.mapper.TimerMapper
-import com.example.smartalarm.feature.timer.domain.facade.contract.TimerUseCasesFacade
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.presentation.effect.ShowTimerEffect
 import com.example.smartalarm.feature.timer.presentation.effect.ShowTimerEffect.*
 import com.example.smartalarm.feature.timer.presentation.event.ShowTimerEvent
-import com.example.smartalarm.feature.timer.presentation.model.ShowTimerUiModel
-import com.example.smartalarm.feature.timer.presentation.uistate.ShowTimerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.timer.domain.usecase.TimerUseCase
 import com.example.smartalarm.feature.timer.presentation.model.TimerUiState
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -87,8 +84,8 @@ class ShowTimerViewModel @Inject constructor(
     private fun startTimer(timer: TimerModel) = viewModelScope.launch(defaultDispatcher) {
         if (timer.isTimerRunning) return@launch
         val result = timerUseCase.startTimer(timer)
-        if (result is Result.Error) {
-            postEffect(ShowToast("Failed to start: ${result.exception.localizedMessage}"))
+        if (result is MyResult.Error) {
+            postEffect(ShowError(result.error))
         } else {
             postEffect(StartTimerForegroundNotification)
         }

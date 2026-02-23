@@ -1,9 +1,10 @@
 package com.example.smartalarm.feature.timer.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.domain.usecase.contract.DeleteTimerUseCase
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.timer.framework.notification.manager.TimerNotificationManager
 import com.example.smartalarm.feature.timer.framework.scheduler.TimerScheduler
 import javax.inject.Inject
@@ -22,19 +23,29 @@ class DeleteTimerUseCaseImpl @Inject constructor(
     private val timerNotificationManager: TimerNotificationManager
 ) : DeleteTimerUseCase {
 
-    override suspend fun invoke(timer: TimerModel): Result<Unit> {
-        // 1. Delete from the repository
+    /**
+     * Deletes a timer from storage and clears associated system resources.
+     * * @param timer The timer model to be removed.
+     * @return [MyResult.Success] if deleted, or [MyResult.Error] with [DataError].
+     */
+    override suspend fun invoke(timer: TimerModel): MyResult<Unit, DataError> {
+        // 1. Attempt to delete from the repository
         val result = repository.deleteTimerById(timer.timerId)
 
         return when (result) {
-            is Result.Success -> {
-                // 2. Clear all scheduled alarms/tasks from the OS
-                // This prevents ghost notifications for a deleted timer.
+            is MyResult.Success -> {
+                // 2. Successful deletion: Now safe to clear OS tasks.
+                // This prevents "ghost" alarms for a timer that no longer exists in DB.
                 timerScheduler.cancelAllScheduledTimers(timer.timerId)
                 timerNotificationManager.cancelTimerNotification(timer.timerId)
-                Result.Success(Unit)
+
+                MyResult.Success(Unit)
             }
-            is Result.Error -> Result.Error(result.exception)
+            is MyResult.Error -> {
+                // 3. Deletion failed: Pass the DataError (e.g. Local.NOT_FOUND or BUSY)
+                // back to the ViewModel to notify the user.
+                MyResult.Error(result.error)
+            }
         }
     }
 }

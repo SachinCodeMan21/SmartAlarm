@@ -1,7 +1,5 @@
 package com.example.smartalarm.feature.timer.framework.di.modules
 
-import com.example.smartalarm.feature.timer.data.manager.ShowTimerStateManagerImpl
-import com.example.smartalarm.feature.timer.domain.manager.ShowTimerStateManager
 import com.example.smartalarm.feature.timer.framework.jobmanager.contract.ShowTimerJobManager
 import com.example.smartalarm.feature.timer.framework.jobmanager.contract.TimerServiceJobManager
 import com.example.smartalarm.feature.timer.framework.jobmanager.impl.ShowTimerJobManagerImpl

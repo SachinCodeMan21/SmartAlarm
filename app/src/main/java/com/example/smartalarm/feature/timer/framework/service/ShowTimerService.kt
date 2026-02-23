@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import com.example.smartalarm.feature.timer.utility.TimerRingtonePlayer
-import com.example.smartalarm.feature.timer.domain.model.TimerState
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.domain.usecase.TimerUseCase
 import kotlinx.coroutines.Dispatchers
@@ -39,12 +39,11 @@ class ShowTimerService : Service() {
     lateinit var repository: TimerRepository // We observe this now
     @Inject
     lateinit var notificationHandler: TimerNotificationHandler
-
     @Inject
     lateinit var timerRingtoneHelper: TimerRingtonePlayer
 
     // Scope for the service lifecycle
-    private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     // A specific job for the 1-second ticking loop
     private var tickerJob: Job? = null
@@ -100,8 +99,8 @@ class ShowTimerService : Service() {
 
                 // 2. Categorize Timers
                 val runningTimers = timers.filter { it.isTimerRunning }
-                val completedTimers = timers.filter { it.remainingTime <= 0 && it.state != TimerState.STOPPED }
-                val activeTimers = timers.filter { it.remainingTime > 0 && it.state != TimerState.STOPPED }
+                val completedTimers = timers.filter { it.remainingTime <= 0 && it.status != TimerStatus.STOPPED }
+                val activeTimers = timers.filter { it.remainingTime > 0 && it.status != TimerStatus.STOPPED }
 
                 // 3. Manage the "Heartbeat" (Ticker)
                 manageTicker(runningTimers.isNotEmpty())
@@ -140,9 +139,11 @@ class ShowTimerService : Service() {
         activeTimers: List<TimerModel>,
         completedTimers: List<TimerModel>
     ) {
+
+
         // --- A. Ringtone Logic ---
+
         // Play if any timer is effectively "ringing" (completed but not stopped)
-        // Adjust this logic based on your exact definition of when ringtone stops
         val shouldRing = completedTimers.any { it.isTimerRunning }
         if (shouldRing) {
             timerRingtoneHelper.playDefaultTimer()
@@ -152,6 +153,7 @@ class ShowTimerService : Service() {
         }
 
         // --- B. Notification Logic ---
+
         // Case 1: Active + Completed (Completed takes Foreground)
         if (activeTimers.isNotEmpty() && completedTimers.isNotEmpty()) {
             notificationHandler.showForegroundTimerNotification(
@@ -162,6 +164,7 @@ class ShowTimerService : Service() {
             // Show active as a secondary normal notification
             notificationHandler.showNormalTimerNotification(activeTimers)
         }
+
         // Case 2: Only Completed
         else if (completedTimers.isNotEmpty()) {
             notificationHandler.showForegroundTimerNotification(
@@ -171,6 +174,7 @@ class ShowTimerService : Service() {
             )
             notificationHandler.removeNormalTimerNotification()
         }
+
         // Case 3: Only Active
         else if (activeTimers.isNotEmpty()) {
             notificationHandler.showForegroundTimerNotification(
@@ -180,34 +184,19 @@ class ShowTimerService : Service() {
             )
             notificationHandler.removeNormalTimerNotification() // Remove the secondary one
         }
+
         // Case 4: Nothing relevant (e.g. all reset)
         else {
             stopService()
         }
     }
 
+
+
     // ────────────────────────────────────────────────────────────────
     //  4. Action Handlers (Delegates to UseCase)
     // ────────────────────────────────────────────────────────────────
 
-    private suspend fun getCurrentTimerList() : List<TimerModel>{
-        return timerUseCase.getAllTimers().first()
-    }
-
-    private fun handleAction(intent: Intent, action: suspend (TimerModel) -> Unit) {
-        val id = intent.getIntExtra(TimerKeys.TIMER_ID, -1)
-        if (id == -1) return
-
-        serviceScope.launch {
-            // We get the current model from the repo snapshot
-            val timer = getCurrentTimerList().find { it.timerId == id }
-            timer?.let {
-                action(it)
-            }
-        }
-    }
-
-    // Handle the timer timeout action
     private fun handleTimeoutAction(intent: Intent) {
 
         val timerId = intent.getIntExtra(TimerKeys.TIMER_ID, -1)
@@ -246,5 +235,28 @@ class ShowTimerService : Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
+
+
+    // ────────────────────────────────────────────────────────────────
+    //  5. Helper Method
+    // ────────────────────────────────────────────────────────────────
+
+    private suspend fun getCurrentTimerList() : List<TimerModel>{
+        return timerUseCase.getAllTimers().first()
+    }
+
+    private fun handleAction(intent: Intent, action: suspend (TimerModel) -> Unit) {
+        val id = intent.getIntExtra(TimerKeys.TIMER_ID, -1)
+        if (id == -1) return
+
+        serviceScope.launch {
+            // We get the current model from the repo snapshot
+            val timer = getCurrentTimerList().find { it.timerId == id }
+            timer?.let {
+                action(it)
+            }
+        }
+    }
+
 
 }

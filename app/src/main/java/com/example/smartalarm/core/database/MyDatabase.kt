@@ -11,9 +11,10 @@ import com.example.smartalarm.feature.clock.data.local.dao.ClockDao
 import com.example.smartalarm.feature.clock.data.local.dao.PlaceDao
 import com.example.smartalarm.feature.clock.data.local.entity.ClockEntity
 import com.example.smartalarm.feature.clock.data.local.entity.PlaceEntity
-import com.example.smartalarm.feature.stopwatch.data.local.dao.StopWatchDao
-import com.example.smartalarm.feature.stopwatch.data.local.entity.StopWatchEntity
-import com.example.smartalarm.feature.stopwatch.data.local.entity.StopWatchLapEntity
+import com.example.smartalarm.feature.stopwatch.data.local.dao.StopwatchDao
+import com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchStateEntity
+import com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchLapEntity
+import com.example.smartalarm.feature.timer.data.local.converter.TimerConverters
 import com.example.smartalarm.feature.timer.data.local.dao.TimerDao
 import com.example.smartalarm.feature.timer.data.local.entity.TimerEntity
 
@@ -21,8 +22,8 @@ import com.example.smartalarm.feature.timer.data.local.entity.TimerEntity
  * Room database for managing alarm-related data in the app.
  *
  * This database provides access to the following entities:
- * - [com.example.smartalarm.feature.stopwatch.data.local.entity.StopWatchEntity]: Stopwatch session information & Operations.
- * - [com.example.smartalarm.feature.stopwatch.data.local.entity.StopWatchLapEntity]: Individual lap records for stopwatches.
+ * - [com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchStateEntity]: Stopwatch session information & Operations.
+ * - [com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchLapEntity]: Individual lap records for stopwatches.
  *
  * Version 1 with schema export disabled.
  */
@@ -33,13 +34,13 @@ import com.example.smartalarm.feature.timer.data.local.entity.TimerEntity
         ClockEntity::class,
         PlaceEntity::class,
         TimerEntity::class,
-        StopWatchEntity::class,
-        StopWatchLapEntity::class
+        StopwatchStateEntity::class,
+        StopwatchLapEntity::class
     ],
     version = 1,
     exportSchema = false
 )
-@TypeConverters(AlarmConverters::class)
+@TypeConverters(AlarmConverters::class, TimerConverters::class)
 abstract class MyDatabase : RoomDatabase() {
 
     /** Provides access to alarm-related database operations. */
@@ -55,6 +56,6 @@ abstract class MyDatabase : RoomDatabase() {
     abstract fun timerDao(): TimerDao
 
     /** Provides access to stopwatch-related database operations. */
-    abstract fun stopwatchDao(): StopWatchDao
+    abstract fun stopwatchDao(): StopwatchDao
 
 }

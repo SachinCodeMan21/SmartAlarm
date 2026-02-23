@@ -124,7 +124,7 @@ class TimerLocalDataSourceIT {
         timerLocalDatasource.saveTimer(timerEntity)
 
         // Act: Delete the saved timer by ID
-        timerLocalDatasource.deleteTimerById(timerEntity.timerId)
+        timerLocalDatasource.deleteTimerById(timerEntity.id)
 
         // Assert: The list of timers should be empty after deletion
         val result = timerLocalDatasource.getTimerList().first()
@@ -137,7 +137,7 @@ class TimerLocalDataSourceIT {
         val timerEntity = createTimerEntity(timerId = 1)
 
         // Act: Try to delete a non-existent timer by ID
-        timerLocalDatasource.deleteTimerById(timerEntity.timerId)
+        timerLocalDatasource.deleteTimerById(timerEntity.id)
 
         // Assert: The list should still be empty (no timers in the database)
         val result = timerLocalDatasource.getTimerList().first()
@@ -153,8 +153,8 @@ class TimerLocalDataSourceIT {
         timerLocalDatasource.saveTimer(timer2)
 
         // Act: Delete all timers
-        timerLocalDatasource.deleteTimerById(timer1.timerId)
-        timerLocalDatasource.deleteTimerById(timer2.timerId)
+        timerLocalDatasource.deleteTimerById(timer1.id)
+        timerLocalDatasource.deleteTimerById(timer2.id)
 
         // Assert: The list of timers should be empty after deletion
         val result = timerLocalDatasource.getTimerList().first()
@@ -168,14 +168,14 @@ class TimerLocalDataSourceIT {
     // ================================================================================================
     private fun createTimerEntity(timerId : Int = 0, remainingTime : Long = 60000) : TimerEntity {
         return TimerEntity(
-            timerId = timerId,
-            startTime = 0,
-            remainingTime = remainingTime,
-            endTime = 6000,
-            targetTime = 60000,
+            id = timerId,
+            startTimeMillis = 0,
+            remainingMillis = remainingTime,
+            endTimeMillis = 6000,
+            targetDurationMillis = 60000,
             isTimerRunning = false,
             isTimerSnoozed = false,
-            snoozedTargetTime = 0,
+            snoozedTargetDurationMillis = 0,
             state = "RUNNING"
         )
     }

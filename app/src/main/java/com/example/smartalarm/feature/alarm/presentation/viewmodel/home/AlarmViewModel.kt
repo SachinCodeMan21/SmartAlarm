@@ -168,7 +168,7 @@ class AlarmViewModel @Inject constructor(
                 }
 
                 is Result.Error -> {
-                    postEffect(ShowToastMessage(result.exception.message.toString()))
+                    //postEffect(ShowToastMessage(result.exception.message.toString()))
                 }
 
             }
@@ -205,7 +205,7 @@ class AlarmViewModel @Inject constructor(
                     }
 
                     is Result.Error -> {
-                        postEffect(ShowToastMessage(result.exception.message.toString()))
+                        //postEffect(ShowToastMessage(result.exception.message.toString()))
                     }
                 }
 
@@ -237,7 +237,7 @@ class AlarmViewModel @Inject constructor(
                 }
 
                 is Result.Error -> {
-                    postEffect(ShowToastMessage(result.exception.message.toString()))
+                    //postEffect(ShowToastMessage(result.exception.message.toString()))
                 }
             }
 

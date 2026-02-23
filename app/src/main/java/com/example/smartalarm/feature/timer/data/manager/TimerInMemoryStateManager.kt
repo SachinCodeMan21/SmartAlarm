@@ -29,13 +29,4 @@ interface TimerInMemoryStateManager {
      */
     fun updateFromTicker()
 
-    // --- Helper Methods (Reading from the Live Feed) ---
-
-    fun getTimer(timerId: Int): TimerModel?
-
-    fun hasRunningTimers(): Boolean
-
-    fun getActiveTimers(): List<TimerModel>
-
-    fun getCompletedTimers(): List<TimerModel>
 }

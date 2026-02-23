@@ -2,25 +2,24 @@ package com.example.smartalarm.feature.stopwatch.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.stopwatch.framework.jobmanager.contract.BlinkEffectJobManager
 import com.example.smartalarm.feature.stopwatch.presentation.effect.StopwatchEffect
 import com.example.smartalarm.feature.stopwatch.presentation.event.StopwatchEvent
 import com.example.smartalarm.feature.stopwatch.presentation.mapper.StopwatchUiMapper
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchUiModel
-import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import com.example.smartalarm.core.di.annotations.DefaultDispatcher
 import com.example.smartalarm.feature.stopwatch.domain.usecase.StopwatchUseCases
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 
@@ -33,17 +32,13 @@ import javax.inject.Inject
  *
  * @property stopwatchUsecase Encapsulates domain operations (start, pause, lap, delete).
  * @property stopWatchUiMapper Converts domain models into UI-friendly models (e.g., formatting time strings).
- * @property resourceProvider Helper to fetch localized strings or system resources.
  * @property blinkEffectJobManager Manages the coroutine job that toggles time visibility when paused.
- * @property defaultDispatcher The coroutine dispatcher used for non-UI intensive background tasks.
  */
 @HiltViewModel
 class StopWatchViewModel @Inject constructor(
     private val stopwatchUsecase: StopwatchUseCases,
     private val stopWatchUiMapper: StopwatchUiMapper,
-    private val resourceProvider: ResourceProvider,
     private val blinkEffectJobManager: BlinkEffectJobManager,
-    @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     /**
@@ -54,15 +49,11 @@ class StopWatchViewModel @Inject constructor(
      * after the last collector disappears, preventing restarts during configuration changes.
      */
     val uiState: StateFlow<StopwatchUiModel> = stopwatchUsecase.getStopwatch()
-        .map { model ->
-            // Logic: Blink if paused with time on the clock, otherwise stay solid.
-            if (!model.isRunning && model.elapsedTime > 0) {
-                startBlinkingJob()
-            } else {
-                stopBlinkingJob()
-            }
-            stopWatchUiMapper.mapToUiModel(model)
+        .onEach { model ->
+            // Handle side effects separately from data mapping
+            updateBlinkingState(model.isRunning, model.elapsedTime)
         }
+        .map { model -> stopWatchUiMapper.mapToUiModel(model) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -70,18 +61,18 @@ class StopWatchViewModel @Inject constructor(
         )
 
     /**
-     * A [SharedFlow] for one-time side effects that should not be part of the persistent state.
+     * A [Channel] for one-time side effects that should not be part of the persistent state.
      * Examples: Starting/Stopping the foreground service or showing a Toast.
      */
-    private val _uiEffect = MutableSharedFlow<StopwatchEffect>(0)
-    val uiEffect: Flow<StopwatchEffect> = _uiEffect.asSharedFlow()
+    private val _uiEffect = Channel<StopwatchEffect>(Channel.BUFFERED)
+    val uiEffect: Flow<StopwatchEffect> = _uiEffect.receiveAsFlow()
 
 
     /**
      * Publishes a one-off effect to the [uiEffect] stream.
      */
     private fun postEffect(effect: StopwatchEffect) {
-        viewModelScope.launch { _uiEffect.emit(effect) }
+        viewModelScope.launch { _uiEffect.send(effect) }
     }
 
 
@@ -107,6 +98,7 @@ class StopWatchViewModel @Inject constructor(
     //-------------------------
     // Stopwatch Action Methods
     //-------------------------
+
     /**
      * Switches the stopwatch between Running and Paused states.
      */
@@ -120,43 +112,65 @@ class StopWatchViewModel @Inject constructor(
      * persistence when the UI is hidden.
      */
     private fun startStopwatch() = viewModelScope.launch {
-        stopwatchUsecase.startStopwatch()
-        postEffect(StopwatchEffect.StartForegroundService)
+        val result = stopwatchUsecase.startStopwatch()
+        if (result is MyResult.Error) {
+            postEffect(StopwatchEffect.ShowError(result.error))
+        } else {
+            postEffect(StopwatchEffect.StartForegroundService)
+        }
     }
 
     /**
      * Pauses the stopwatch via the domain layer.
      */
     private fun pauseStopwatch() = viewModelScope.launch {
-        stopwatchUsecase.pauseStopwatch()
+        val result = stopwatchUsecase.pauseStopwatch()
+        handleErrorResult(result)
     }
 
     /**
      * Records the current elapsed time as a lap.
      */
     private fun recordStopwatchLap() = viewModelScope.launch {
-        stopwatchUsecase.lapStopwatch()
+        val result = stopwatchUsecase.lapStopwatch()
+        handleErrorResult(result)
     }
 
     /**
      * Resets the stopwatch to zero, clears laps, and stops the foreground service.
      */
     private fun resetStopwatch() = viewModelScope.launch {
-        stopwatchUsecase.deleteStopwatch()
+        val result = stopwatchUsecase.deleteStopwatch()
         postEffect(StopwatchEffect.StopForegroundService)
+        handleErrorResult(result)
     }
+
 
 
     //---------------------
     // Blink Job Methods
     //--------------------
+
+    /**
+     * Updates the blinking state based on the current stopwatch state.
+     *
+     * @param isRunning Whether the stopwatch is currently running.
+     */
+    private fun updateBlinkingState(isRunning: Boolean, elapsedTime: Long) {
+        if (!isRunning && elapsedTime > 0) {
+            startBlinkingJob()
+        } else {
+            stopBlinkingJob()
+        }
+    }
+
+
     /**
      * Initiates the blinking visual effect for the "Paused" state.
-     * Runs on the [defaultDispatcher] to keep the main thread clear.
      */
-    private fun startBlinkingJob() = viewModelScope.launch(defaultDispatcher) {
+    private fun startBlinkingJob() {
         blinkEffectJobManager.startBlinking(
-            scope = this,
+            scope = viewModelScope,
             onVisibilityChanged = { postEffect(StopwatchEffect.BlinkVisibilityChanged(it)) }
         )
     }
@@ -168,4 +182,25 @@ class StopWatchViewModel @Inject constructor(
         blinkEffectJobManager.stopBlinking()
         postEffect(StopwatchEffect.BlinkVisibilityChanged(true))
     }
+
+
+
+    //---------------------
+    // Helper Method
+    // --------------------
+
+    fun getIsStopwatchRunning() : Boolean {
+        return stopwatchUsecase.getCurrentStopwatch().isRunning
+    }
+
+
+    /**
+     * Helper to handle common result patterns and post errors to UI.
+     */
+    private fun handleErrorResult(result: MyResult<Unit, DataError>) {
+        if (result is MyResult.Error) {
+            postEffect(StopwatchEffect.ShowError(result.error))
+        }
+    }
+
 }

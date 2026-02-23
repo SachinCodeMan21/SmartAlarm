@@ -1,10 +1,11 @@
 package com.example.smartalarm.feature.timer.data.repository
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.GeneralErrorMapper
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.data.datasource.contract.TimerLocalDataSource
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.core.utility.extension.runCatchingResult
 import com.example.smartalarm.feature.timer.data.manager.TimerInMemoryStateManager
 import com.example.smartalarm.feature.timer.data.mapper.TimerMapper.toEntity
 import kotlinx.coroutines.flow.StateFlow
@@ -39,67 +40,28 @@ class TimerRepositoryImpl @Inject constructor(
     }
 
     /**
-     * Persists a timer to the local data source.
-     * Note: The UI updates via the 'init' block observer, not directly from here.
+     * Persists a timer. Maps SQLite/Room exceptions to [DataError.Local].
      */
-    override suspend fun persistTimer(timerModel: TimerModel): Result<Unit> = runCatchingResult {
-        val entity = timerModel.toEntity()
-        localDataSource.saveTimer(entity)
+    override suspend fun persistTimer(timerModel: TimerModel): MyResult<Unit, DataError> {
+        return try {
+            val entity = timerModel.toEntity()
+            localDataSource.saveTimer(entity)
+            MyResult.Success(Unit)
+        } catch (e: Throwable) {
+            // Converts Throwable into our specific DataError.Local or Unexpected
+            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
+        }
     }
 
     /**
-     * Deletes a timer from the local data source.
+     * Deletes a timer. Maps potential IO or Database errors to [DataError.Local].
      */
-    override suspend fun deleteTimerById(timerId: Int): Result<Unit> = runCatchingResult {
-        localDataSource.deleteTimerById(timerId)
+    override suspend fun deleteTimerById(timerId: Int): MyResult<Unit, DataError> {
+        return try {
+            localDataSource.deleteTimerById(timerId)
+            MyResult.Success(Unit)
+        } catch (e: Throwable) {
+            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
+        }
     }
 }
-//
-///**
-// * Implementation of the [TimerRepository] interface that provides a layer of abstraction over
-// * the local data source for managing timer data.
-// *
-// * This class handles the conversion between [TimerEntity] and [TimerModel], ensuring that the
-// * domain layer works only with models, while the data layer manages persistence.
-// *
-// * @property localDataSource A local data source responsible for actual storage and retrieval
-// * of timer entities.
-// */
-//class TimerRepositoryImpl @Inject constructor(
-//    private val localDataSource: TimerLocalDataSource
-//) : TimerRepository {
-//
-//    /**
-//     * Retrieves a flow of a list of timers from the local data source.
-//     * Each [TimerEntity] is mapped to a [TimerModel].
-//     *
-//     * @return [Flow] emitting lists of [TimerModel]s.
-//     */
-//    override fun getTimerList(): Flow<List<TimerModel>> {
-//        return localDataSource.getTimerList().map { entityList ->
-//            entityList.map { it.toDomainModel() }
-//        }
-//    }
-//
-//    /**
-//     * Saves a timer to the local data source after converting it to an entity.
-//     *
-//     * @param timerModel The [TimerModel] to be saved.
-//     * @return [Result.Success] if saving was successful, or [Result.Error] with the exception.
-//     */
-//    override suspend fun saveTimer(timerModel: TimerModel): Result<Unit> = runCatchingResult {
-//        val entity = timerModel.toEntity()
-//        localDataSource.saveTimer(entity)
-//    }
-//
-//    /**
-//     * Deletes a timer identified by its ID from the local data source.
-//     *
-//     * @param timerId The unique ID of the timer to delete.
-//     * @return [Result.Success] if deletion was successful, or [Result.Error] with the exception.
-//     */
-//    override suspend fun deleteTimerById(timerId: Int): Result<Unit> = runCatchingResult {
-//        localDataSource.deleteTimerById(timerId)
-//    }
-//
-//}

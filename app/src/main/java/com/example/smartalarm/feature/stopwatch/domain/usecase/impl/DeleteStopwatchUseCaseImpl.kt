@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase.impl
 
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository
 import com.example.smartalarm.feature.stopwatch.domain.usecase.contract.DeleteStopwatchUseCase
 import javax.inject.Inject
 
@@ -12,11 +13,10 @@ import javax.inject.Inject
  * @param repository The stopwatch repository handling data operations.
  */
 class DeleteStopwatchUseCaseImpl @Inject constructor(
-    private val repository: StopWatchRepository
+    private val repository: StopwatchRepository
 ) : DeleteStopwatchUseCase {
 
-    override suspend fun invoke(): Result<Unit> {
-        val stopwatch = repository.getCurrentStopwatchState()
-        return repository.deleteStopwatch(stopwatch.id)
+    override suspend fun invoke(): MyResult<Unit, DataError> {
+        return repository.deleteStopwatch()
     }
 }

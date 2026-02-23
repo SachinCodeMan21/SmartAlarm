@@ -5,6 +5,7 @@ import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmByIdUseCase
 import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.R
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import javax.inject.Inject
 
@@ -45,7 +46,8 @@ class GetAlarmByIdUseCaseImpl @Inject constructor(
                 Result.Success(result.data)
             }
             is Result.Error -> {
-                Result.Error(Exception(resourceProvider.getString(R.string.failed_to_retrieve_the_alarm_details)))
+                //Result.Error(Exception(resourceProvider.getString(R.string.failed_to_retrieve_the_alarm_details)))
+                Result.Error(result.error)
             }
         }
 

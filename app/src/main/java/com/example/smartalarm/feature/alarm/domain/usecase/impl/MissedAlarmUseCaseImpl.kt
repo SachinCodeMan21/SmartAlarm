@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.MissedAlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
@@ -86,12 +87,12 @@ class MissedAlarmUseCaseImpl @Inject constructor(
 
                 is Result.Error -> {
                     // Return an error result if the update fails
-                    Result.Error(updateResult.exception)
+                    Result.Error(updateResult.error)
                 }
             }
         } catch (exception: Exception) {
             // Catch unexpected errors and return a Result.Error with the exception
-            Result.Error(exception)
+            Result.Error(ExceptionMapper.map(exception))
         }
     }
 

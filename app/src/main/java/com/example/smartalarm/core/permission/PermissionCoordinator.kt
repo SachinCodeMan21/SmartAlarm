@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.example.smartalarm.R
+import com.example.smartalarm.core.permission.model.AppFeature
 import com.example.smartalarm.core.permission.model.AppPermission
 import com.example.smartalarm.core.permission.model.PermissionResult
 import com.example.smartalarm.core.permission.model.PermissionStatus
@@ -27,6 +28,7 @@ class PermissionCoordinator(
     fun runPermissionGatekeeper(
         permissions: List<AppPermission>,
         activity: Activity,
+        feature: AppFeature,
         onFinished: (Map<AppPermission, Boolean>) -> Unit
     ) {
 
@@ -50,7 +52,7 @@ class PermissionCoordinator(
             }
 
             // Otherwise, start the UI/Request flow for this permission
-            coordinateSinglePermission(current, activity) { isGranted ->
+            coordinateSinglePermission(current, activity, feature) { isGranted ->
                 results[current] = isGranted
                 processNext(index + 1) // Only moves to next when UI is dismissed
             }
@@ -63,6 +65,7 @@ class PermissionCoordinator(
     private fun coordinateSinglePermission(
         permission: AppPermission,
         activity: Activity,
+        feature: AppFeature,
         onDone: (Boolean) -> Unit
     ) {
         val status = checker.checkPermissionStatus(permission, activity)
@@ -73,17 +76,18 @@ class PermissionCoordinator(
                 // Wait for DialogFragment Listener
                 showRationaleDialog(
                     permission,
-                    onConfirm = { executeSystemRequest(permission, onDone) },
+                    onConfirm = { executeSystemRequest(permission, feature,onDone) },
                     onCancel = { onDone(false) }
                 )
             }
 
-            else -> executeSystemRequest(permission, onDone)
+            else -> executeSystemRequest(permission, feature,onDone)
         }
     }
 
     private fun executeSystemRequest(
         permission: AppPermission,
+        featureName: AppFeature,
         onDone: (Boolean) -> Unit
     ) {
         requester.requestSinglePermission(permission) { result ->
@@ -97,22 +101,34 @@ class PermissionCoordinator(
                 is PermissionResult.RuntimePermissionResult.Denied -> {
                     showRationaleDialog(
                         permission,
-                        onConfirm = { executeSystemRequest(permission, onDone) },
+                        onConfirm = { executeSystemRequest(permission, featureName,onDone) },
                         onCancel = { onDone(false) }
                     )
                 }
                 is PermissionResult.RuntimePermissionResult.PermanentlyDenied -> {
-                    // Wait for DialogFragment Listener
-                    showSettingsDialog(
-                        permission,
-                        onSettingsClicked = {
-                            // Use the explicit Settings call here
-                            requester.openAppSettings(permission) {
-                                onDone(checker.isGranted(permission))
+
+                    // Check if we've already shown this for the current feature
+                    val permissionKey = permission.toString()
+
+                    if (PermissionSessionTracker.hasBeenShown(featureName, permissionKey)) {
+                        // SILENT DENIAL: We've already shown the dialog this session
+                        onDone(false)
+                    } else {
+                        // Show dialog and mark as shown
+                        showSettingsDialog(
+                            permission,
+                            onSettingsClicked = {
+                                requester.openAppSettings(permission) {
+                                    onDone(checker.isGranted(permission))
+                                }
+                            },
+                            onCancelClicked = {
+                                // Even if they cancel, mark it as shown so we don't ask again
+                                PermissionSessionTracker.markAsShown(featureName, permissionKey)
+                                onDone(false)
                             }
-                        },
-                        onCancelClicked = { onDone(false) }
-                    )
+                        )
+                    }
                 }
 
                 is PermissionResult.SpecialPermissionResult.Granted,

@@ -8,6 +8,7 @@ import com.example.smartalarm.feature.alarm.framework.notification.manager.Alarm
 import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
 import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.R
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel
 import com.example.smartalarm.feature.alarm.utility.helper.contract.AlarmTimeHelper
 import javax.inject.Inject
@@ -46,12 +47,14 @@ class UndoAlarmUseCaseImpl @Inject constructor(
                 }
                 is Result.Error -> {
                     // If saving fails, return an error message.
-                    Result.Error(Exception(resourceProvider.getString(R.string.error_failed_to_restore_alarm)))
+                    //Result.Error(Exception(resourceProvider.getString(R.string.error_failed_to_restore_alarm)))
+                    Result.Error(result.error)
                 }
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
             // Catch any unexpected errors and return an error result.
-            Result.Error(Exception(resourceProvider.getString(R.string.error_failed_to_restore_alarm)))
+           // Result.Error(Exception(resourceProvider.getString(R.string.error_failed_to_restore_alarm)))
+            Result.Error(ExceptionMapper.map(e))
         }
     }
 
@@ -85,7 +88,8 @@ class UndoAlarmUseCaseImpl @Inject constructor(
             }
         } catch (exception: Exception) {
             // If an error occurs during scheduling, return an error result.
-            Result.Error(exception)
+            //Result.Error(exception)
+            Result.Error(ExceptionMapper.map(exception))
         }
     }
 }

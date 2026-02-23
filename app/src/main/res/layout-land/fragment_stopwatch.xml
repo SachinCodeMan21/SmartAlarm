@@ -7,6 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".feature.stopwatch.presentation.view.StopwatchFragment">
 
+
+    <!-- # 1. [Guideline Section] #  -->
+
     <!-- StopWatch Top Guideline -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/stopwatch_guideline_top"
@@ -40,6 +43,9 @@
         app:layout_constraintGuide_percent="@dimen/guideline_stopwatch_bottom" />
 
 
+
+    <!-- # 2. [Stopwatch ProgressBar Section] #  -->
+
     <!-- Circular ProgressBar -->
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/stopwatch_progress_bar_indicator"
@@ -54,6 +60,10 @@
         app:layout_constraintTop_toBottomOf="@+id/stopwatch_guideline_top"
         app:trackThickness="@dimen/stopwatch_progress_indicator_thickness" />
 
+
+
+    <!-- # 3. Stopwatch Time Display Section  #  -->
+
     <!-- Stopwatch Seconds Time Label -->
     <TextView
         android:id="@+id/stopwatch_seconds_text"
@@ -61,6 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        android:textSize="@dimen/stopwatch_elapsed_time_size"
         app:layout_constraintBottom_toBottomOf="@id/stopwatch_progress_bar_indicator"
         app:layout_constraintEnd_toEndOf="@id/stopwatch_progress_bar_indicator"
         app:layout_constraintStart_toStartOf="@id/stopwatch_progress_bar_indicator"
@@ -87,6 +98,10 @@
         android:visibility="visible"
         app:constraint_referenced_ids="stopwatch_seconds_text,stopwatch_milliSeconds_text" />
 
+
+
+    <!-- # 4. [Stopwatch Lap Time Display Section]  #  -->
+
     <!-- Stopwatch RecordLap Times RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stopwatch_lap_rv"
@@ -101,6 +116,10 @@
         app:layout_constraintStart_toEndOf="@+id/stopwatch_progress_bar_indicator"
         app:layout_constraintEnd_toStartOf="@+id/stopwatch_guideline_end"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+
+
+    <!-- # 5. [Stopwatch Action Section]  #  -->
 
     <!-- FAB Reset,Play/Pause,Lap Buttons -->
 

@@ -16,11 +16,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartalarm.R
+import com.example.smartalarm.core.exception.asUiText
 import com.example.smartalarm.core.permission.PermissionChecker
 import com.example.smartalarm.core.permission.PermissionRequester
 import com.example.smartalarm.core.permission.model.AppPermission
 import com.example.smartalarm.core.permission.PermissionCoordinator
+import com.example.smartalarm.core.permission.model.AppFeature
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
+import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.FragmentStopwatchBinding
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchBroadCastAction
 import com.example.smartalarm.feature.stopwatch.presentation.adapter.StopWatchLapAdapter
@@ -28,9 +31,9 @@ import com.example.smartalarm.feature.stopwatch.presentation.effect.StopwatchEff
 import com.example.smartalarm.feature.stopwatch.presentation.event.StopwatchEvent
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchLapUiModel
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchUiModel
-import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.feature.stopwatch.framework.services.StopwatchService
 import com.example.smartalarm.feature.stopwatch.presentation.viewmodel.StopWatchViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -176,8 +179,13 @@ class StopwatchFragment : Fragment() {
         }
 
         toggleStopwatchBtn.setOnClickListener {
-            permissionCoordinator.runPermissionGatekeeper(listOf(AppPermission.Runtime.PostNotifications),requireActivity()){
+            if (stopWatchViewModel.getIsStopwatchRunning()){
                 stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
+            }
+            else{
+                permissionCoordinator.runPermissionGatekeeper(listOf(AppPermission.Runtime.PostNotifications),requireActivity(), AppFeature.STOPWATCH){
+                    stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
+                }
             }
         }
 
@@ -231,7 +239,10 @@ class StopwatchFragment : Fragment() {
             stopWatchViewModel.uiEffect.collect { effect ->
                 when (effect) {
                     is StopwatchEffect.BlinkVisibilityChanged -> binding.stopwatchTimeTextGroup.isVisible = effect.isVisible
-                    is StopwatchEffect.ShowError -> requireContext().showToast(effect.message)
+                    is StopwatchEffect.ShowError -> {
+                        val message = effect.error.asUiText().asString(requireContext())
+                        binding.root.showSnackBar(message, Snackbar.LENGTH_SHORT)
+                    }
                     is StopwatchEffect.StartForegroundService -> startStopwatchService()
                     is StopwatchEffect.StopForegroundService -> stopStopwatchService()
                 }
@@ -344,10 +355,6 @@ class StopwatchFragment : Fragment() {
             }
         }
     }
-
-
-
-
 
 
 

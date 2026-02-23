@@ -120,7 +120,7 @@ class ShowAlarmViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = getAlarmByIdUseCase(alarmId)) {
                 is Result.Success -> updateState(result.data)
-                is Result.Error -> postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
+                is Result.Error -> {} // postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
             }
         }
     }
@@ -137,7 +137,7 @@ class ShowAlarmViewModel @Inject constructor(
                     //alarmServiceController.stopAlarmService()
                     //postEffect(ShowAlarmEffect.FinishActivity)
                 }
-                is Result.Error -> postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
+                is Result.Error -> {} //postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
             }
         }
     }
@@ -156,7 +156,7 @@ class ShowAlarmViewModel @Inject constructor(
                         //alarmServiceController.stopAlarmService()
                         //postEffect(ShowAlarmEffect.FinishActivity)
                     }
-                    is Result.Error -> postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
+                    is Result.Error -> {} //postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
                 }
             } else {
                 if (isPreview) {

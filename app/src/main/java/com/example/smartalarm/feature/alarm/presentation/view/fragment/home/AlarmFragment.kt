@@ -19,6 +19,7 @@ import com.example.smartalarm.R
 import com.example.smartalarm.core.permission.PermissionChecker
 import com.example.smartalarm.core.permission.PermissionCoordinator
 import com.example.smartalarm.core.permission.PermissionRequester
+import com.example.smartalarm.core.permission.model.AppFeature
 import com.example.smartalarm.core.permission.model.AppPermission
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.extension.showToast
@@ -104,7 +105,7 @@ class AlarmFragment : Fragment() {
     private fun setUpAddAlarmButton() {
         binding.addAlarmBtn.setOnClickListener {
             val permissions = listOf(AppPermission.Runtime.PostNotifications, AppPermission.Special.FullScreenNotification, AppPermission.Special.ScheduleExactAlarm)
-            permissionCoordinator.runPermissionGatekeeper(permissions,requireActivity()){
+            permissionCoordinator.runPermissionGatekeeper(permissions,requireActivity(), AppFeature.ALARM){
                 alarmViewModel.handleEvent(AlarmEvent.AddNewAlarm)
             }
         }

@@ -1,5 +1,7 @@
 package com.example.smartalarm.core.model
 
+import com.example.smartalarm.core.exception.AppError
+
 /**
  * A sealed class representing the result of an operation, which can either succeed with data or fail with an error.
  *
@@ -23,6 +25,6 @@ sealed class Result<out T> {
      *
      * @property exception The exception that caused the failure.
      */
-    data class Error(val exception: Throwable) : Result<Nothing>()
+    data class Error(val error: AppError) : Result<Nothing>()
 
 }

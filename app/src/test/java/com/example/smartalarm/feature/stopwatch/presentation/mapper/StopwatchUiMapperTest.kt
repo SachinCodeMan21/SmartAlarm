@@ -3,7 +3,7 @@ package com.example.smartalarm.feature.stopwatch.presentation.mapper
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
-import com.example.smartalarm.feature.stopwatch.domain.model.StopWatchLapModel
+import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchLapModel
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchLapUiModel
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchUiModel
@@ -80,8 +80,8 @@ class StopwatchUiMapperTest {
             elapsedTime = 150500L,
             isRunning = true,
             lapTimes = listOf(
-                StopWatchLapModel(1, 1000L, 4000L, 5000L),
-                StopWatchLapModel(2, 6000L, 8000L, 9000L)
+                StopwatchLapModel(1, 1000L, 4000L, 5000L),
+                StopwatchLapModel(2, 6000L, 8000L, 9000L)
             )
         )
 
@@ -125,7 +125,7 @@ class StopwatchUiMapperTest {
 
     /**
      * Test case for [StopwatchUiMapper.mapLapToUiModel] to verify that it correctly converts
-     * a [StopWatchLapModel] to a [StopwatchLapUiModel].
+     * a [StopwatchLapModel] to a [StopwatchLapUiModel].
      *
      * This test checks that:
      * - The lap index is correctly formatted.
@@ -137,11 +137,11 @@ class StopwatchUiMapperTest {
     fun `test mapLapToUiModel should return correct UI model for StopwatchLapModel`() {
 
         // Arrange: A StopWatchLapModel representing a single lap
-        val lapModel = StopWatchLapModel(
+        val lapModel = StopwatchLapModel(
             lapIndex = 1,
-            lapStartTime = 1000L,
-            lapElapsedTime = 2000L,
-            lapEndTime = 2000L
+            lapStartTimeMillis = 1000L,
+            lapElapsedTimeMillis = 2000L,
+            lapEndTimeMillis = 2000L
         )
 
         // Mocks for formatting the lap data

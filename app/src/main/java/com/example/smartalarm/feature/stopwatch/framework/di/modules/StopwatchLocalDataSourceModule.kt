@@ -4,7 +4,7 @@ package com.example.smartalarm.feature.stopwatch.framework.di.modules
 
 import com.example.smartalarm.feature.stopwatch.data.datasource.contract.StopwatchLocalDataSource
 import com.example.smartalarm.feature.stopwatch.data.datasource.impl.StopwatchLocalDataSourceImpl
-import com.example.smartalarm.feature.stopwatch.data.local.dao.StopWatchDao
+import com.example.smartalarm.feature.stopwatch.data.local.dao.StopwatchDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,12 +23,12 @@ object StopwatchLocalDataSourceModule {
      * Provides a singleton instance of [StopwatchLocalDataSourceImpl].
      * This method will be used by Hilt to inject dependencies wherever [StopwatchLocalDataSource] is required.
      *
-     * @param dao The [StopWatchDao] instance, automatically provided by Hilt.
+     * @param dao The [StopwatchDao] instance, automatically provided by Hilt.
      * @return A singleton instance of [StopwatchLocalDataSource].
      */
     @Provides
     @Singleton
-    fun provideStopwatchLocalDataSource(dao: StopWatchDao): StopwatchLocalDataSource {
+    fun provideStopwatchLocalDataSource(dao: StopwatchDao): StopwatchLocalDataSource {
         return StopwatchLocalDataSourceImpl(dao)
     }
 }

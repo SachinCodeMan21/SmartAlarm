@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.RingAlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
@@ -79,11 +80,11 @@ class RingAlarmUseCaseImpl @Inject constructor(
                 }
 
                 is Result.Error -> {
-                    Result.Error(updateResult.exception)
+                    Result.Error(updateResult.error)
                 }
             }
         } catch (exception: Exception) {
-            Result.Error(exception)
+            Result.Error(ExceptionMapper.map(exception))
         }
     }
 

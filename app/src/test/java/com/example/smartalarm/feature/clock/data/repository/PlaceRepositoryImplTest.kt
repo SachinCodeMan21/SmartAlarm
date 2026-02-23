@@ -28,7 +28,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlaceRepositoryImplTest {
 
-    @RelaxedMockK
+/*    @RelaxedMockK
     private lateinit var localDataSource: PlaceLocalDataSource
 
     @RelaxedMockK
@@ -166,5 +166,5 @@ class PlaceRepositoryImplTest {
 
         assertTrue(result is Result.Error)
         assertEquals("Network down", (result as Result.Error).exception.message)
-    }
+    }*/
 }

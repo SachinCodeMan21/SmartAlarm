@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.presentation.effect.TimerEffect
 import com.example.smartalarm.feature.timer.presentation.event.TimerEvent
@@ -15,16 +16,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
-import com.example.smartalarm.feature.timer.domain.model.TimerState
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.domain.usecase.contract.GetAllTimersUseCase
 import com.example.smartalarm.feature.timer.domain.usecase.contract.SaveTimerUseCase
 import com.example.smartalarm.feature.timer.presentation.view.statemanager.contract.TimerInputStateManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 
 /**
@@ -55,13 +54,6 @@ class TimerViewModel @Inject constructor(
 
         /** Key representing the backspace button label */
         const val KEY_BACKSPACE = "⌫"
-
-        /** Key representing the zero digit */
-        const val KEY_ZERO = "0"
-
-        /** Key representing double zero digits */
-        const val KEY_DOUBLE_ZERO = "00"
-
     }
 
     /** Backing mutable state flow holding the UI state of the timer screen */
@@ -149,12 +141,7 @@ class TimerViewModel @Inject constructor(
      */
     fun initTimerUIState() = viewModelScope.launch {
         // Collect the first emission of the timers and then stop listening
-        getAllTimersUseCase()
-            .catch { e ->
-                // Show error message if timers fail to load
-                postEffect(TimerEffect.ShowSnackBar(resourceProvider.getString(R.string.failed_to_load_timers)))
-            }
-            .firstOrNull()
+        getAllTimersUseCase().firstOrNull()
             ?.let { timers ->
                 val hasRunningTimers = timers.isNotEmpty()
                 // Update UI to reflect whether there are active timers or not
@@ -207,17 +194,17 @@ class TimerViewModel @Inject constructor(
             targetTime = timerDurationMillis,
             remainingTime = timerDurationMillis,
             isTimerRunning = false,
-            state = TimerState.IDLE
+            status = TimerStatus.IDLE
         )
 
-        when (saveTimerUseCase(timer)) {
-            is Result.Success -> {
+        when (val result = saveTimerUseCase(timer)) {
+            is MyResult.Success -> {
                 timerInputStateManager.clearInput()
                 postEffect(TimerEffect.NavigateToShowTimerScreen)
             }
 
-            is Result.Error -> {
-                postEffect(TimerEffect.ShowSnackBar(resourceProvider.getString(R.string.unable_to_start_the_timer)))
+            is MyResult.Error -> {
+                postEffect(TimerEffect.ShowError(result.error))
             }
         }
     }

@@ -164,7 +164,7 @@ class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
      * Returns the horizontal bias for the progress bar based on lap availability.
      */
     private fun getProgressBarHorizontalBias(isLapTimeAvailable: Boolean): Float {
-        return if (isLapTimeAvailable) 0.05f else 0.40f
+        return if (isLapTimeAvailable) 0.05f else 0.50f
     }
 
 
@@ -178,10 +178,7 @@ class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
      * Returns the stopwatch seconds text size (in sp) based on smallest screen size and lap availability.
      */
     private fun getStopwatchTextSize(isLapTimeAvailable: Boolean): Float {
-        val textSizeResId = if (isLapTimeAvailable)
-            R.dimen.stopwatch_seconds_tv_tran_textSize
-        else
-            R.dimen.text_size_l
+        val textSizeResId = if (isLapTimeAvailable) R.dimen.stopwatch_elapsed_time_trans_size else R.dimen.stopwatch_elapsed_time_size
         return res.getDimension(textSizeResId) / res.displayMetrics.density
     }
 

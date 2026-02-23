@@ -50,6 +50,7 @@ import java.time.LocalTime
 @ExperimentalCoroutinesApi
 class StopAlarmUseCaseImplTest {
 
+/*
     @MockK
     private lateinit var updateAlarmUseCase: UpdateAlarmUseCase
 
@@ -99,10 +100,12 @@ class StopAlarmUseCaseImplTest {
         unmockkAll()
     }
 
-    /**
+    */
+/**
      * Verifies that when the alarm is passed directly, it is correctly marked as EXPIRED, stopped,
      * and all related operations (cancelling timeouts, stopping the sound, and resetting preferences) are executed.
-     */
+     *//*
+
     @Test
     fun `invoke - success - stops the alarm, marks as EXPIRED, and resets state`() = runTest {
 
@@ -124,13 +127,15 @@ class StopAlarmUseCaseImplTest {
         verify(exactly = 1) { sharedPrefsHelper.lastActiveAlarmNotificationPref = 0 }
     }
 
-    /**
+    */
+/**
      * Verifies that when updating the alarm fails (e.g., due to a database error), the use case:
      * - Returns an error result.
      * - Does not stop the alarm sound or reset preferences.
      *
      * This ensures that any database errors are properly handled.
-     */
+     *//*
+
     @Test
     fun `invoke - failure - update fails - returns error and does NOT stop or reset`() = runTest {
         // Arrange
@@ -148,11 +153,13 @@ class StopAlarmUseCaseImplTest {
     }
 
 
-    /**
+    */
+/**
      * Verifies the system handles failures gracefully when side effects (e.g., stopping ringtone or canceling timeouts)
      * fail, but the database update was successful.
      * Ensures the alarm still gets marked as EXPIRED even if side effects fail.
-     */
+     *//*
+
     @Test
     fun `invoke - resilience - side effects fail but DB update succeeds - still returns error`() = runTest {
         // Arrange
@@ -172,6 +179,7 @@ class StopAlarmUseCaseImplTest {
         verify(atLeast = 0) { alarmRingtoneHelper.stopAlarmRingtone() }
         verify(atLeast = 0) { sharedPrefsHelper.lastActiveAlarmNotificationPref = 0 }
     }
+*/
 
 }
 

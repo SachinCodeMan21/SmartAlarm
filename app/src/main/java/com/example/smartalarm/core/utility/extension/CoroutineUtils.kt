@@ -1,5 +1,6 @@
 package com.example.smartalarm.core.utility.extension
 
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.core.model.Result
 
 /**
@@ -19,5 +20,5 @@ import com.example.smartalarm.core.model.Result
 suspend fun <T> runCatchingResult(block: suspend () -> T): Result<T> = try {
     Result.Success(block())
 } catch (e: Exception) {
-    Result.Error(e)
+    Result.Error(ExceptionMapper.map(e))
 }

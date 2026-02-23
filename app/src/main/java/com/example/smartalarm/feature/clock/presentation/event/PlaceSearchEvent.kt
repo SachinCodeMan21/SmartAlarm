@@ -29,11 +29,4 @@ sealed class PlaceSearchEvent {
      * @property place The [PlaceModel] that was selected.
      */
     data class PlaceSelected(val place: PlaceModel) : PlaceSearchEvent()
-
-    /**
-     * Requests the UI to show a SnackBar with a message.
-     *
-     * @property message The message content to be shown in the SnackBar.
-     */
-    data class ShowSnackBarMessage(val message: String) : PlaceSearchEvent()
 }

@@ -1,14 +1,5 @@
 package com.example.smartalarm.feature.clock.data.datasource.impl
 
-import com.example.smartalarm.feature.clock.data.remote.api.GoogleApiService
-import com.example.smartalarm.feature.clock.data.remote.dto.googlePlaces.PlacesResponse
-import com.example.smartalarm.feature.clock.data.remote.dto.googlePlaces.Prediction
-import com.example.smartalarm.feature.clock.data.remote.dto.googlePlaces.StructuredFormatting
-import com.example.smartalarm.feature.clock.data.remote.dto.placeDetails.Geometry
-import com.example.smartalarm.feature.clock.data.remote.dto.placeDetails.Location
-import com.example.smartalarm.feature.clock.data.remote.dto.placeDetails.PlaceDetailResult
-import com.example.smartalarm.feature.clock.data.remote.dto.placeDetails.PlaceDetailsResponse
-import com.example.smartalarm.feature.clock.data.remote.dto.timezone.TimeZoneResponse
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK

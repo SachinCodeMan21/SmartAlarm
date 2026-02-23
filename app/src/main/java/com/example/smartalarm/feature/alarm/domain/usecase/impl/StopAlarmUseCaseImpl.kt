@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.StopAlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
@@ -77,14 +78,14 @@ class StopAlarmUseCaseImpl @Inject constructor(
 
                 is Result.Error -> {
                     // Return error result if alarm update fails
-                    Result.Error(updateResult.exception)
+                    Result.Error(updateResult.error)
                 }
 
             }
 
         } catch (exception: Exception) {
             // Catch any unexpected exception and return it as Result.Error
-            Result.Error(exception)
+            Result.Error(ExceptionMapper.map(exception))
         }
     }
 }

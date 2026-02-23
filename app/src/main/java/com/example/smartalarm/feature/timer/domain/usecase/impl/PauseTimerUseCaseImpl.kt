@@ -1,11 +1,12 @@
 package com.example.smartalarm.feature.timer.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerState
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.domain.usecase.contract.PauseTimerUseCase
 import com.example.smartalarm.feature.timer.utility.TimerTimeHelper
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.timer.framework.scheduler.TimerScheduler
 import javax.inject.Inject
 
@@ -13,10 +14,10 @@ import javax.inject.Inject
  * Implementation of [PauseTimerUseCase] that pauses a running timer and persists the update.
  *
  * If the timer is currently running, it calculates the remaining time using [TimerTimeHelper],
- * updates the timer state to [TimerState.PAUSED], and saves the updated timer via [TimerRepository].
+ * updates the timer state to [TimerStatus.PAUSED], and saves the updated timer via [TimerRepository].
  *
  * If the timer is not running, it is returned as-is.
- * If saving fails, the error is returned via [Result.Error].
+ * If saving fails, the error is returned via [MyResult.Error].
  *
  * @property timerTimeHelper Utility to calculate current time and remaining duration.
  * @property timerRepository Repository used to persist the timer state.
@@ -29,31 +30,33 @@ class PauseTimerUseCaseImpl @Inject constructor(
 ) : PauseTimerUseCase {
 
     /**
-     * Pauses the given timer if it's currently running.
-     *
-     * @param timer The timer to pause.
-     * @return A [Result] indicating success or failure.
+     * Pauses the given timer, cancels the system alarm, and persists the state.
+     * * @return [MyResult.Success] if the operation completed, or [MyResult.Error] with [DataError].
      */
-    override suspend fun invoke(timer: TimerModel): Result<Unit> {
-        // Check if the timer is running. If it's not, no changes are made.
-        if (!timer.isTimerRunning) return Result.Success(Unit)
+    override suspend fun invoke(timer: TimerModel): MyResult<Unit, DataError> {
+        // 1. Validation: If it's not running, we consider the "action" a success (no-op)
+        if (!timer.isTimerRunning) return MyResult.Success(Unit)
 
-        // Calculate the updated timer values
+        // 2. Business Logic: Calculate the pause state
         val updatedTimer = timer.copy(
             endTime = timerTimeHelper.getCurrentTime(),
             remainingTime = timerTimeHelper.getRemainingTimeConsideringSnooze(timer),
             isTimerRunning = false,
-            state = TimerState.PAUSED
+            status = TimerStatus.PAUSED
         )
 
-        // Save the updated timer to the repository
+        // 3. Execution: Persist and handle side effects
         return when (val saveResult = timerRepository.persistTimer(updatedTimer)) {
-            is Result.Success -> {
-                // Cancel any scheduled actions for the timer
+
+            is MyResult.Success -> {
+                // Side Effect: Remove all the scheduled alarm for this timer from the Android System AlarmManager
                 timerScheduler.cancelAllScheduledTimers(timer.timerId)
-                Result.Success(Unit) // No need to return the updated model; state is handled in-memory
+                MyResult.Success(Unit)
             }
-            is Result.Error -> Result.Error(saveResult.exception)
+            is MyResult.Error -> {
+                // Propagate the specific DataError (e.g., Local.DISK_FULL) back to the ViewModel
+                MyResult.Error(saveResult.error)
+            }
         }
     }
 }

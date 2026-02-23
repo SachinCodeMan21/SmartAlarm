@@ -2,33 +2,50 @@ package com.example.smartalarm.feature.timer.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 
 /**
- * Represents a Timer entity stored in the database.
- * This class maps to a table named "timer_table" in the database.
+ * Represents a persistent timer session in the database.
  *
- * @property timerId The unique identifier for this timer. This is an auto-generated primary key.
- * @property startTime The timestamp (in milliseconds) when the timer was started.
- * @property remainingTime The remaining time (in milliseconds) for the timer, if it is running or paused.
- * @property endTime The timestamp (in milliseconds) when the timer was supposed to end.
- * @property targetTime The target time (in milliseconds) the timer is set to reach.
- * @property isTimerRunning A boolean flag indicating whether the timer is currently running.
- * @property isTimerSnoozed A boolean flag indicating whether the timer has been snoozed.
- * @property snoozedTargetTime The target time (in milliseconds) to which the timer was snoozed.
- * @property state The current state of the timer as a string. It represents the status of the timer, such as "INITIAL", "RUNNING", "PAUSED", or "STOPPED".
+ * **Purpose:**
+ * This entity ensures that a timer survives app process death, system updates, and reboots. It stores the
+ * necessary state (start time, remaining time, etc.) to accurately restore the timer’s state after interruptions.
  *
- * This class is used as a database entity, and instances of it are stored in the "timer_table".
+ * **Design Strategy:**
+ * - Combines absolute timestamps (`endTimeMillis`) and relative durations (`remainingMillis`) for accuracy,
+ *   ensuring timers are correctly restored even after system clock changes or long suspensions.
+ * - Uses `endTimeMillis` to track when the timer was last stopped by the user, providing a reference for
+ *   resuming or recalculating the remaining time.
+ *
+ * **Fields:**
+ * - `id`: Auto-incremented primary key.
+ * - `startTimeMillis`: Time when the timer started.
+ * - `remainingMillis`: Remaining time on the timer, updated as it runs or is paused.
+ * - `endTimeMillis`: Time when the user last stopped the timer. Used for resuming or recalculating the remaining time.
+ * - `targetDurationMillis`: Initial user-defined duration (in milliseconds).
+ * - `isTimerRunning`: Indicates if the timer is currently running.
+ * - `isTimerSnoozed`: Indicates if the timer is in a snooze state.
+ * - `snoozedTargetDurationMillis`: Time when the snooze period ends, if applicable.
+ * - `state`: Current lifecycle state of the timer (e.g., IDLE, RUNNING, PAUSED, FINISHED).
+ *
+ * **Usage:**
+ * This entity tracks the timer’s state across app lifecycle events, ensuring accurate restoration and resumption
+ * of the timer when the app is resumed.
  */
-@Entity(tableName = "timer_table")
+@Entity(tableName = "timers")
 data class TimerEntity(
-    @PrimaryKey(autoGenerate = true) val timerId: Int = 0,
-    val startTime: Long,
-    val remainingTime: Long,
-    val endTime: Long,
-    val targetTime: Long,
+
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+
+    val startTimeMillis: Long,
+    val remainingMillis: Long,
+    val endTimeMillis: Long,
+    val targetDurationMillis: Long,
+
     val isTimerRunning: Boolean,
     val isTimerSnoozed: Boolean,
-    val snoozedTargetTime: Long,
-    val state: String
-)
+    val snoozedTargetDurationMillis: Long,
 
+    val state: TimerStatus = TimerStatus.IDLE
+)

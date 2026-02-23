@@ -5,7 +5,6 @@ import com.example.smartalarm.core.utility.provider.resource.contract.ResourcePr
 import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
 import com.example.smartalarm.fakes.stopwatch.FakePermissionManager
 import com.example.smartalarm.feature.stopwatch.framework.jobmanager.contract.BlinkEffectJobManager
-import com.example.smartalarm.feature.stopwatch.framework.jobmanager.contract.StopwatchTickerJobManager
 import com.example.smartalarm.feature.stopwatch.presentation.mapper.StopwatchUiMapper
 import com.example.smartalarm.feature.stopwatch.presentation.viewmodel.StopWatchViewModel
 import dagger.hilt.android.testing.HiltAndroidRule

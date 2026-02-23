@@ -1,20 +1,8 @@
 package com.example.smartalarm.integration.timer
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerState
-import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
-import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest

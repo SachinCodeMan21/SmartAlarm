@@ -10,6 +10,6 @@ package com.example.smartalarm.feature.timer.domain.model
  * - [PAUSED]: The timer is paused, and the countdown is temporarily halted.
  * - [STOPPED]: The timer has stopped, either after reaching the target time or being manually stopped.
  */
-enum class TimerState {
+enum class TimerStatus {
     IDLE, RUNNING, PAUSED, STOPPED
 }

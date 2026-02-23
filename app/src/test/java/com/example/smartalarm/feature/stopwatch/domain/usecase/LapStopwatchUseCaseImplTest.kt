@@ -1,24 +1,23 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase
 
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
-import com.example.smartalarm.feature.stopwatch.domain.model.StopWatchLapModel
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
-import com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository
+import com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository
 import com.example.smartalarm.feature.stopwatch.domain.usecase.impl.LapStopwatchUseCaseImpl
 import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Before
+import kotlin.test.Test
+import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchLapModel
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
-import io.mockk.unmockkAll
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import io.mockk.slot
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
 
 /**
  * Unit tests for the [com.example.smartalarm.feature.stopwatch.domain.usecase.impl.LapStopwatchUseCaseImpl] class, responsible for handling the lap functionality
@@ -34,126 +33,118 @@ import org.junit.Test
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LapStopwatchUseCaseImplTest {
-/*
+
     @MockK
     private lateinit var clockProvider: SystemClockHelper
     @MockK
-    private lateinit var repository: StopWatchRepository
-    @InjectMockKs
+    private lateinit var repository: StopwatchRepository
+
     private lateinit var lapStopwatchUseCase: LapStopwatchUseCaseImpl
 
     private val startTime = 1000L
-    private val currentElapsedRealtime = 5000L
-    private val elapsedSinceStart = currentElapsedRealtime - startTime
+    private val currentTime = 5000L
+    private val elapsedSinceStart = currentTime - startTime
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        every { clockProvider.elapsedRealtime() } returns currentElapsedRealtime
-    }
+        lapStopwatchUseCase = LapStopwatchUseCaseImpl(repository, clockProvider)
 
-    @After
-    fun tearDown() {
-        unmockkAll()
+        // Default clock behavior
+        every { clockProvider.getCurrentTime() } returns currentTime
     }
-
 
     //====================================================
-    // LapStopwatchUseCase Test Scenarios
+    // Test Scenarios
     //====================================================
 
     @Test
-    fun invoke_whenStopwatchNotRunning_shouldReturn_sameStopwatch() = runTest {
-
+    fun `invoke when stopwatch not running should return Success and not persist`() = runTest {
         // Arrange
         val stopwatch = createBaseStopwatch(isRunning = false)
+        every { repository.getCurrentStopwatchState() } returns stopwatch
 
         // Act
-        val result = lapStopwatchUseCase.invoke(stopwatch)
+        val result = lapStopwatchUseCase.invoke()
 
         // Assert
-        Assert.assertEquals(Result.Success(stopwatch), result)
-        coVerify(exactly = 0) { repository.saveStopwatch(any()) }
+        assertThat(result).isInstanceOf(Result.Success::class.java)
+        coVerify(exactly = 0) { repository.persistStopwatch(any()) }
     }
 
     @Test
-    fun invoke_whenStopwatchRunningAndNoLaps_shouldAddFirstLapAndReturnSuccess() = runTest {
-
-        // Arrange
-        val stopwatch = createBaseStopwatch(isRunning = true)
-        val expectedLapList = listOf(createFirstLap(), createNewLap())
-        val expectedStopwatch = stopwatch.copy(
-            lapTimes = expectedLapList,
-            lapCount = expectedLapList.size
-        )
-        coEvery { repository.saveStopwatch(any()) } returns Result.Success(Unit)
+    fun `invoke when stopwatch running and no laps should add two laps (init + new) and persist`() = runTest {
+        // Arrange: Start with 0 laps
+        val stopwatch = createBaseStopwatch(isRunning = true, lapTimes = emptyList())
+        every { repository.getCurrentStopwatchState() } returns stopwatch
+        coEvery { repository.persistStopwatch(any()) } returns MyResult.Success(Unit)
 
         // Act
-        val result = lapStopwatchUseCase.invoke(stopwatch)
+        val result = lapStopwatchUseCase.invoke()
 
         // Assert
-        Assert.assertEquals(Result.Success(expectedStopwatch), result)
-        coVerify(exactly = 1) { repository.saveStopwatch(any()) }
+        val capturedStopwatch = slot<StopwatchModel>()
+        coVerify(exactly = 1) { repository.persistStopwatch(capture(capturedStopwatch)) }
+
+        val laps = capturedStopwatch.captured.lapTimes
+        assertThat(laps).hasSize(2)
+        // Check first lap (initialization lap)
+        assertThat(laps[0].lapIndex).isEqualTo(1)
+        assertThat(laps[0].lapElapsedTimeMillis).isEqualTo(elapsedSinceStart)
+        // Check second lap (the actual "new" lap)
+        assertThat(laps[1].lapIndex).isEqualTo(2)
+        assertThat(laps[1].lapStartTimeMillis).isEqualTo(elapsedSinceStart)
+
+        assertThat(result).isInstanceOf(Result.Success::class.java)
     }
 
     @Test
-    fun invoke_whenStopwatchRunningAndExistingLaps_shouldAddNewLapAndReturnSuccess() = runTest {
-
-        // Arrange
-        val existingLap = createFirstLap()
+    fun `invoke when stopwatch running with existing laps should add only one new lap`() = runTest {
+        // Arrange: Start with 1 existing lap
+        val existingLap = StopwatchLapModel(1, 0L, 500L, 500L)
         val stopwatch = createBaseStopwatch(isRunning = true, lapTimes = listOf(existingLap))
-        val newLap = createNewLap()
-        val expectedLapList = listOf(existingLap, newLap)
-        val expectedStopwatch = stopwatch.copy(
-            lapTimes = expectedLapList,
-            lapCount = expectedLapList.size
-        )
 
-        coEvery { repository.saveStopwatch(any()) } returns Result.Success(Unit)
+        every { repository.getCurrentStopwatchState() } returns stopwatch
+        coEvery { repository.persistStopwatch(any()) } returns MyResult.Success(Unit)
 
         // Act
-        val result = lapStopwatchUseCase.invoke(stopwatch)
+        lapStopwatchUseCase.invoke()
 
         // Assert
-        Assert.assertEquals(Result.Success(expectedStopwatch), result)
-        coVerify(exactly = 1) { repository.saveStopwatch(any()) }
+        val capturedStopwatch = slot<StopwatchModel>()
+        coVerify(exactly = 1) { repository.persistStopwatch(capture(capturedStopwatch)) }
+
+        val laps = capturedStopwatch.captured.lapTimes
+        assertThat(laps).hasSize(2) // 1 existing + 1 new
+        assertThat(laps.last().lapIndex).isEqualTo(2)
+        assertThat(laps.last().lapStartTimeMillis).isEqualTo(elapsedSinceStart)
     }
 
     @Test
-    fun invoke_whenRepositorySaveFails_shouldReturn_error() = runTest {
-
+    fun `invoke when repository fails should return Error via ExceptionMapper`() = runTest {
         // Arrange
         val stopwatch = createBaseStopwatch(isRunning = true)
-        coEvery { repository.saveStopwatch(any()) } throws RuntimeException("Save failed")
+        every { repository.getCurrentStopwatchState() } returns stopwatch
+        coEvery { repository.persistStopwatch(any()) } throws RuntimeException("DB Error")
 
         // Act
-        val result = lapStopwatchUseCase.invoke(stopwatch)
+        val result = lapStopwatchUseCase.invoke()
 
         // Assert
-        Assert.assertTrue(result is Result.Error)
-        coVerify(exactly = 1) { repository.saveStopwatch(any()) }
+        assertThat(result).isInstanceOf(Result.Error::class.java)
     }
-
-
 
     //====================================================
-    // Helper Method
+    // Helpers
     //====================================================
 
     private fun createBaseStopwatch(
         isRunning: Boolean,
-        lapTimes: List<StopWatchLapModel> = emptyList(),
-        lapCount: Int = lapTimes.size
+        lapTimes: List<StopwatchLapModel> = emptyList()
     ) = StopwatchModel(
-        id = 1,
         startTime = startTime,
-        elapsedTime = 0L,
         isRunning = isRunning,
         lapTimes = lapTimes,
-        lapCount = lapCount
+        lapCount = lapTimes.size
     )
-
-    private fun createFirstLap() = StopWatchLapModel(1, 0L, elapsedSinceStart, elapsedSinceStart)
-
-    private fun createNewLap() = StopWatchLapModel(2, elapsedSinceStart, 0L, elapsedSinceStart)*/
 }

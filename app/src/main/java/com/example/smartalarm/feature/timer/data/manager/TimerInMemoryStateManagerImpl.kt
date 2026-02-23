@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.timer.data.manager
 
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerState
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.utility.TimerTimeHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,10 +25,12 @@ class TimerInMemoryStateManagerImpl @Inject constructor(
 
     override val state: StateFlow<List<TimerModel>> = _timers.asStateFlow()
 
+
     /**
      * Retrieves the current list of timers.
      */
     override fun getCurrentTimers(): List<TimerModel> = _timers.value
+
 
     /**
      * Updates the state from the Database.
@@ -51,6 +53,7 @@ class TimerInMemoryStateManagerImpl @Inject constructor(
         _timers.value = updatedTimers
     }
 
+
     /**
      * Updates the state from the Ticker (Service).
      * This iterates through the current list and decrements time for running timers.
@@ -68,23 +71,4 @@ class TimerInMemoryStateManagerImpl @Inject constructor(
             }
         }
     }
-
-    // --- Helper Methods (Reading from the Live Feed) ---
-
-    override fun getTimer(timerId: Int): TimerModel? =
-        _timers.value.find { it.timerId == timerId }
-
-    override fun hasRunningTimers(): Boolean {
-        return _timers.value.any { it.isTimerRunning && it.remainingTime > 0 }
-    }
-
-    override fun getActiveTimers(): List<TimerModel> =
-        _timers.value
-            .filter { it.remainingTime > 0 && (it.state == TimerState.RUNNING || it.state == TimerState.PAUSED) }
-            .sortedWith(compareBy<TimerModel> { it.state != TimerState.RUNNING }.thenBy { it.remainingTime })
-
-    override fun getCompletedTimers(): List<TimerModel> =
-        _timers.value
-            .filter { it.remainingTime <= 0 && (it.state == TimerState.RUNNING || it.state == TimerState.PAUSED) }
-            .sortedBy { it.remainingTime }
 }

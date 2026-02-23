@@ -1,5 +1,9 @@
 package com.example.smartalarm.feature.clock.data.repository
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.ExceptionMapper
+import com.example.smartalarm.core.exception.GeneralErrorMapper
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.clock.data.datasource.contract.PlaceLocalDataSource
 import com.example.smartalarm.feature.clock.data.datasource.contract.PlaceRemoteDataSource
 import com.example.smartalarm.feature.clock.data.mapper.PlaceMapper.toEntity
@@ -36,56 +40,118 @@ class PlaceRepositoryImpl @Inject constructor(
 ) : PlaceRepository {
 
     /**
-     * Saves a [place] to the local database.
-     *
-     * @param place The [PlaceModel] to save.
-     * @return [Result.Success] if saved successfully, or [Result.Error] on failure.
+     * Saves a place to the local database.
      */
-    override suspend fun savePlace(place: PlaceModel): Result<Unit> {
+    override suspend fun savePlace(place: PlaceModel): MyResult<Unit, DataError> {
         return try {
             localDataSource.insertPlace(place.toEntity())
-            Result.Success(Unit)
-        } catch (_: Exception) {
-            Result.Error(Exception())
+            MyResult.Success(Unit)
+        } catch (e: Exception) {
+            // Using the database mapper we created earlier
+            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
         }
     }
 
     /**
-     * Searches for places matching the given [query] using **offline-first logic**.
-     *
-     * The search flow:
-     * 1. **Local check** – returns cached results if available, providing instant feedback.
-     * 2. **Remote fetch** – if local results are empty, fetches from the API including timezone info.
-     * 3. **Cache update** – inserts remote results into the local database for future offline queries.
-     * 4. **Consistency check** – queries local DB again to return a complete, consistent result set.
-     *
-     * This approach ensures users always get fast, reliable results with accurate timezone
-     * information, even without network connectivity.
-     *
-     * @param query The user's search keyword or phrase.
-     * @return [Result.Success] with a list of [PlaceModel] or [Result.Error] if something goes wrong.
+     * Searches for places matching the given [query] using offline-first logic.
      */
-    override suspend fun searchPlaces(query: String): Result<List<PlaceModel>> {
+    override suspend fun searchPlaces(query: String): MyResult<List<PlaceModel>, DataError> {
         return try {
-            // Step 1: Check local
+            // 1. Check local first
             val local = localDataSource.searchPlace("%$query%")
             if (local.isNotEmpty()) {
-                return Result.Success(local.map { it.toModel() })
+                return MyResult.Success(local.map { it.toModel() })
             }
 
-            // Step 2: Fetch from remote
-            val remoteDtos = remoteDataSource.searchPlaces(query)
-            val placeEntities = remoteDtos.map { it.toEntity() }
+            // 2. Fetch from remote (Handling the MyResult from RemoteDataSource)
+            val remoteResult = remoteDataSource.searchPlaces(query)
 
-            // Step 3: Insert all timezone at once
-            localDataSource.insertAllPlaces(placeEntities)
+            when (remoteResult) {
+                is MyResult.Success -> {
+                    val remoteDtos = remoteResult.data
+                    val placeEntities = remoteDtos.map { it.toEntity() }
 
-            // Step 4: Query again from local to ensure consistency
-            val updatedLocal = localDataSource.searchPlace("%$query%")
-            Result.Success(updatedLocal.map { it.toModel() })
+                    // 3. Update Cache
+                    localDataSource.insertAllPlaces(placeEntities)
+
+                    // 4. Return from local for consistency
+                    val updatedLocal = localDataSource.searchPlace("%$query%")
+                    MyResult.Success(updatedLocal.map { it.toModel() })
+                }
+                is MyResult.Error -> {
+                    // Propagate the network error (e.g. NO_CONNECTION)
+                    // if we have nothing in local to show.
+                    MyResult.Error(remoteResult.error)
+                }
+            }
 
         } catch (e: Exception) {
-            Result.Error(e)
+            // Catch-all for any mapping/logic issues during the flow
+            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
         }
     }
 }
+
+
+
+
+//class PlaceRepositoryImpl @Inject constructor(
+//    private val localDataSource: PlaceLocalDataSource,
+//    private val remoteDataSource: PlaceRemoteDataSource,
+//) : PlaceRepository
+//{
+//
+//    /**
+//     * Saves a [place] to the local database.
+//     *
+//     * @param place The [PlaceModel] to save.
+//     * @return [Result.Success] if saved successfully, or [Result.Error] on failure.
+//     */
+//    override suspend fun savePlace(place: PlaceModel): Result<Unit> {
+//        return try {
+//            localDataSource.insertPlace(place.toEntity())
+//            Result.Success(Unit)
+//        } catch (e: Exception) {
+//            Result.Error(ExceptionMapper.map(e))
+//        }
+//    }
+//
+//    /**
+//     * Searches for places matching the given [query] using **offline-first logic**.
+//     *
+//     * The search flow:
+//     * 1. **Local check** – returns cached results if available, providing instant feedback.
+//     * 2. **Remote fetch** – if local results are empty, fetches from the API including timezone info.
+//     * 3. **Cache update** – inserts remote results into the local database for future offline queries.
+//     * 4. **Consistency check** – queries local DB again to return a complete, consistent result set.
+//     *
+//     * This approach ensures users always get fast, reliable results with accurate timezone
+//     * information, even without network connectivity.
+//     *
+//     * @param query The user's search keyword or phrase.
+//     * @return [Result.Success] with a list of [PlaceModel] or [Result.Error] if something goes wrong.
+//     */
+//    override suspend fun searchPlaces(query: String): Result<List<PlaceModel>> {
+//        return try {
+//            // Step 1: Check local
+//            val local = localDataSource.searchPlace("%$query%")
+//            if (local.isNotEmpty()) {
+//                return Result.Success(local.map { it.toModel() })
+//            }
+//
+//            // Step 2: Fetch from remote
+//            val remoteDtos = remoteDataSource.searchPlaces(query)
+//            val placeEntities = remoteDtos.map { it.toEntity() }
+//
+//            // Step 3: Insert all timezone at once
+//            localDataSource.insertAllPlaces(placeEntities)
+//
+//            // Step 4: Query again from local to ensure consistency
+//            val updatedLocal = localDataSource.searchPlace("%$query%")
+//            Result.Success(updatedLocal.map { it.toModel() })
+//
+//        } catch (e: Exception) {
+//            Result.Error(ExceptionMapper.map(e))
+//        }
+//    }
+//}

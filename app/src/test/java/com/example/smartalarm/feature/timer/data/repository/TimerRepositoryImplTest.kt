@@ -2,27 +2,7 @@
 
 package com.example.smartalarm.feature.timer.data.repository
 
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.timer.data.datasource.contract.TimerLocalDataSource
-import com.example.smartalarm.feature.timer.data.mapper.TimerMapper.toEntity
-import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerState
-import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.runs
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
-import kotlin.test.assertTrue
 
 /**
  * Unit tests for [TimerRepositoryImpl], responsible for ensuring correct interaction with the local data source

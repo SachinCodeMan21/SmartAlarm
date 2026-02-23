@@ -1,6 +1,7 @@
 package com.example.smartalarm.feature.timer.domain.usecase.contract
 
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 
 /**
@@ -12,7 +13,7 @@ fun interface RestartTimerUseCase {
      * Restarts the given timer by resetting its remaining time to the target duration.
      *
      * @param timer The [TimerModel] to restart.
-     * @return A [Result] indicating the success or failure of the operation.
+     * @return A [MyResult] indicating the success or failure of the operation.
      */
-    suspend operator fun invoke(timer: TimerModel): Result<Unit>
+    suspend operator fun invoke(timer: TimerModel): MyResult<Unit, DataError>
 }

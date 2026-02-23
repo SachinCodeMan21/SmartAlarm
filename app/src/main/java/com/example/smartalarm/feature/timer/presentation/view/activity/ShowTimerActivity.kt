@@ -5,10 +5,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -19,6 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.smartalarm.core.exception.asUiText
+import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.ActivityShowTimerBinding
 import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerBroadCastAction
 import com.example.smartalarm.feature.timer.framework.broadcast.receiver.TimerReceiver
@@ -28,6 +28,7 @@ import com.example.smartalarm.feature.timer.presentation.effect.ShowTimerEffect
 import com.example.smartalarm.feature.timer.presentation.event.ShowTimerEvent
 import com.example.smartalarm.feature.timer.presentation.model.TimerUiState
 import com.example.smartalarm.feature.timer.presentation.viewmodel.ShowTimerViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -104,10 +105,7 @@ class ShowTimerActivity : AppCompatActivity() {
             insets
         }
 
-        Log.d("TAG", "ShowTimerActivity onCreate Executed")
-
         turnScreenOnAndKeyguardOff()
-
         setUpToolbar()
         setupTimerRecyclerView()
         setUpAddTimerBtnClick()
@@ -123,7 +121,6 @@ class ShowTimerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("TAG", "ShowTimerActivity onDestroy Executed")
         _binding = null
     }
 
@@ -193,7 +190,10 @@ class ShowTimerActivity : AppCompatActivity() {
             viewModel.uiEffect.collectLatest { effect ->
                 when (effect) {
                     is ShowTimerEffect.FinishActivity -> finish()
-                    is ShowTimerEffect.ShowToast -> showToast(effect.message)
+                    is ShowTimerEffect.ShowError -> {
+                        val message = effect.error.asUiText().asString(this@ShowTimerActivity)
+                        binding.root.showSnackBar(message, Snackbar.LENGTH_SHORT)
+                    }
                     ShowTimerEffect.StartTimerForegroundNotification -> startTimerForegroundNotification()
                 }
             }
@@ -209,10 +209,6 @@ class ShowTimerActivity : AppCompatActivity() {
             action = TimerBroadCastAction.ACTION_START
         }
         ContextCompat.startForegroundService(this, startTimerServiceIntent)
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun turnScreenOnAndKeyguardOff() {

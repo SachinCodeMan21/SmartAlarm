@@ -1,11 +1,12 @@
 package com.example.smartalarm.feature.timer.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerState
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.domain.usecase.contract.StartTimerUseCase
 import com.example.smartalarm.feature.timer.utility.TimerTimeHelper
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.timer.framework.notification.manager.TimerNotificationManager
 import com.example.smartalarm.feature.timer.framework.scheduler.TimerScheduler
 import javax.inject.Inject
@@ -14,7 +15,7 @@ import javax.inject.Inject
  * Implementation of [StartTimerUseCase] that starts a timer and persists the updated state.
  *
  * This use case checks if the timer is already running. If not, it calculates an
- * adjusted start time using [TimerTimeHelper], sets the timer state to [TimerState.RUNNING],
+ * adjusted start time using [TimerTimeHelper], sets the timer state to [TimerStatus.RUNNING],
  * and saves the updated timer using [TimerRepository].
  *
  * @property timerTimeHelper Utility to calculate accurate start times.
@@ -29,36 +30,40 @@ class StartTimerUseCaseImpl @Inject constructor(
 ) : StartTimerUseCase {
 
     /**
-     * Starts the given timer if it's not already running.
-     *
-     * @param timer The timer to be started.
-     * @return A [Result] indicating success or failure of the operation.
+     * Starts a timer, calculates its end time, and registers system alarms.
+     * * @return [MyResult.Success] if persisted and scheduled, or [MyResult.Error] with [DataError].
      */
-    override suspend fun invoke(timer: TimerModel): Result<Unit> {
+    override suspend fun invoke(timer: TimerModel): MyResult<Unit, DataError> {
 
-        // If the timer is already running, no action is needed
-        if (timer.isTimerRunning) return Result.Success(Unit)
+        // 1. Validation: Prevent double-starting
+        if (timer.isTimerRunning) return MyResult.Success(Unit)
 
-        // Calculate the adjusted start time
+        // 2. State Calculation: Determine exactly when this timer "started"
         val updatedTimer = timer.copy(
             startTime = timerTimeHelper.calculateAdjustedStartTime(timer),
             isTimerRunning = true,
-            state = TimerState.RUNNING
+            status = TimerStatus.RUNNING
         )
 
-        // Save the updated timer to the repository
+        // 3. Persistence: Attempt to save to DB first
         return when (val saveResult = timerRepository.persistTimer(updatedTimer)) {
-
-            is Result.Success -> {
-                // Calculate the expiration time and schedule the timer
+            is MyResult.Success -> {
+                // 4. System Side-Effects: Only schedule if the DB save was successful
                 val triggerAt = updatedTimer.startTime + updatedTimer.targetTime
+
                 timerScheduler.scheduleTimer(updatedTimer.timerId, triggerAt)
                 timerScheduler.scheduleTimerTimeout(updatedTimer.timerId, triggerAt)
+
+                // Clear any "Timer Finished" notifications that might still be showing
                 timerNotificationManager.cancelTimerNotification(timer.timerId)
-                Result.Success(Unit) // Operation successful, no need to return updated model
+
+                MyResult.Success(Unit)
             }
 
-            is Result.Error -> Result.Error(saveResult.exception)
+            is MyResult.Error -> {
+                // Propagate the specific DataError (e.g. Local.DISK_FULL)
+                MyResult.Error(saveResult.error)
+            }
         }
     }
 }

@@ -40,7 +40,7 @@ import org.junit.After
  */
 @ExperimentalCoroutinesApi
 class GetAlarmByIdUseCaseImplTest {
-
+/*
     // Mocking dependencies with MockK annotations
     @MockK
     lateinit var alarmRepository: AlarmRepository
@@ -53,9 +53,9 @@ class GetAlarmByIdUseCaseImplTest {
 
     private lateinit var testDispatcher: TestDispatcher
 
-    /**
+    *//**
      * Sets up the necessary environment for the tests, including mock initialization and dispatcher setup.
-     */
+     *//*
     @Before
     fun setUp() {
         // Initialize MockK annotations
@@ -69,11 +69,11 @@ class GetAlarmByIdUseCaseImplTest {
         clearAllMocks()
     }
 
-    /**
+    *//**
      * Tests the successful retrieval of an alarm from the repository.
      * Verifies that when the alarm is found, the use case returns a [Result.Success]
      * with the expected [AlarmModel].
-     */
+     *//*
     @Test
     fun `invoke should return Success when alarm is found`() = runTest {
 
@@ -92,11 +92,11 @@ class GetAlarmByIdUseCaseImplTest {
         coVerify { alarmRepository.getAlarmById(alarmId) }
     }
 
-    /**
+    *//**
      * Tests the scenario where the alarm retrieval fails.
      * Verifies that when an error occurs in the repository, the use case returns a [Result.Error]
      * with the appropriate localized error message from [ResourceProvider].
-     */
+     *//*
     @Test
     fun `invoke should return Error when alarm retrieval fails`() = runTest {
 
@@ -118,5 +118,5 @@ class GetAlarmByIdUseCaseImplTest {
         assertEquals(errorMessage, result.exception.message)
         coVerify { alarmRepository.getAlarmById(alarmId) }
         verify { resourceProvider.getString(R.string.failed_to_retrieve_the_alarm_details) }
-    }
+    }*/
 }

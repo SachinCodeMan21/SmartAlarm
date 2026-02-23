@@ -1,6 +1,7 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
 import com.example.smartalarm.R
+import com.example.smartalarm.core.exception.ExceptionMapper
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.DeleteAlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SwipedAlarmUseCase
@@ -47,9 +48,12 @@ class SwipedAlarmUseCaseImpl @Inject constructor(
         swipedAlarmId: Int,
         alarmState: AlarmState
     ): Result<Unit> {
-        return when (deleteAlarmUseCase(swipedAlarmId)) {
+        return when (val result = deleteAlarmUseCase(swipedAlarmId)) {
             is Result.Success -> cancelAlarm(swipedAlarmId, alarmState)  // If delete is successful, proceed to cancel
-            is Result.Error -> Result.Error(Exception(resourceProvider.getString(R.string.error_failed_to_delete_alarm))) // If delete fails, return error
+            is Result.Error -> Result.Error(
+             //   Exception(resourceProvider.getString(R.string.error_failed_to_delete_alarm))
+                result.error
+            ) // If delete fails, return error
         }
     }
 
@@ -88,7 +92,7 @@ class SwipedAlarmUseCaseImpl @Inject constructor(
             Result.Success(Unit)
         } catch (exception: Exception) {
             // Return an error result in case of failure
-            Result.Error(exception)
+            Result.Error(ExceptionMapper.map(exception))
         }
     }
 }

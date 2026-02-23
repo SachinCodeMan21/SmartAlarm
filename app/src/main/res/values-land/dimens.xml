@@ -47,8 +47,9 @@
 
 
     <!-- Stopwatch Screen Dimens   -->
-    <dimen name="stopwatch_seconds_tv_tran_textSize">16sp</dimen>
     <dimen name="stopwatch_progress_indicator_thickness">1dp</dimen>
+    <dimen name="stopwatch_elapsed_time_size">20sp</dimen>
+    <dimen name="stopwatch_elapsed_time_trans_size">20sp</dimen>
     <item name="guideline_stopwatch_top" format="float" type="dimen">0.0</item>
     <item name="guideline_stopwatch_anim_top" format="float" type="dimen">0.0</item>
     <item name="guideline_stopwatch_start" format="float" type="dimen">0.0</item>
@@ -57,5 +58,13 @@
     <item name="guideline_stopwatch_anim_end" format="float" type="dimen">0.0</item>
     <item name="guideline_stopwatch_bottom" format="float" type="dimen">1.0</item>
     <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">1.0</item>
+
+
+    <!-- Setting Screen Dimens   -->
+    <item name="guideline_setting_start" format="float" type="dimen">0.1</item>
+    <item name="guideline_setting_end" format="float" type="dimen">0.9</item>
+
+    <!-- Help Screen Dimens   -->
+    <item name="guideline_help_container" format="float" type="dimen">0.8</item>
 
 </resources>

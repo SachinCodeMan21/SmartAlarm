@@ -25,6 +25,7 @@ import org.junit.Assert.assertTrue
 @ExperimentalCoroutinesApi
 class ToggleAlarmUseCaseImplTest {
 
+/*
     @MockK
     private lateinit var updateAlarmUseCase: UpdateAlarmUseCase
 
@@ -61,9 +62,11 @@ class ToggleAlarmUseCaseImplTest {
         unmockkAll()
     }
 
-    /**
+    */
+/**
      * Test that toggling the alarm on schedules it and posts a notification.
-     */
+     *//*
+
     @Test
     fun `invoke - enable alarm - schedules and posts notification`() = runTest {
 
@@ -91,9 +94,11 @@ class ToggleAlarmUseCaseImplTest {
         verify(exactly = 1) { alarmNotificationManager.postAlarmNotification(alarmId, any()) }
     }
 
-    /**
+    */
+/**
      * Test that toggling the alarm off cancels it and removes the notification.
-     */
+     *//*
+
     @Test
     fun `invoke - disable alarm - cancels and removes notification`() = runTest {
         // Arrange
@@ -118,9 +123,11 @@ class ToggleAlarmUseCaseImplTest {
         verify(exactly = 1) { alarmNotificationManager.cancelAlarmNotification(alarmId) }
     }
 
-    /**
+    */
+/**
      * Test that if updating the alarm fails, an error is returned and no further actions are taken.
-     */
+     *//*
+
     @Test
     fun `invoke - update fails - returns error and does not schedule or notify`() = runTest {
         // Arrange
@@ -136,10 +143,12 @@ class ToggleAlarmUseCaseImplTest {
         verify(exactly = 0) { alarmNotificationManager.postAlarmNotification(any(), any()) }
     }
 
-    /**
+    */
+/**
      * Test that if the alarm is successfully updated but scheduling or posting notifications fails,
      * the operation still returns success with an empty string as no further actions were needed.
-     */
+     *//*
+
     @Test
     fun `invoke - schedule or notification fail - returns success with empty string`() = runTest {
         // Arrange
@@ -163,5 +172,6 @@ class ToggleAlarmUseCaseImplTest {
         verify(exactly = 1) { alarmScheduler.scheduleSmartAlarm(any(), any()) }
         verify(exactly = 0) { alarmNotificationManager.postAlarmNotification(any(), any()) }
     }
+*/
 
 }

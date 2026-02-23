@@ -1,6 +1,8 @@
 package com.example.smartalarm.feature.stopwatch.framework.jobmanager.impl
 
+import com.example.smartalarm.core.di.annotations.DefaultDispatcher
 import com.example.smartalarm.feature.stopwatch.framework.jobmanager.contract.BlinkEffectJobManager
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,7 +18,9 @@ import javax.inject.Inject
  *
  * Uses a coroutine job to manage the blinking lifecycle.
  */
-class BlinkEffectJobManagerImpl @Inject constructor() : BlinkEffectJobManager {
+class BlinkEffectJobManagerImpl @Inject constructor(
+    @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+) : BlinkEffectJobManager {
 
     /** Coroutine job responsible for running the blinking loop. */
     private var blinkingJob: Job? = null
@@ -30,7 +34,7 @@ class BlinkEffectJobManagerImpl @Inject constructor() : BlinkEffectJobManager {
     override fun startBlinking(scope: CoroutineScope, onVisibilityChanged: (isVisible: Boolean) -> Unit) {
         if (blinkingJob?.isActive == true) return
 
-        blinkingJob = scope.launch {
+        blinkingJob = scope.launch(defaultDispatcher) {
 
             var isVisible = true
 

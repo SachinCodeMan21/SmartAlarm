@@ -9,12 +9,10 @@ import com.example.smartalarm.core.notification.model.NotificationAction
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity
-import com.example.smartalarm.feature.home.presentation.view.HomeActivity.Companion.EXTRA_DESTINATION_ID
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity.Companion.EXTRA_NOTIFICATION_ACTION
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity.Companion.EXTRA_START_DESTINATION
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchBroadCastAction
-import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchKey
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.receivers.StopwatchReceiver
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotificationData
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotificationModel
@@ -36,6 +34,10 @@ class ActiveStopwatchNotificationDataMapper @Inject constructor(
     private val numberFormatter: NumberFormatter
 ) : AppNotificationDataMapper<StopwatchNotificationModel.ActiveStopwatchModel, StopwatchNotificationData> {
 
+    companion object{
+        private const val REQUEST_CODE = 1000
+    }
+
     /**
      * Maps an [StopwatchNotificationModel.ActiveStopwatchModel] to [StopwatchNotificationData].
      *
@@ -56,11 +58,11 @@ class ActiveStopwatchNotificationDataMapper @Inject constructor(
         val actions = buildActions(context, stopwatch)
 
         return StopwatchNotificationData(
-            id = stopwatch.id,
+            id = 1,
             title = context.getString(R.string.stopwatch),
             contentText = contentText,
             actions = actions,
-            contentIntent = buildStopwatchContentIntent(context, stopwatch),
+            contentIntent = buildStopwatchContentIntent(context),
             lapCount = lapCount,
             isRunning = stopwatch.isRunning,
             progress = stopwatch.getIndicatorProgress
@@ -80,7 +82,7 @@ class ActiveStopwatchNotificationDataMapper @Inject constructor(
             id = id,
             title = context.getString(titleRes),
             icon = iconRes,
-            pendingIntent = buildStopwatchPendingIntent(context, stopwatch.id, action)
+            pendingIntent = buildStopwatchPendingIntent(context, action)
         )
 
         return if (stopwatch.isRunning) {
@@ -100,19 +102,16 @@ class ActiveStopwatchNotificationDataMapper @Inject constructor(
      * Builds a [PendingIntent] for a broadcast action (pause, lap, resume, reset) tied to a stopwatch.
      *
      * @param context Context used to create the intent.
-     * @param id The stopwatch ID.
      * @param action The broadcast action string.
      * @return A [PendingIntent] that can be attached to a notification action button.
      */
-    private fun buildStopwatchPendingIntent(context: Context, id: Int, action: String): PendingIntent {
+    private fun buildStopwatchPendingIntent(context: Context, action: String): PendingIntent {
         val intent = Intent(context, StopwatchReceiver::class.java).apply {
             this.action = action
-            putExtra(StopWatchKey.ID, id)
         }
-        val requestCode = (id.toString() + action).hashCode()
         return PendingIntent.getBroadcast(
             context,
-            requestCode,
+            REQUEST_CODE,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -122,22 +121,20 @@ class ActiveStopwatchNotificationDataMapper @Inject constructor(
      * Builds the [PendingIntent] for tapping the notification to open the app.
      *
      * @param context Context used to create the intent.
-     * @param stopwatch The stopwatch associated with the notification.
      * @return A [PendingIntent] that opens [HomeActivity] with the stopwatch ID.
      */
 
-    private fun buildStopwatchContentIntent(context: Context, stopwatch: StopwatchModel): PendingIntent {
+    private fun buildStopwatchContentIntent(context: Context): PendingIntent {
 
         val intent = Intent(context, HomeActivity::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ACTION, HomeActivity.ACTION_ACTIVE_STOPWATCH)
             putExtra(EXTRA_START_DESTINATION, R.id.stopwatchFragment)
-            putExtra(EXTRA_DESTINATION_ID, stopwatch.id)
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
         return PendingIntent.getActivity(
             context,
-            stopwatch.id, // Unique ID per notification
+            REQUEST_CODE, // Unique ID per notification
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

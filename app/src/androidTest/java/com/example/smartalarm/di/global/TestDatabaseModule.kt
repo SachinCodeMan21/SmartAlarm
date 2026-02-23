@@ -34,4 +34,5 @@ object TestDatabaseModule {
             MyDatabase::class.java,
         ).allowMainThreadQueries().build()
     }
+
 }

@@ -1,9 +1,10 @@
 package com.example.smartalarm.feature.timer.domain.usecase.impl
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.domain.usecase.contract.SaveTimerUseCase
-import com.example.smartalarm.core.model.Result
 import javax.inject.Inject
 
 /**
@@ -18,12 +19,13 @@ class SaveTimerUseCaseImpl @Inject constructor(
 ) : SaveTimerUseCase {
 
     /**
-     * Saves the timer to the repository.
-     *
-     * @param timer The timer to save.
-     * @return A [Result] indicating success or failure.
+     * Saves or updates a timer in the repository.
+     * * @param timer The timer model to persist.
+     * @return [MyResult.Success] if saved, or [MyResult.Error] with [DataError] details.
      */
-    override suspend fun invoke(timer: TimerModel): Result<Unit> {
+    override suspend fun invoke(timer: TimerModel): MyResult<Unit, DataError> {
+        // We simply forward the repository result.
+        // The DataError mapping happens inside the Repository implementation.
         return repository.persistTimer(timer)
     }
 }

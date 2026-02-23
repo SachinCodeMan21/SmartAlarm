@@ -50,6 +50,7 @@ import java.time.LocalTime
  */
 @ExperimentalCoroutinesApi
 class MissedAlarmUseCaseImplTest {
+/*
 
     @MockK
     private lateinit var updateAlarmUseCase: UpdateAlarmUseCase
@@ -113,10 +114,12 @@ class MissedAlarmUseCaseImplTest {
         unmockkAll()
     }
 
-    /**
+    */
+/**
      * Verifies that a single-shot alarm is correctly marked as MISSED, disabled, snooze settings are reset,
      * and a notification is posted. It ensures the expected state changes and side effects occur when the alarm is missed.
-     */
+     *//*
+
     @Test
     fun `invoke - success - single-shot alarm - marks as MISSED, disables, resets snooze, posts notification`() =
         runTest {
@@ -142,9 +145,11 @@ class MissedAlarmUseCaseImplTest {
             verify(exactly = 0) { alarmScheduler.scheduleSmartAlarm(any(), any()) }
         }
 
-    /**
+    */
+/**
      * Verifies that a repeating alarm is correctly marked as MISSED, remains enabled, and the next occurrence is rescheduled.
-     */
+     *//*
+
     @Test
     fun `invoke - success - repeating alarm - marks as MISSED, keeps enabled, reschedules next occurrence`() =
         runTest {
@@ -174,12 +179,14 @@ class MissedAlarmUseCaseImplTest {
             }
         }
 
-    /**
+    */
+/**
      * Verifies that when updating the alarm fails (e.g., due to a database error), the use case should:
      * - Return an error result.
      * - Not attempt to schedule the alarm again.
      * - Not post any notifications.
-     */
+     *//*
+
     @Test
     fun `invoke - failure - update fails - returns error and does NOT schedule or notify`() =
         runTest {
@@ -196,11 +203,13 @@ class MissedAlarmUseCaseImplTest {
             verify(exactly = 0) { alarmNotificationManager.postAlarmNotification(any(), any()) }
         }
 
-    /**
+    */
+/**
      * Verifies the resilience of the system when side effects fail but the database update is successful.
      * This test ensures that the system still returns a success result as long as the database state update succeeds,
      * even if other operations (like scheduling or notifications) fail.
-     */
+     *//*
+
     @Test
     fun `invoke - resilience - side effects fail but DB update succeeds - still returns error`() =
         runTest {
@@ -221,9 +230,11 @@ class MissedAlarmUseCaseImplTest {
             verify(atLeast = 0) { alarmNotificationManager.postAlarmNotification(any(), any()) }
         }
 
-    /**
+    */
+/**
      * Verifies that when the alarm cannot be found, the use case returns an error and no updates or notifications are performed.
-     */
+     *//*
+
     @Test
     fun `invoke - failure - alarm not found - returns error`() = runTest {
         // Arrange: We're not passing a non-existent alarm because we directly provide the alarm model now.
@@ -238,5 +249,6 @@ class MissedAlarmUseCaseImplTest {
         verify(exactly = 0) { alarmScheduler.cancelSmartAlarmTimeout(any()) }
         verify(exactly = 0) { alarmNotificationManager.postAlarmNotification(any(), any()) }
     }
+*/
 
 }

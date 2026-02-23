@@ -4,7 +4,7 @@ import com.example.smartalarm.R
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
-import com.example.smartalarm.feature.stopwatch.domain.model.StopWatchLapModel
+import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchLapModel
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchLapUiModel
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchUiModel
@@ -41,17 +41,17 @@ class StopwatchUiMapper @Inject constructor(
 
 
     /**
-     * Converts a [StopWatchLapModel] from the domain layer into a [StopwatchLapUiModel] for UI display.
+     * Converts a [StopwatchLapModel] from the domain layer into a [StopwatchLapUiModel] for UI display.
      *
      * @param lap The domain model representing a single lap's timing information.
      * @return A [StopwatchLapUiModel] with formatted strings for use in the UI.
      */
-    fun mapLapToUiModel(lap: StopWatchLapModel): StopwatchLapUiModel {
+    fun mapLapToUiModel(lap: StopwatchLapModel): StopwatchLapUiModel {
         return StopwatchLapUiModel(
             formattedLapIndex = "${resourceProvider.getString(R.string.lap_index)} ${ numberFormatter.formatLocalizedNumber(lap.lapIndex.toLong(),false)}",
-            formattedLapStartTime = timeFormatter.formatDurationForStopwatch(lap.lapStartTime, includeMillis = true),
-            formattedLapElapsedTime = timeFormatter.formatDurationForStopwatch(lap.lapElapsedTime,includeMillis = true),
-            formattedLapEndTime = timeFormatter.formatDurationForStopwatch(lap.lapEndTime,includeMillis = true)
+            formattedLapStartTime = timeFormatter.formatDurationForStopwatch(lap.lapStartTimeMillis, includeMillis = true),
+            formattedLapElapsedTime = timeFormatter.formatDurationForStopwatch(lap.lapElapsedTimeMillis,includeMillis = true),
+            formattedLapEndTime = timeFormatter.formatDurationForStopwatch(lap.lapEndTimeMillis,includeMillis = true)
         )
     }
 

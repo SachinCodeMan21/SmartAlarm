@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase.impl
 
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
-import com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository
+import com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository
 import com.example.smartalarm.feature.stopwatch.domain.usecase.contract.UpdateStopwatchTickerStateUseCase
 import javax.inject.Inject
 
@@ -11,11 +11,11 @@ import javax.inject.Inject
  * This use case calculates the elapsed time and updates the stopwatch state, including lap times.
  * It is typically called by the ticker job to keep the stopwatch state updated in real time.
  *
- * @param repository The [StopWatchRepository] used for updating the in-memory stopwatch state.
+ * @param repository The [StopwatchRepository] used for updating the in-memory stopwatch state.
  * @param clockProvider Provides the current system time for calculating the elapsed time.
  */
 class UpdateStopwatchTickerStateUseCaseImpl @Inject constructor(
-    private val repository: StopWatchRepository,
+    private val repository: StopwatchRepository,
     private val clockProvider: SystemClockHelper
 ) : UpdateStopwatchTickerStateUseCase {
 
@@ -42,8 +42,8 @@ class UpdateStopwatchTickerStateUseCaseImpl @Inject constructor(
                 set(
                     lastIndex,
                     lastLap.copy(
-                        lapElapsedTime = elapsedTime - lastLap.lapStartTime,
-                        lapEndTime = elapsedTime
+                        lapElapsedTimeMillis = elapsedTime - lastLap.lapStartTimeMillis,
+                        lapEndTimeMillis = elapsedTime
                     )
                 )
             }

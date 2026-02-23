@@ -1,69 +1,61 @@
 package com.example.smartalarm.feature.stopwatch.data.datasource.impl
 
-import com.example.smartalarm.feature.stopwatch.data.local.dao.StopWatchDao
-import com.example.smartalarm.feature.stopwatch.data.local.entity.StopWatchEntity
-import com.example.smartalarm.feature.stopwatch.data.local.entity.StopWatchLapEntity
-import com.example.smartalarm.feature.stopwatch.data.local.relation.StopWatchWithLaps
+import com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchStateEntity
+import com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchLapEntity
 import com.example.smartalarm.feature.stopwatch.data.datasource.contract.StopwatchLocalDataSource
+import com.example.smartalarm.feature.stopwatch.data.local.dao.StopwatchDao
+import com.example.smartalarm.feature.stopwatch.data.local.relation.StopwatchWithLaps
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
- * Implementation of [StopwatchLocalDataSource] that interacts with [StopWatchDao]
- * to perform local database operations related to stopwatches and their lap times.
+ * Room-backed implementation of [StopwatchLocalDataSource].
  *
- * This class acts as a middle layer between the repository and the DAO,
- * abstracting Room-specific logic to maintain separation of concerns.
+ * This class facilitates communication between the Repository layer and the
+ * [StopwatchDao], ensuring that high-level data requests are translated into
+ * efficient database operations.
  *
- * @property dao DAO used to access stopwatch and lap data from the database.
+ * @property dao The Data Access Object responsible for SQLite interactions.
  */
 class StopwatchLocalDataSourceImpl @Inject constructor(
-    private val dao: StopWatchDao
+    private val dao: StopwatchDao
 ) : StopwatchLocalDataSource {
 
-
-
     /**
-     * Observes the stopwatch and its laps for a given stopwatch ID.
-     *
-     * @param stopwatchId The ID of the stopwatch to observe.
-     * @return A flow of [StopWatchWithLaps?], which emits the stopwatch and its laps, or `null` if not found.
+     * Streams the stopwatch session (state + laps) from the database.
+     * * @param id The ID of the stopwatch session (Defaults to 1).
      */
-    override fun observeStopwatchWithLaps(stopwatchId: Int): Flow<StopWatchWithLaps?> {
-        return dao.observeStopwatchWithLaps(stopwatchId)
+    override fun observeStopwatchWithLaps(id: Int): Flow<StopwatchWithLaps?> {
+        return dao.observeStopwatchWithLaps(id)
     }
 
-
     /**
-     * Retrieves a stopwatch and its laps by the given ID.
-     *
-     * @param stopwatchId The ID of the stopwatch to retrieve.
-     * @return A [StopWatchWithLaps] object if found, or `null` otherwise.
+     * Fetches a single snapshot of the stopwatch session.
+     * * @param id The ID of the stopwatch session (Defaults to 1).
      */
-    override suspend fun getStopwatchWithLaps(stopwatchId: Int): StopWatchWithLaps? {
-        return dao.getStopwatchWithLaps(stopwatchId)
+    override suspend fun getStopwatchWithLaps(id: Int): StopwatchWithLaps? {
+        return dao.getStopwatchWithLaps(id)
     }
 
-
     /**
-     * Saves or updates a stopwatch along with its associated lap records in the database.
+     * Persists the stopwatch state and its laps atomically using a Room transaction.
      *
-     * @param stopwatchEntity The [StopWatchEntity] to save or update.
-     * @param laps A list of [StopWatchLapEntity] associated with the stopwatch.
+     * @param state The [StopwatchStateEntity] representing the current timer progress.
+     * @param laps The collection of [StopwatchLapEntity] records to persist.
      */
-    override suspend fun saveStopwatchWithLaps(stopwatchEntity: StopWatchEntity, laps: List<StopWatchLapEntity>) {
-        return dao.upsertStopwatchWithLaps(stopwatchEntity, laps)
+    override suspend fun saveStopwatchWithLaps(
+        state: StopwatchStateEntity,
+        laps: List<StopwatchLapEntity>
+    ) {
+        dao.syncStopwatchSession(state, laps)
     }
 
-
     /**
-     * Deletes the stopwatch and all its associated lap records by ID.
-     *
-     * @param stopwatchId The ID of the stopwatch to delete.
+     * Removes the stopwatch session.
+     * Due to the cascade constraint, this also wipes all associated laps.
+     * * @param id The ID of the stopwatch session to delete.
      */
-    override suspend fun deleteStopwatchWithLaps(stopwatchId: Int){
-        return dao.deleteStopwatchWithLaps(stopwatchId)
+    override suspend fun deleteStopwatchSession(id: Int) {
+        dao.deleteStopwatchState(id)
     }
-
-
 }

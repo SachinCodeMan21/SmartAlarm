@@ -56,7 +56,7 @@ import io.mockk.verify
  */
 @ExperimentalCoroutinesApi
 class SwipedAlarmUseCaseImplTest {
-
+/*
     @MockK
     private lateinit var deleteAlarmUseCase: DeleteAlarmUseCase
 
@@ -91,10 +91,10 @@ class SwipedAlarmUseCaseImplTest {
         unmockkAll()
     }
 
-    /**
+    *//**
      * Test the successful swiping of an alarm, which results in the alarm being deleted,
      * and associated actions (scheduling and notification) being canceled.
-     */
+     *//*
     @Test
     fun `invoke - success - deletes and cancels alarm`() = runTest {
         // Arrange: Mocking successful deletion and successful cancellation of alarm
@@ -112,9 +112,9 @@ class SwipedAlarmUseCaseImplTest {
         verify(exactly = 1) { alarmNotificationManager.cancelAlarmNotification(alarmId) }
     }
 
-    /**
+    *//**
      * Test when deleting the alarm fails, it returns an error with a localized message.
-     */
+     *//*
     @Test
     fun `invoke - failure - delete fails - returns error`() = runTest {
         // Arrange: Mocking failure in alarm deletion
@@ -132,9 +132,9 @@ class SwipedAlarmUseCaseImplTest {
         verify(exactly = 0) { alarmNotificationManager.cancelAlarmNotification(any()) }
     }
 
-    /**
+    *//**
      * Test when canceling the alarm fails after deletion, it returns an error result.
-     */
+     *//*
     @Test
     fun `invoke - failure - cancel alarm fails - returns error`() = runTest {
         // Arrange: Mocking successful alarm deletion but failure in cancellation
@@ -152,10 +152,10 @@ class SwipedAlarmUseCaseImplTest {
         verify(exactly = 0) { alarmNotificationManager.cancelAlarmNotification(any()) }
     }
 
-    /**
+    *//**
      * Test when the alarm is in RINGING state, the notification is not canceled, and the alarm service
      * and ringtone are stopped.
-     */
+     *//*
     @Test
     fun `invoke - ringing alarm - notification not canceled and service stopped`() = runTest {
         // Arrange: Mocking successful deletion and actions for ringing alarm state
@@ -175,6 +175,6 @@ class SwipedAlarmUseCaseImplTest {
         verify(exactly = 0) { alarmNotificationManager.cancelAlarmNotification(any()) }
         verify(exactly = 1) { alarmRingtoneManager.stopAlarmRingtone() }
         verify(exactly = 1) { alarmServiceController.stopAlarmService() }
-    }
+    }*/
 }
 

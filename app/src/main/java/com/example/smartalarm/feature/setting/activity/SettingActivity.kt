@@ -7,13 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.smartalarm.core.utility.Constants
+import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.databinding.ActivitySettingBinding
 
 class SettingActivity : AppCompatActivity() {
 
+
     companion object {
         private const val TAG = "SettingActivity"
-        private const val BINDING_NULL_ERROR = "$TAG ${Constants.BINDING_NULL}"
+        private const val BINDING_NULL_ERROR = "$TAG $BINDING_NULL"
     }
 
     private var _binding: ActivitySettingBinding? = null

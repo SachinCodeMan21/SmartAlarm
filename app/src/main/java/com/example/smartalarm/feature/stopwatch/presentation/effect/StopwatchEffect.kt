@@ -1,5 +1,7 @@
 package com.example.smartalarm.feature.stopwatch.presentation.effect
 
+import com.example.smartalarm.core.exception.DataError
+
 /**
  * Represents one-time side effects emitted by the stopwatch feature.
  *
@@ -20,9 +22,9 @@ sealed class StopwatchEffect {
     /**
      * Effect to show an error message to the user (e.g., via a toast or snackBar).
      *
-     * @property message The error message to display.
+     * @property error The error message to display.
      */
-    data class ShowError(val message: String) : StopwatchEffect()
+    data class ShowError(val error: DataError) : StopwatchEffect()
 
     /**
      * Effect to start the stopwatch foreground service.

@@ -2,7 +2,7 @@ package com.example.smartalarm.feature.stopwatch.framework.di.modules
 
 import com.example.smartalarm.core.database.MyDatabase
 import com.example.smartalarm.core.startup.AppStartupTask
-import com.example.smartalarm.feature.stopwatch.data.local.dao.StopWatchDao
+import com.example.smartalarm.feature.stopwatch.data.local.dao.StopwatchDao
 import com.example.smartalarm.feature.stopwatch.data.startup.StopwatchStartup
 import dagger.Module
 import dagger.Provides
@@ -21,13 +21,13 @@ import dagger.multibindings.IntoSet
 object StopwatchDatabaseModule {
 
     /**
-     * Provides a [StopWatchDao] instance from the given [MyDatabase].
+     * Provides a [StopwatchDao] instance from the given [MyDatabase].
      *
      * @param db The database instance from which to obtain the DAO.
-     * @return The [StopWatchDao] used for accessing stopwatch-related data.
+     * @return The [StopwatchDao] used for accessing stopwatch-related data.
      */
     @Provides
-    fun provideStopWatchDao(db: MyDatabase): StopWatchDao = db.stopwatchDao()
+    fun provideStopWatchDao(db: MyDatabase): StopwatchDao = db.stopwatchDao()
 
     @Provides
     @IntoSet

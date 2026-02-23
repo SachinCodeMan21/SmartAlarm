@@ -5,11 +5,9 @@ import android.app.Notification
 import android.app.Service
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import com.example.smartalarm.core.notification.model.NotificationIds
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerState
+import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.framework.notification.manager.TimerNotificationManager
-import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotification
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotificationModel
 import com.example.smartalarm.feature.timer.framework.service.ShowTimerService
 import javax.inject.Inject
@@ -25,14 +23,62 @@ class TimerNotificationHandlerImpl @Inject constructor(
      * Helper: Builds a [TimerNotificationModel] from the full timer list.
      * Computes running/paused/completed counts once.
      */
-    private fun buildTimerNotificationModel(timers: List<TimerModel>): TimerNotificationModel {
+/*    private fun buildTimerNotificationModel(timers: List<TimerModel>): TimerNotificationModel {
         require(timers.isNotEmpty()) { "Timer list cannot be empty" }
 
         val representativeTimer = timers.first()
 
         val completedCount = timers.count { it.remainingTime <= 0 }
-        val runningCount = timers.count { it.isTimerRunning && it.remainingTime > 0 && it.state == TimerState.RUNNING }
-        val pausedCount = timers.count { (!it.isTimerRunning && it.remainingTime > 0) && it.state == TimerState.PAUSED }
+        val runningCount = timers.count { it.isTimerRunning && it.remainingTime > 0 && it.status == TimerStatus.RUNNING }
+        val pausedCount = timers.count { (!it.isTimerRunning && it.remainingTime > 0) && it.status == TimerStatus.PAUSED }
+
+        return if (completedCount > 0) {
+            TimerNotificationModel.CompletedTimerModel(
+                timer = representativeTimer,
+                totalCount = timers.size,
+                runningCount = runningCount,
+                pausedCount = pausedCount,
+                completedCount = completedCount
+            )
+        } else {
+            TimerNotificationModel.ActiveTimerModel(
+                timer = representativeTimer,
+                totalCount = timers.size,
+                runningCount = runningCount,
+                pausedCount = pausedCount
+            )
+        }
+    }*/
+    private fun buildTimerNotificationModel(timers: List<TimerModel>): TimerNotificationModel {
+        require(timers.isNotEmpty()) { "Timer list cannot be empty" }
+
+        // Separate active and completed timers
+        val completedTimers = timers.filter { it.remainingTime <= 0 }
+        val activeTimers = timers.filter { it.remainingTime > 0 }
+
+        // Logic for selecting the representative timer based on the state
+        val representativeTimer = when {
+            completedTimers.isNotEmpty() -> {
+                // For completed timers, pick the one with the largest remaining time (farthest from zero)
+                completedTimers.minByOrNull { it.remainingTime }
+            }
+            activeTimers.isNotEmpty() -> {
+                // For active timers, pick the one with the smallest remaining time (closest to zero)
+                activeTimers.minByOrNull { it.remainingTime }
+            }
+            else -> {
+                // If there are no timers, return null or handle as needed
+                null
+            }
+        }
+
+        // Ensure that we have a representative timer selected
+        requireNotNull(representativeTimer) { "No representative timer found" }
+
+        // Count the timers in different states
+        val completedCount = timers.count { it.remainingTime <= 0 }
+        val runningCount = timers.count { it.isTimerRunning && it.remainingTime > 0 && it.status == TimerStatus.RUNNING }
+        val pausedCount = timers.count { !it.isTimerRunning && it.remainingTime > 0 && it.status == TimerStatus.PAUSED }
 
         return if (completedCount > 0) {
             TimerNotificationModel.CompletedTimerModel(
@@ -90,17 +136,12 @@ class TimerNotificationHandlerImpl @Inject constructor(
         timers: List<TimerModel>
     ) {
         if (timers.isEmpty()) return
-        Log.d("NOTIFICATION_DEBUG", "showForegroundTimerNotification called - ID: $notificationId")
         service.startForeground(notificationId, buildNotification(timers))
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun updateTimerNotification(notificationId: Int, timers: List<TimerModel>) {
         if (timers.isEmpty()) return
-
-        Log.d("NOTIFICATION_DEBUG", "updateTimerNotification called - ID: $notificationId, timers: ${timers.size}")
-        //Log.d("NOTIFICATION_DEBUG", "Stack trace: ${Thread.currentThread().stackTrace.joinToString("\n")}")
-
         timerNotificationManager.updateTimerNotification(
             notificationId,
             buildNotification(timers)

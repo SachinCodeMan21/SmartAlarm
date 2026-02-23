@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.timer.presentation.effect
 
+import com.example.smartalarm.core.exception.DataError
 import com.example.smartalarm.feature.timer.presentation.view.activity.ShowTimerActivity
 import com.example.smartalarm.feature.timer.presentation.viewmodel.ShowTimerViewModel
 
@@ -42,28 +43,6 @@ sealed class ShowTimerEffect {
     object FinishActivity : ShowTimerEffect()
 
 
-    /** Displays a toast message with the provided [message]. */
-    data class ShowToast(val message: String) : ShowTimerEffect()
+    /** Displays a toast message with the provided [error]. */
+    data class ShowError(val error: DataError) : ShowTimerEffect()
 }
-
-
-//sealed class ShowTimerEffect {
-//
-//    /** Starts a foreground notification for the timer service. */
-//    object StartTimerForegroundNotification : ShowTimerEffect()
-//
-//    /** Stops the foreground notification for the timer service. */
-//    object StopTimerForegroundNotification : ShowTimerEffect()
-//
-//    /**
-//     * Represents an effect that triggers navigation to the "TimerScreen" screen.
-//     *
-//     * This event is typically used to navigate away from the current screen (Show Timer)
-//     * and transition to the screen where users can create or add a new timer.
-//     */
-//    object FinishActivity : ShowTimerEffect()
-//
-//
-//    /** Displays a toast message with the provided [message]. */
-//    data class ShowToast(val message: String) : ShowTimerEffect()
-//}

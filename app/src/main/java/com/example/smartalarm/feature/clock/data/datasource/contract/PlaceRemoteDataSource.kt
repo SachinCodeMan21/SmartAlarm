@@ -1,5 +1,7 @@
 package com.example.smartalarm.feature.clock.data.datasource.contract
 
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.clock.data.remote.dto.PlaceDto
 
 /**
@@ -19,5 +21,7 @@ interface PlaceRemoteDataSource {
      *
      * @throws Exception If a network error or API error occurs during the request.
      */
-    suspend fun searchPlaces(query: String): List<PlaceDto>
+    //suspend fun searchPlaces(query: String): List<PlaceDto>
+    suspend fun searchPlaces(query: String): MyResult<List<PlaceDto>, DataError>
+
 }

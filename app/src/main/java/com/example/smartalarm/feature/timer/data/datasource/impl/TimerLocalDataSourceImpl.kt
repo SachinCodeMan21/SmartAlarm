@@ -20,7 +20,7 @@ class TimerLocalDataSourceImpl @Inject constructor(
     override fun getTimerList(): Flow<List<TimerEntity>> = timerDao.getTimerList()
 
     override suspend fun saveTimer(timerEntity: TimerEntity) {
-        timerDao.saveTimer(timerEntity)
+        timerDao.persistTimer(timerEntity)
     }
 
     override suspend fun deleteTimerById(timerId: Int) {

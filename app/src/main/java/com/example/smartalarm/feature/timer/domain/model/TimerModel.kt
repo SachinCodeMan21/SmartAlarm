@@ -12,7 +12,7 @@ package com.example.smartalarm.feature.timer.domain.model
  * @property isTimerRunning A boolean flag indicating whether the timer is currently running.
  * @property isTimerSnoozed A boolean flag indicating whether the timer has been snoozed.
  * @property snoozedTargetTime The target time (in milliseconds) to which the timer was snoozed.
- * @property state The current state of the timer, defined by the [TimerState] enum.
+ * @property status The current state of the timer, defined by the [TimerStatus] enum.
  */
 data class TimerModel(
     val timerId: Int = 0,
@@ -23,5 +23,5 @@ data class TimerModel(
     val isTimerRunning: Boolean = false,
     val isTimerSnoozed: Boolean = false,
     val snoozedTargetTime: Long = 0,
-    val state: TimerState = TimerState.IDLE
+    val status: TimerStatus = TimerStatus.IDLE
 )

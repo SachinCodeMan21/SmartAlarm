@@ -1,21 +1,6 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase
 
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
-import com.example.smartalarm.feature.stopwatch.domain.repository.StopWatchRepository
-import com.example.smartalarm.feature.stopwatch.domain.usecase.impl.GetStopwatchStateUseCaseImpl
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
-import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
 
 /**
  * Unit tests for the [com.example.smartalarm.feature.stopwatch.domain.usecase.impl.GetStopwatchStateUseCaseImpl] class, which retrieves the state of a stopwatch

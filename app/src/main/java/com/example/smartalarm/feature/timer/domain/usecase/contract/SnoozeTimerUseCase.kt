@@ -1,6 +1,7 @@
 package com.example.smartalarm.feature.timer.domain.usecase.contract
 
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 
 /**
@@ -12,7 +13,7 @@ fun interface SnoozeTimerUseCase {
      * Snoozes the given timer by extending its remaining time.
      *
      * @param timer The [TimerModel] to snooze.
-     * @return A [Result] indicating success or failure of the operation.
+     * @return A [MyResult] indicating success or failure of the operation.
      */
-    suspend operator fun invoke(timer: TimerModel): Result<Unit>
+    suspend operator fun invoke(timer: TimerModel): MyResult<Unit, DataError>
 }

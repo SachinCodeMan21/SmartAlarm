@@ -1,14 +1,15 @@
 package com.example.smartalarm.integration.stopwatch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.smartalarm.feature.stopwatch.data.local.dao.StopWatchDao
-import com.example.smartalarm.feature.stopwatch.data.local.entity.StopWatchEntity
-import com.example.smartalarm.feature.stopwatch.data.local.entity.StopWatchLapEntity
+import com.example.smartalarm.core.database.MyDatabase
+import com.example.smartalarm.feature.stopwatch.data.local.dao.StopwatchDao
+import com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchStateEntity
+import com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchLapEntity
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,203 +20,85 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 class StopWatchDaoIT {
 
-    @get:Rule(order = 1)
-    val hiltRule = HiltAndroidRule(this)
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var stopWatchDao: StopWatchDao
+    lateinit var database: MyDatabase
+    @Inject
+    lateinit var stopwatchDao: StopwatchDao
 
     @Before
-    fun setUp(){
+    fun setup() {
         hiltRule.inject()
     }
 
-    // Test upsertStopwatch and upsertStopwatchLap
     @Test
-    fun upsertStopwatchAndLap_whenStopwatchAndLapsInserted_thenStopwatchAndLapsShouldBeFetchedCorrectly() =
-        runTest {
-            val stopwatch = StopWatchEntity(
-                id = 1,
-                startTime = System.currentTimeMillis(),
-                elapsedTime = 0L,
-                endTime = 0L,
-                isRunning = false,
-                lapCount = 0
-            )
-            val lap1 = StopWatchLapEntity(
-                stopwatchId = 1,
-                lapIndexId = 1,
-                lapStartTime = System.currentTimeMillis(),
-                lapElapsedTime = 1000L,
-                lapEndTime = System.currentTimeMillis() + 1000
-            )
-            val lap2 = StopWatchLapEntity(
-                stopwatchId = 1,
-                lapIndexId = 2,
-                lapStartTime = System.currentTimeMillis(),
-                lapElapsedTime = 2000L,
-                lapEndTime = System.currentTimeMillis() + 2000
-            )
+    fun insertStateAndLaps_ReadBackAsCombinedObject() = runTest {
 
-            // Insert stopwatch and laps
-            stopWatchDao.upsertStopwatch(stopwatch)
-            stopWatchDao.upsertStopwatchLap(lap1)
-            stopWatchDao.upsertStopwatchLap(lap2)
+        // 1. Arrange
+        val state = StopwatchStateEntity(id = 1, isRunning = true)
 
-            // Fetch the stopwatch along with its laps
-            val stopwatchWithLaps = stopWatchDao.getStopwatchWithLaps(1)
-
-            // Verify that the stopwatch and laps were inserted correctly
-            assertEquals(stopwatchWithLaps?.stopwatch?.id, 1)
-            assertEquals(stopwatchWithLaps?.laps?.size, 2)
-            assertEquals(stopwatchWithLaps?.laps?.get(0)?.lapElapsedTime, 1000L)
-            assertEquals(stopwatchWithLaps?.laps?.get(1)?.lapElapsedTime, 2000L)
-        }
-
-    // Test transaction: upsertStopwatchWithLaps
-    @Test
-    fun upsertStopwatchWithLaps_whenStopwatchAndLapsUpserted_thenBothShouldBeInserted() = runTest {
-        val stopwatch = StopWatchEntity(
-            id = 2,
-            startTime = System.currentTimeMillis(),
-            elapsedTime = 0L,
-            endTime = 0L,
-            isRunning = false,
-            lapCount = 0
-        )
-        val lap1 = StopWatchLapEntity(
-            stopwatchId = 2,
-            lapIndexId = 1,
-            lapStartTime = System.currentTimeMillis(),
-            lapElapsedTime = 1500L,
-            lapEndTime = System.currentTimeMillis() + 1500
-        )
-        val lap2 = StopWatchLapEntity(
-            stopwatchId = 2,
-            lapIndexId = 2,
-            lapStartTime = System.currentTimeMillis(),
-            lapElapsedTime = 2500L,
-            lapEndTime = System.currentTimeMillis() + 2500
+        val laps = listOf(
+            StopwatchLapEntity(stopwatchId = 1, lapIndex = 1, lapStartTimeMillis = 1000, lapElapsedTimeMillis = 500, lapEndTimeMillis = 1500),
+            StopwatchLapEntity(stopwatchId = 1, lapIndex = 2, lapStartTimeMillis = 1500, lapElapsedTimeMillis = 600, lapEndTimeMillis = 2100)
         )
 
-        // Upsert both stopwatch and laps in a single transaction
-        stopWatchDao.upsertStopwatchWithLaps(stopwatch, listOf(lap1, lap2))
+        // 2. Act
+        stopwatchDao.upsertStopwatchState(state)
+        laps.forEach { stopwatchDao.upsertLap(it) }
 
-        // Fetch the stopwatch along with its laps
-        val stopwatchWithLaps = stopWatchDao.getStopwatchWithLaps(2)
 
-        // Verify that the stopwatch and laps were inserted correctly
-        assertEquals(stopwatchWithLaps?.stopwatch?.id, 2)
-        assertEquals(stopwatchWithLaps?.laps?.size, 2)
-        assertEquals(stopwatchWithLaps?.laps?.get(0)?.lapElapsedTime, 1500L)
-        assertEquals(stopwatchWithLaps?.laps?.get(1)?.lapElapsedTime, 2500L)
+        // 3. Assert
+        val result = stopwatchDao.getStopwatchWithLaps(1)
+        assertThat(result).isNotNull()
+        assertThat(result?.stopwatch?.isRunning).isTrue()
+        assertThat(result?.laps).hasSize(2)
+        assertThat(result?.laps?.get(0)?.lapIndex).isEqualTo(1)
     }
 
-    // Test deleteStopwatchWithLaps
     @Test
-    fun deleteStopwatchWithLaps_whenStopwatchDeleted_thenStopwatchAndLapsShouldBeDeleted() = runTest {
-        val stopwatch = StopWatchEntity(
-            id = 3,
-            startTime = System.currentTimeMillis(),
-            elapsedTime = 0L,
-            endTime = 0L,
-            isRunning = false,
-            lapCount = 0
-        )
-        val lap1 = StopWatchLapEntity(
-            stopwatchId = 3,
-            lapIndexId = 1,
-            lapStartTime = System.currentTimeMillis(),
-            lapElapsedTime = 1000L,
-            lapEndTime = System.currentTimeMillis() + 1000
-        )
-        val lap2 = StopWatchLapEntity(
-            stopwatchId = 3,
-            lapIndexId = 2,
-            lapStartTime = System.currentTimeMillis(),
-            lapElapsedTime = 2000L,
-            lapEndTime = System.currentTimeMillis() + 2000
-        )
+    fun deleteState_ShouldCascadeDeleteLaps() = runTest {
+        // 1. Setup existing data
+        val state = StopwatchStateEntity(id = 1)
+        val lap = StopwatchLapEntity(stopwatchId = 1, lapIndex = 1, lapStartTimeMillis = 0, lapElapsedTimeMillis = 0, lapEndTimeMillis = 0)
 
-        // Insert stopwatch and laps
-        stopWatchDao.upsertStopwatch(stopwatch)
-        stopWatchDao.upsertStopwatchLap(lap1)
-        stopWatchDao.upsertStopwatchLap(lap2)
+        stopwatchDao.upsertStopwatchState(state)
+        stopwatchDao.upsertLap(lap)
 
-        // Delete stopwatch and laps
-        stopWatchDao.deleteStopwatchWithLaps(3)
+        // 2. Delete the parent state
+        stopwatchDao.deleteStopwatchState(1)
 
-        // Try to fetch the deleted stopwatch with laps
-        val stopwatchWithLaps = stopWatchDao.getStopwatchWithLaps(3)
+        // 3. Verify both are gone
+        val result = stopwatchDao.getStopwatchWithLaps(1)
+        assertThat(result).isNull()
 
-        // Assert that the stopwatch and its laps are deleted (should return null)
-        assertNull(stopwatchWithLaps)
+        // Manual check on laps table to confirm Cascade
+        val allLaps = stopwatchDao.observeStopwatchWithLaps(1).first()?.laps ?: emptyList()
+        assertThat(allLaps).isEmpty()
     }
 
-    // Test upsert of stopwatch and laps when a stopwatch already exists
     @Test
-    fun upsertStopwatchWithLaps_whenStopwatchAlreadyExists_thenStopwatchAndLapsShouldBeUpdated() = runTest {
-        val stopwatch = StopWatchEntity(
-            id = 4,
-            startTime = System.currentTimeMillis(),
-            elapsedTime = 0L,
-            endTime = 0L,
-            isRunning = false,
-            lapCount = 0
-        )
-        val lap1 = StopWatchLapEntity(
-            stopwatchId = 4,
-            lapIndexId = 1,
-            lapStartTime = System.currentTimeMillis(),
-            lapElapsedTime = 1100L,
-            lapEndTime = System.currentTimeMillis() + 1100
-        )
-        val lap2 = StopWatchLapEntity(
-            stopwatchId = 4,
-            lapIndexId = 2,
-            lapStartTime = System.currentTimeMillis(),
-            lapElapsedTime = 2100L,
-            lapEndTime = System.currentTimeMillis() + 2100
+    fun syncStopwatchSession_ShouldReplaceOldLapsWithNewOnes() = runTest {
+
+        // 1. Setup initial state with 1 lap
+        val initialState = StopwatchStateEntity(id = 1, totalLaps = 1)
+        val oldLap = StopwatchLapEntity(stopwatchId = 1, lapIndex = 1, lapStartTimeMillis = 10, lapElapsedTimeMillis = 10, lapEndTimeMillis = 20)
+        stopwatchDao.syncStopwatchSession(initialState, listOf(oldLap))
+
+        // 2. Perform sync with entirely new lap data
+        val newState = StopwatchStateEntity(id = 1, totalLaps = 2)
+        val newLaps = listOf(
+            StopwatchLapEntity(stopwatchId = 1, lapIndex = 1, lapStartTimeMillis = 100, lapElapsedTimeMillis = 100, lapEndTimeMillis = 200),
+            StopwatchLapEntity(stopwatchId = 1, lapIndex = 2, lapStartTimeMillis = 200, lapElapsedTimeMillis = 100, lapEndTimeMillis = 300)
         )
 
-        // Insert stopwatch and laps
-        stopWatchDao.upsertStopwatch(stopwatch)
-        stopWatchDao.upsertStopwatchLap(lap1)
-        stopWatchDao.upsertStopwatchLap(lap2)
+        stopwatchDao.syncStopwatchSession(newState, newLaps)
 
-        // Modify stopwatch and laps
-        val updatedStopwatch = StopWatchEntity(
-            id = 4,
-            startTime = System.currentTimeMillis(),
-            elapsedTime = 0L,
-            endTime = 0L,
-            isRunning = false,
-            lapCount = 0
-        )
-        val updatedLap1 = StopWatchLapEntity(
-            stopwatchId = 4,
-            lapIndexId = 1,
-            lapStartTime = System.currentTimeMillis(),
-            lapElapsedTime = 1200L,
-            lapEndTime = System.currentTimeMillis() + 1200
-        )
-        val updatedLap2 = StopWatchLapEntity(
-            stopwatchId = 4,
-            lapIndexId = 2,
-            lapStartTime = System.currentTimeMillis(),
-            lapElapsedTime = 2200L,
-            lapEndTime = System.currentTimeMillis() + 2200
-        )
-
-        // Upsert updated stopwatch and laps
-        stopWatchDao.upsertStopwatchWithLaps(updatedStopwatch, listOf(updatedLap1, updatedLap2))
-
-        // Fetch the updated stopwatch with laps
-        val stopwatchWithLaps = stopWatchDao.getStopwatchWithLaps(4)
-
-        // Verify that the stopwatch and laps were updated correctly
-        assertEquals(stopwatchWithLaps?.stopwatch?.id, 4)
-        assertEquals(stopwatchWithLaps?.laps?.get(0)?.lapElapsedTime, 1200L)
-        assertEquals(stopwatchWithLaps?.laps?.get(1)?.lapElapsedTime, 2200L)
+        // 3. Verify
+        val result = stopwatchDao.getStopwatchWithLaps(1)
+        assertThat(result?.laps).hasSize(2)
+        // Ensure the old lap (10ms) was deleted and replaced by new lap (100ms)
+        assertThat(result?.laps?.first()?.lapStartTimeMillis).isEqualTo(100)
     }
 }

@@ -3,15 +3,12 @@ package com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants
 import com.example.smartalarm.core.utility.Constants.PACKAGE
 
 /**
- * Defines broadcast action constants used by the stopwatch's foreground service.
+ * Defines broadcast action constants used by the stopwatch's Broadcast Receiver & foreground service.
  *
  * These actions are used to control the stopwatch via broadcast intents
  * (e.g., from notification actions or other components).
  */
 object StopWatchBroadCastAction {
-
-    /** Action to restore the running stopwatch foreground service when boot happens. */
-    const val BOOT_RESTORE = "$PACKAGE.RESTORE"
 
     /** Action to start the stopwatch foreground service. */
     const val START_FOREGROUND = "$PACKAGE.STOPWATCH_START_FOREGROUND"

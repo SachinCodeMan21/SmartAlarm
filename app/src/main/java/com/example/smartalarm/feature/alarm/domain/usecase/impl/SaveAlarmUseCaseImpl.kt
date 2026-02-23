@@ -48,7 +48,8 @@ class SaveAlarmUseCaseImpl @Inject constructor(
             // If the save operation fails, return an error result with a localized error message
             is Result.Error -> {
                 Result.Error(
-                    Exception(resourceProvider.getString(R.string.failed_to_save_the_alarm_details))
+                   //Exception(resourceProvider.getString(R.string.failed_to_save_the_alarm_details))
+                    result.error
                 )
             }
         }

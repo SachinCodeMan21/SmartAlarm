@@ -13,6 +13,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.smartalarm.core.exception.asUiText
+import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.ActivitySearchTimeZoneBinding
 import com.example.smartalarm.feature.clock.presentation.adapter.PlaceSearchAdapter
 import com.example.smartalarm.feature.clock.presentation.effect.PlaceSearchEffect
@@ -38,6 +40,7 @@ class SearchTimeZoneActivity : AppCompatActivity() {
     private val viewModel: PlaceSearchViewModel by viewModels()
     private lateinit var placeSearchAdapter: PlaceSearchAdapter
 
+
     // ---------------------------------------------------------------------
     //  #  Lifecycle Methods
     // ---------------------------------------------------------------------
@@ -51,8 +54,8 @@ class SearchTimeZoneActivity : AppCompatActivity() {
      * - Sets the content view.
      * - Applies edge-to-edge system window insets.
      * - Initializes UI components via [setupUI].
-     * - Begins observing UI state via [observeState].
-     * - Begins observing one-time UI effects via [observeEffects].
+     * - Begins observing UI state via [observeUIState].
+     * - Begins observing one-time UI effects via [observeUIEffects].
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down
      * then this Bundle contains the data it most recently supplied. Otherwise, it is null.
@@ -69,8 +72,8 @@ class SearchTimeZoneActivity : AppCompatActivity() {
         }
 
         setupUI()
-        observeState()
-        observeEffects()
+        observeUIState()
+        observeUIEffects()
     }
 
     /**
@@ -124,15 +127,12 @@ class SearchTimeZoneActivity : AppCompatActivity() {
     //  # Setup Observe UI State
     // ---------------------------------------------------------------------
     @SuppressLint("SetTextI18n")
-    private fun observeState() {
+    private fun observeUIState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { state ->
                     with(binding) {
-
-                        val query = searchEt.text?.toString()?.trim().orEmpty()
-
-                        // Reset visibility
+                        // 1. Hide everything by default
                         progressBar.isVisible = false
                         searchedPlacesRv.isVisible = false
                         emptyStateTv.isVisible = false
@@ -142,16 +142,26 @@ class SearchTimeZoneActivity : AppCompatActivity() {
                                 emptyStateTv.isVisible = true
                                 emptyStateTv.text = "Start typing to search for a place"
                             }
-                            is PlaceSearchUiState.Loading -> { progressBar.isVisible = true  }
+
+                            is PlaceSearchUiState.Loading -> {
+                                progressBar.isVisible = true
+                            }
+
                             is PlaceSearchUiState.Success -> {
-                                if (query.isNotEmpty() && state.places.isEmpty()) {
+                                if (state.places.isEmpty()) {
+                                    // This is the "No Result Found" state
                                     emptyStateTv.isVisible = true
+                                    emptyStateTv.text = "No such place found"
                                 } else {
                                     searchedPlacesRv.isVisible = true
                                     placeSearchAdapter.submitList(state.places)
                                 }
                             }
-                            is PlaceSearchUiState.Error -> {}
+
+                            is PlaceSearchUiState.Error -> {
+                                emptyStateTv.isVisible = true
+                                emptyStateTv.text = "Something went wrong"
+                            }
                         }
                     }
                 }
@@ -173,7 +183,7 @@ class SearchTimeZoneActivity : AppCompatActivity() {
      * The collection runs only while the activity is in the STARTED state,
      * ensuring proper lifecycle awareness.
      */
-    private fun observeEffects() {
+    private fun observeUIEffects() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEffect.collect { effect ->
@@ -185,8 +195,9 @@ class SearchTimeZoneActivity : AppCompatActivity() {
                             setResult(RESULT_OK)
                             finish()
                         }
-                        is PlaceSearchEffect.ShowSnackBarMessage -> {
-                            Snackbar.make(binding.root, effect.message, Snackbar.LENGTH_LONG).show()
+                        is PlaceSearchEffect.ShowError -> {
+                            val message = effect.error.asUiText().asString(this@SearchTimeZoneActivity)
+                            binding.root.showSnackBar(message, Snackbar.LENGTH_SHORT)
                         }
                     }
                 }
