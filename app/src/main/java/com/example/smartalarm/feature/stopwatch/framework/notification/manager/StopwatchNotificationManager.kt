@@ -3,7 +3,7 @@ package com.example.smartalarm.feature.stopwatch.framework.notification.manager
 import android.app.Notification
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
-import com.example.smartalarm.core.notification.manager.AppNotificationManager
+import com.example.smartalarm.core.framework.notification.manager.AppNotificationManager
 import com.example.smartalarm.feature.stopwatch.framework.notification.factory.StopwatchNotificationBuilderFactory
 import com.example.smartalarm.feature.stopwatch.framework.notification.factory.StopwatchNotificationDataMapperFactory
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotificationModel

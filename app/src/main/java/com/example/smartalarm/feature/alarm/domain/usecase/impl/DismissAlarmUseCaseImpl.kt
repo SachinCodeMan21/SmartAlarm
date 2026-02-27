@@ -7,7 +7,7 @@ import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmById
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
 import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
 import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.utility.helper.contract.AlarmTimeHelper
 import javax.inject.Inject
 
@@ -126,8 +126,8 @@ class DismissAlarmUseCaseImpl @Inject constructor(
     private suspend fun getAlarm(alarmId: Int): AlarmModel? {
         val result = getAlarmByIdUseCase(alarmId)
         return when (result) {
-            is Result.Success -> result.data
-            is Result.Error -> null
+            is MyResult.Success -> result.data
+            is MyResult.Error -> null
         }
     }
 }

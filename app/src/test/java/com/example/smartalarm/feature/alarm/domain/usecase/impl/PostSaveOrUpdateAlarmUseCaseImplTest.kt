@@ -1,26 +1,10 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
-import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
-import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
 import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
 import com.example.smartalarm.feature.alarm.utility.helper.contract.AlarmTimeHelper
-import io.mockk.MockKAnnotations
-import io.mockk.clearAllMocks
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import java.time.LocalTime
-import kotlin.test.Test
-import com.example.smartalarm.core.model.Result
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.verify
 
 /**
  * Unit tests for the [PostSaveOrUpdateAlarmUseCaseImpl] class.

@@ -61,7 +61,9 @@ interface TimeFormatter {
     fun formatMillisToTimerTextFormat(timerTimeMillis: Long): String
 
 
+    fun formatClockTime(timeInMillis: Long): String
 
+    fun formatDayMonth(dateInMillis: Long): String
 
 
     // Stopwatch Methods

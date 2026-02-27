@@ -1,5 +1,7 @@
 package com.example.smartalarm.feature.alarm.presentation.effect.home
 
+import com.example.smartalarm.core.utility.exception.DataError
+
 /**
  * Represents one-time side effects or UI actions within the alarm feature.
  *
@@ -46,5 +48,7 @@ sealed class AlarmEffect {
      *  Represents an effect to show a toast message with the given message.
      */
     data class ShowToastMessage(val toastMessage: String) : AlarmEffect()
+
+    data class ShowError(val error : DataError) : AlarmEffect()
 
 }

@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.alarm.framework.di.annotations
 
 import com.example.smartalarm.feature.alarm.framework.notification.enums.AlarmNotificationDataMapperKey
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import dagger.MapKey
 
 /**

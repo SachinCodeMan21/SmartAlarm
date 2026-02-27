@@ -1,25 +1,7 @@
 package com.example.smartalarm.integration.stopwatch
 
-import com.example.smartalarm.core.permission.PermissionManager
-import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
-import com.example.smartalarm.fakes.stopwatch.FakePermissionManager
-import com.example.smartalarm.feature.stopwatch.framework.jobmanager.contract.BlinkEffectJobManager
-import com.example.smartalarm.feature.stopwatch.presentation.mapper.StopwatchUiMapper
-import com.example.smartalarm.feature.stopwatch.presentation.viewmodel.StopWatchViewModel
-import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import javax.inject.Inject
 
 @HiltAndroidTest
 @ExperimentalCoroutinesApi

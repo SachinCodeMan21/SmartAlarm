@@ -1,7 +1,7 @@
 package com.example.smartalarm.integration.stopwatch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.smartalarm.core.database.MyDatabase
+import com.example.smartalarm.core.data.database.MyDatabase
 import com.example.smartalarm.feature.stopwatch.data.local.dao.StopwatchDao
 import com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchStateEntity
 import com.example.smartalarm.feature.stopwatch.data.local.entity.StopwatchLapEntity

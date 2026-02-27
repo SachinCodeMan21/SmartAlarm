@@ -2,8 +2,9 @@ package com.example.smartalarm.feature.stopwatch.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartalarm.core.exception.DataError
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
+import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import com.example.smartalarm.feature.stopwatch.framework.jobmanager.contract.BlinkEffectJobManager
 import com.example.smartalarm.feature.stopwatch.presentation.effect.StopwatchEffect
 import com.example.smartalarm.feature.stopwatch.presentation.event.StopwatchEvent
@@ -57,7 +58,7 @@ class StopWatchViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = StopwatchUiModel()
+            initialValue = stopWatchUiMapper.mapToUiModel(StopwatchModel())
         )
 
     /**

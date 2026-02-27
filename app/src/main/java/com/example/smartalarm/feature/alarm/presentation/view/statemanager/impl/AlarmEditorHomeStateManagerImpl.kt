@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.alarm.presentation.view.statemanager.impl
 
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
+import com.example.smartalarm.core.framework.sharedPreference.contract.SharedPrefsHelper
 import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.model.Mission

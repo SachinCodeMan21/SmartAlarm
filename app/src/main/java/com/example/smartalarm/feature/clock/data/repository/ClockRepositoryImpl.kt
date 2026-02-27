@@ -1,104 +1,65 @@
 package com.example.smartalarm.feature.clock.data.repository
 
-import com.example.smartalarm.core.exception.DataError
-import com.example.smartalarm.core.exception.ExceptionMapper
-import com.example.smartalarm.core.exception.GeneralErrorMapper
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
+import com.example.smartalarm.core.utility.extension.myRunCatchingResult
 import com.example.smartalarm.feature.clock.data.datasource.contract.ClockLocalDataSource
 import com.example.smartalarm.feature.clock.data.mapper.ClockMapper.toEntity
 import com.example.smartalarm.feature.clock.data.mapper.ClockMapper.toModel
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.clock.domain.repository.ClockRepository
 import javax.inject.Inject
 
-
+/**
+ * Implementation of [ClockRepository] responsible for handling
+ * clock-related data operations.
+ *
+ * This repository acts as an abstraction layer between the domain
+ * and the local data source. It maps data entities to domain models
+ * and wraps results using [MyResult] for unified success/error handling.
+ *
+ * All operations are executed safely using [myRunCatchingResult]
+ * to convert exceptions into [DataError].
+ *
+ * @property clockLocalDataSource The local data source providing
+ * access to Room database operations.
+ */
 class ClockRepositoryImpl @Inject constructor(
     private val clockLocalDataSource: ClockLocalDataSource
 ) : ClockRepository {
 
-    override suspend fun getAllSavedPlaces(): MyResult<List<PlaceModel>, DataError> {
-        return try {
-            val places = clockLocalDataSource.getAllSavedTimeZones().map { it.toModel() }
-            MyResult.Success(places)
-        } catch (e: Exception) {
-            // Using our specialized database error mapper
-            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
+    /**
+     * Retrieves all saved clock places from the local data source.
+     *
+     * @return [MyResult] containing a list of [PlaceModel] on success,
+     * or a [DataError] on failure.
+     */
+    override suspend fun getAllSavedPlaces(): MyResult<List<PlaceModel>, DataError> =
+        myRunCatchingResult {
+            clockLocalDataSource
+                .getAllSavedTimeZones()
+                .map { it.toModel() }
         }
-    }
 
-    override suspend fun insertPlace(placeModel: PlaceModel): MyResult<Unit, DataError> {
-        return try {
+    /**
+     * Inserts or updates a clock place in the local database.
+     *
+     * @param placeModel The domain model to persist.
+     * @return [MyResult] indicating success or containing a [DataError].
+     */
+    override suspend fun insertPlace(placeModel: PlaceModel): MyResult<Unit, DataError> =
+        myRunCatchingResult {
             clockLocalDataSource.insertTimeZone(placeModel.toEntity())
-            MyResult.Success(Unit)
-        } catch (e: Exception) {
-            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
         }
-    }
 
-    override suspend fun deletePlaceById(placeId: Long): MyResult<Unit, DataError> {
-        return try {
+    /**
+     * Deletes a saved place by its unique identifier.
+     *
+     * @param placeId The primary key of the place to remove.
+     * @return [MyResult] indicating success or containing a [DataError].
+     */
+    override suspend fun deletePlaceById(placeId: Long): MyResult<Unit, DataError> =
+        myRunCatchingResult {
             clockLocalDataSource.deleteTimeZoneById(placeId)
-            MyResult.Success(Unit)
-        } catch (e: Exception) {
-            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
         }
-    }
 }
-
-///**
-// * Implementation of [ClockRepository] that uses a local data source to manage
-// * clock-related data such as saved places and time zones.
-// *
-// * @property clockLocalDataSource The data source used for accessing local data.
-// */
-//class ClockRepositoryImpl @Inject constructor(
-//    private val clockLocalDataSource: ClockLocalDataSource
-//) : ClockRepository {
-//
-//    /**
-//     * Retrieves all saved places from the local data source and maps them to domain models.
-//     *
-//     * @return A [Result] containing a list of [PlaceModel] on success, or an error on failure.
-//     */
-//    override suspend fun getAllSavedPlaces(): Result<List<PlaceModel>> {
-//        return try {
-//            val places = clockLocalDataSource.getAllSavedTimeZones().map { it.toModel() }
-//            Result.Success(places)
-//        } catch (e: Exception) {
-//            Result.Error(ExceptionMapper.map(e))
-//        }
-//    }
-//
-//    /**
-//     * Inserts a place into the local data source after mapping it to an entity.
-//     *
-//     * @param placeModel The place to insert.
-//     * @return A [Result] indicating success or failure.
-//     */
-//    override suspend fun insertPlace(placeModel: PlaceModel): Result<Unit> {
-//        return try {
-//            clockLocalDataSource.insertTimeZone(placeModel.toEntity())
-//            Result.Success(Unit)
-//        } catch (e: Exception) {
-//            Result.Error(ExceptionMapper.map(e))
-//        }
-//    }
-//
-//    /**
-//     * Deletes a place from the local data source by its ID.
-//     *
-//     * @param placeId The ID of the place to delete.
-//     * @return A [Result] indicating success or failure.
-//     */
-//    override suspend fun deletePlaceById(placeId: Long): Result<Unit> {
-//        return try {
-//            clockLocalDataSource.deleteTimeZoneById(placeId)
-//            Result.Success(Unit)
-//        } catch (e: Exception) {
-//            Result.Error(ExceptionMapper.map(e))
-//        }
-//    }
-//}
-//
-//

@@ -1,12 +1,12 @@
 package com.example.smartalarm.feature.alarm.presentation.view.fragment.home
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,12 +16,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartalarm.R
-import com.example.smartalarm.core.permission.PermissionChecker
-import com.example.smartalarm.core.permission.PermissionCoordinator
-import com.example.smartalarm.core.permission.PermissionRequester
-import com.example.smartalarm.core.permission.model.AppFeature
-import com.example.smartalarm.core.permission.model.AppPermission
+import com.example.smartalarm.core.framework.permission.MyPermissionChecker
+import com.example.smartalarm.core.framework.permission.PermissionFlowDelegate
+import com.example.smartalarm.core.framework.permission.model.AppFeature
+import com.example.smartalarm.core.framework.permission.model.MyAppPermission
+import com.example.smartalarm.core.framework.permission.MyAppPermissionRequester
+import com.example.smartalarm.core.framework.permission.model.RequesterType
+import com.example.smartalarm.core.framework.permission.model.Requirement
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
+import com.example.smartalarm.core.utility.exception.asUiText
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.databinding.FragmentAlarmBinding
 import com.example.smartalarm.feature.alarm.framework.services.AlarmService
@@ -40,44 +43,67 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 @AndroidEntryPoint
 class AlarmFragment : Fragment() {
 
 
     companion object {
 
-        // Tag for logging within AlarmFragment
+        // Tag used for logging in AlarmFragment
         private const val TAG = "AlarmFragment"
 
-        // Error message for null view binding reference
+        // Error message displayed when view binding reference is null
         private const val BINDING_NULL_ERROR = "$TAG $BINDING_NULL"
 
     }
 
 
-   // ---------------------------------------------------------------------
-   // 1] Global Fields Section
-   // ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // 1] Global Fields Section
+    // ---------------------------------------------------------------------
 
+    // Nullable reference to the AlarmFragment's view binding
     private var _binding: FragmentAlarmBinding? = null
+
+    // Non-nullable reference to the Fragment's view binding, throws an error if _binding is null
     private val binding get() = _binding ?: error(BINDING_NULL_ERROR)
+
+    // ViewModel for managing the alarm data, scoped to this Fragment
     private val alarmViewModel: AlarmViewModel by viewModels()
 
 
-
-    // Adapter for displaying alarm items in the RecyclerView
     private lateinit var alarmsAdapter: AlarmAdapter
-    @Inject lateinit var permissionChecker: PermissionChecker
-    private lateinit var permissionCoordinator: PermissionCoordinator
-
+    @Inject
+    lateinit var permissionChecker: MyPermissionChecker
+    private lateinit var permissionFlowDelegate: PermissionFlowDelegate
+    private lateinit var permissionRequester: MyAppPermissionRequester
 
 
     // ---------------------------------------------------------------------
     // 2] Alarm Fragment Lifecycle Methods
     // ---------------------------------------------------------------------
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        permissionRequester = MyAppPermissionRequester(
+            caller = this,
+            lifecycle = lifecycle,
+            checker = permissionChecker,
+            type = RequesterType.BOTH
+        )
+
+        permissionFlowDelegate = PermissionFlowDelegate(
+            fragment = this,
+            checker = permissionChecker,
+            requester = permissionRequester
+        )
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentAlarmBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -88,7 +114,6 @@ class AlarmFragment : Fragment() {
         setupRecyclerView()
         setUpUIStateObserver()
         setUpUIEffectsObserver()
-        setUpPermissionCoordinator()
     }
 
     override fun onDestroy() {
@@ -97,17 +122,13 @@ class AlarmFragment : Fragment() {
     }
 
 
-
     // ---------------------------------------------------------------------
     // UI Setup
     // ---------------------------------------------------------------------
 
     private fun setUpAddAlarmButton() {
         binding.addAlarmBtn.setOnClickListener {
-            val permissions = listOf(AppPermission.Runtime.PostNotifications, AppPermission.Special.FullScreenNotification, AppPermission.Special.ScheduleExactAlarm)
-            permissionCoordinator.runPermissionGatekeeper(permissions,requireActivity(), AppFeature.ALARM){
-                alarmViewModel.handleEvent(AlarmEvent.AddNewAlarm)
-            }
+            checkAndStartAlarm()
         }
     }
 
@@ -122,13 +143,13 @@ class AlarmFragment : Fragment() {
             }
         )
 
-        val isPhone = resources.configuration.smallestScreenWidthDp <600
-        val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        val lm = if (isPhone && isPortrait) LinearLayoutManager(requireContext()) else GridLayoutManager(requireContext(), 2)
+        //val isPhone = resources.configuration.smallestScreenWidthDp < 600
+        //val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        //val lm = if (isPhone && isPortrait) LinearLayoutManager(requireContext()) else GridLayoutManager(requireContext(), 2)
 
 
         binding.alarmRv.apply {
-            layoutManager = lm
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = alarmsAdapter
             setHasFixedSize(true)
         }.enableSwipeToDelete(requireContext()) { position ->
@@ -136,8 +157,6 @@ class AlarmFragment : Fragment() {
             alarmViewModel.handleEvent(AlarmEvent.AlarmItemSwiped(deletedAlarmId))
         }
     }
-
-
 
 
     // ---------------------------------------------------------------------
@@ -176,6 +195,10 @@ class AlarmFragment : Fragment() {
                     // Visual Effects
                     is AlarmEffect.ShowSnackBarMessage -> showUndoSnackBar()
                     is AlarmEffect.ShowToastMessage -> showToastMessage(effect.toastMessage)
+                    is AlarmEffect.ShowError -> {
+                        val errorMessage = effect.error.asUiText().asString(requireContext())
+                        showToastMessage(errorMessage)
+                    }
 
                     // Service Control
                     is AlarmEffect.StopAlarmService -> stopAlarmService()
@@ -183,34 +206,6 @@ class AlarmFragment : Fragment() {
             }
         }
     }
-
-    private fun setUpPermissionCoordinator() {
-
-        val requester = PermissionRequester(
-            caller = this,
-            lifecycleOwner = this,
-            context = requireContext(),
-            permissionChecker = permissionChecker,
-            rationaleProvider = { permissionName ->
-                ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    permissionName
-                )
-            }
-        )
-
-        permissionCoordinator = PermissionCoordinator(
-            context = requireContext(),
-            requester = requester,
-            checker = permissionChecker,
-            fragmentManager = childFragmentManager,
-            lifecycleOwner = viewLifecycleOwner
-        )
-
-    }
-
-
-
 
 
     // ---------------------------------------------------------------------
@@ -224,7 +219,7 @@ class AlarmFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun showToastMessage(toastMessage:String){
+    private fun showToastMessage(toastMessage: String) {
         binding.root.showToast(toastMessage)
     }
 
@@ -239,6 +234,46 @@ class AlarmFragment : Fragment() {
     private fun stopAlarmService() {
         val intent = Intent(requireContext(), AlarmService::class.java)
         requireContext().stopService(intent)
+    }
+
+
+    //-------------------------------
+    // Permission Handling
+    //------------------------------
+    private fun checkAndStartAlarm() {
+
+        val alarmRequirements = listOf(
+
+            Requirement(
+                permission = MyAppPermission.Runtime.PostNotifications,
+                rationaleTitle = getString(R.string.alarm_notification_permission_rationale_title),
+                rationaleMessage = getString(R.string.alarm_notification_permission_rationale_message),
+                toastOnDeny = getString(R.string.alarm_notification_permission_denied_toast),
+                permanentlyDeniedTitle = getString(R.string.alarm_notification_permission_permanently_denied_title),
+                permanentlyDeniedMessage = getString(R.string.alarm_notification_permission_permanently_denied_message),
+                feature = AppFeature.ALARM,
+            ),
+            Requirement(
+                permission = MyAppPermission.Special.ScheduleExactAlarms,
+                rationaleTitle = getString(R.string.alarm_exact_alarm_permission_rationale_title),
+                rationaleMessage = getString(R.string.alarm_exact_alarm_permission_rationale_message),
+                toastOnDeny = getString(R.string.alarm_exact_alarm_permission_denied_toast),
+                feature = AppFeature.ALARM
+            ),
+            Requirement(
+                permission = MyAppPermission.Special.FullScreenIntent,
+                rationaleTitle = getString(R.string.alarm_full_screen_permission_rationale_title),
+                rationaleMessage = getString(R.string.alarm_full_screen_permission_rationale_message),
+                toastOnDeny = getString(R.string.alarm_full_screen_permission_denied_toast),
+                feature = AppFeature.ALARM,
+            )
+        )
+
+        // Run the chain
+        permissionFlowDelegate.run(alarmRequirements) {
+            alarmViewModel.handleEvent(AlarmEvent.AddNewAlarm)
+        }
+
     }
 
 }

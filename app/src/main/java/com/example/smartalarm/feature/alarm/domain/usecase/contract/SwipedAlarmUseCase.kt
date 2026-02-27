@@ -1,8 +1,8 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.contract
 
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
-import com.example.smartalarm.feature.alarm.domain.usecase.impl.SwipedAlarmUseCaseImpl
 
 
 /**
@@ -17,11 +17,11 @@ interface SwipedAlarmUseCase {
      *
      * @param swipedAlarmId The ID of the alarm that was swiped.
      * @param alarmState The current state of the alarm (e.g., RINGING or other states).
-     * @return A [Result] indicating the success or failure of the operation.
+     * @return A [MyResult] indicating the success or failure of the operation.
      */
     suspend operator fun invoke(
         swipedAlarmId: Int,
         alarmState: AlarmState
-    ): Result<Unit>
+    ): MyResult<Unit, DataError>
 }
 

@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.alarm.domain.repository
 
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -24,33 +25,33 @@ interface AlarmRepository {
      * Retrieves a specific [AlarmModel] by its unique identifier.
      *
      * @param alarmId The ID of the alarm to retrieve.
-     * @return A [Result] containing the [AlarmModel] if found, or an error if not.
+     * @return A [MyResult] containing the [AlarmModel] if found, or an error if not.
      */
-    suspend fun getAlarmById(alarmId: Int): Result<AlarmModel>
+    suspend fun getAlarmById(alarmId: Int): MyResult<AlarmModel, DataError>
 
     /**
      * Saves a **new alarm** with its associated missions.
      *
      * @param alarm The new [AlarmModel] to save (must have ID = 0).
-     * @return A [Result] containing the newly inserted alarm ID, or an error if failed.
+     * @return A [MyResult] containing the newly inserted alarm ID, or an error if failed.
      */
-    suspend fun saveAlarm(alarm: AlarmModel): Result<Int>
+    suspend fun saveAlarm(alarm: AlarmModel): MyResult<Int, DataError>
 
 
     /**
      * Updates an **existing alarm** and its missions in a single transaction.
      *
      * @param alarm The [AlarmModel] to update (must have a valid non-zero ID).
-     * @return A [Result] indicating success or failure.
+     * @return A [MyResult] indicating success or failure.
      */
-    suspend fun updateAlarm(alarm: AlarmModel): Result<Unit>
+    suspend fun updateAlarm(alarm: AlarmModel): MyResult<Unit, DataError>
 
 
     /**
      * Deletes an alarm by its ID. Associated missions are deleted via CASCADE.
      *
      * @param alarmId The ID of the alarm to delete.
-     * @return A [Result] indicating success or failure.
+     * @return A [MyResult] indicating success or failure.
      */
-    suspend fun deleteAlarmById(alarmId: Int): Result<Unit>
+    suspend fun deleteAlarmById(alarmId: Int): MyResult<Unit, DataError>
 }

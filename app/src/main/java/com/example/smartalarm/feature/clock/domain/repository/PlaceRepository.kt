@@ -1,62 +1,37 @@
 package com.example.smartalarm.feature.clock.domain.repository
 
-import com.example.smartalarm.core.exception.DataError
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
-import com.example.smartalarm.core.model.Result
 
+/**
+ * Repository contract for managing place-related data.
+ *
+ * Defines the operations available to the domain layer for
+ * persisting and searching places, abstracting away the
+ * underlying data sources (local or remote).
+ */
 interface PlaceRepository {
 
     /**
-     * Inserts a [PlaceModel] into the local database.
+     * Persists a [PlaceModel].
      *
-     * @param place The place to insert.
-     * @return [MyResult.Success] if the insertion was successful,
-     * or [MyResult.Error] containing [DataError.Local] if a database issue occurred.
+     * @param place The domain model to store.
+     * @return [MyResult] indicating success, or a [DataError]
+     * describing the failure.
      */
     suspend fun savePlace(place: PlaceModel): MyResult<Unit, DataError>
 
     /**
-     * Searches for places either locally or remotely based on the query.
+     * Searches for places matching the provided query.
      *
-     * Implementation strategy:
-     * 1. First tries to search locally.
-     * 2. If no results are found locally, falls back to remote search.
-     * 3. Syncs remote results to local storage for offline-first persistence.
+     * The repository guarantees that the returned data is
+     * consistent with its configured data strategy
+     * (e.g., cached, remote, or hybrid).
      *
-     * @param query The search keyword entered by the user.
-     * @return [MyResult.Success] with a list of [PlaceModel]s,
-     * or [MyResult.Error] with [DataError.Network] or [DataError.Local].
+     * @param query The search keyword.
+     * @return [MyResult] containing a list of [PlaceModel] on success,
+     * or a [DataError] if the operation fails.
      */
     suspend fun searchPlaces(query: String): MyResult<List<PlaceModel>, DataError>
 }
-
-
-/*
-interface PlaceRepository {
-
-    */
-/**
-     * Inserts a [PlaceModel] into the local database.
-     *
-     * @param place The place to insert.
-     * @return A [Result] indicating the success or failure of the operation.
-     *//*
-
-    //suspend fun savePlace(place: PlaceModel): Result<Unit>
-    suspend fun savePlace(place: PlaceModel): Result<Unit>
-
-
-    */
-/**
-     * Searches for places either locally or remotely based on the query.
-     *
-     * 1. First tries to search locally.
-     * 2. If no results are found locally, falls back to remote search.
-     *
-     * @param query The search keyword entered by the user.
-     * @return A list of [PlaceModel]s either from the local database or fetched from the remote service.
-     *//*
-
-    suspend fun searchPlaces(query: String): Result<List<PlaceModel>>
-}*/

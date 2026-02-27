@@ -17,7 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smartalarm.core.exception.asUiText
+import com.example.smartalarm.core.utility.exception.asUiText
 import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.ActivityShowTimerBinding
 import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerBroadCastAction

@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.alarm.framework.di.modules
 
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
 import com.example.smartalarm.feature.alarm.framework.di.annotations.AlarmNotificationBuilderMapKey
 import com.example.smartalarm.feature.alarm.framework.notification.builder.MissedAlarmNotificationBuilder
 import com.example.smartalarm.feature.alarm.framework.notification.builder.RingingAlarmNotificationBuilder

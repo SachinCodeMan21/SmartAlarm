@@ -2,7 +2,8 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.R
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
@@ -157,7 +158,7 @@ class AlarmViewModel @Inject constructor(
 
             when (val result = alarmUseCase.toggleAlarmUseCase(currentAlarm, event.isEnabled)) {
 
-                is Result.Success -> {
+                is MyResult.Success -> {
                     if (!event.isEnabled) {
                         if (currentAlarm.alarmState == AlarmState.RINGING) {
                             postEffect(StopAlarmService)
@@ -167,8 +168,8 @@ class AlarmViewModel @Inject constructor(
                     }
                 }
 
-                is Result.Error -> {
-                    //postEffect(ShowToastMessage(result.exception.message.toString()))
+                is MyResult.Error -> {
+                    postEffect(ShowError(result.error))
                 }
 
             }
@@ -200,12 +201,12 @@ class AlarmViewModel @Inject constructor(
 
                 when (val result = alarmUseCase.swipedAlarmUseCase(it.id, it.alarmState)) {
 
-                    is Result.Success -> {
+                    is MyResult.Success -> {
                         postEffect(ShowSnackBarMessage(swipedAlarmId = deletedAlarmId))
                     }
 
-                    is Result.Error -> {
-                        //postEffect(ShowToastMessage(result.exception.message.toString()))
+                    is MyResult.Error -> {
+                        postEffect(ShowError(result.error))
                     }
                 }
 
@@ -231,13 +232,13 @@ class AlarmViewModel @Inject constructor(
         viewModelScope.launch {
 
             when (val result = alarmUseCase.undoAlarmUseCase(undoAlarm)) {
-                is Result.Success -> {
-                    postEffect(ShowToastMessage(result.data))
+                is MyResult.Success -> {
+                    postEffect(ShowToastMessage(resourceProvider.getString(R.string.undo_successful)))
                     recentlyDeletedAlarm = null
                 }
 
-                is Result.Error -> {
-                    //postEffect(ShowToastMessage(result.exception.message.toString()))
+                is MyResult.Error -> {
+                    postEffect(ShowError(result.error))
                 }
             }
 

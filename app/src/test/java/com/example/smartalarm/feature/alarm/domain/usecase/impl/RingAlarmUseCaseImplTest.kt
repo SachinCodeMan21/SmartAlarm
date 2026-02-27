@@ -1,24 +1,11 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
-import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
+import com.example.smartalarm.core.framework.sharedPreference.contract.SharedPrefsHelper
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
 import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
 import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
 import com.example.smartalarm.feature.alarm.framework.manager.contract.AlarmRingtoneManager
-import io.mockk.impl.annotations.MockK
-import io.mockk.*
-import io.mockk.impl.annotations.InjectMockKs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
-import kotlin.test.assertEquals
-import org.junit.After
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
-import kotlinx.coroutines.test.advanceUntilIdle
 
 /**
  * Unit tests for the [RingAlarmUseCaseImpl] class. This test class validates the behavior of the `invoke` method,

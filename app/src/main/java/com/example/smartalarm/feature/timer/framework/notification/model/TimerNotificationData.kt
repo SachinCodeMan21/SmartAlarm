@@ -1,8 +1,8 @@
 package com.example.smartalarm.feature.timer.framework.notification.model
 
 import android.app.PendingIntent
-import com.example.smartalarm.core.notification.model.AppNotificationData
-import com.example.smartalarm.core.notification.model.NotificationAction
+import com.example.smartalarm.core.framework.notification.model.AppNotificationData
+import com.example.smartalarm.core.framework.notification.model.NotificationAction
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 
 /**

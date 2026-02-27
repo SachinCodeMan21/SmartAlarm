@@ -1,6 +1,6 @@
 package com.example.smartalarm.fakes.stopwatch
 
-import com.example.smartalarm.core.permission.PermissionManager
+import com.example.smartalarm.core.framework.permission.PermissionManager
 import javax.inject.Inject
 
 /**

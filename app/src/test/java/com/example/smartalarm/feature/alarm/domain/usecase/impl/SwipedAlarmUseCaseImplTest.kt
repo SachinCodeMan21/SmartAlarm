@@ -1,30 +1,8 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
-import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.DeleteAlarmUseCase
-import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
-import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
-import io.mockk.MockKAnnotations
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import io.mockk.just
-import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import kotlin.test.Test
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.R
-import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
-import com.example.smartalarm.feature.alarm.framework.controller.contract.AlarmServiceController
-import com.example.smartalarm.feature.alarm.framework.manager.contract.AlarmRingtoneManager
-import io.mockk.coVerify
-import io.mockk.verify
 
 /**
  * Unit tests for the [SwipedAlarmUseCaseImpl] class, which handles the action of swiping an alarm

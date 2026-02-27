@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -30,7 +29,6 @@ import kotlin.getValue
  */
 @AndroidEntryPoint
 class SnoozeAlarmFragment : Fragment() {
-
 
     companion object {
 
@@ -91,9 +89,8 @@ class SnoozeAlarmFragment : Fragment() {
         setUpSnoozeLimitNumPicker()
         setUpRadioButtonPairs()
         setUpSnoozeUIData()
-        setUpOnBackPressed()
+        //setUpOnBackPressed()
     }
-
 
     /**
      * Saves the current snooze configuration before the fragment is destroyed to handle configuration changes
@@ -106,7 +103,7 @@ class SnoozeAlarmFragment : Fragment() {
     }
 
     /**
-     *Retrieves the saved snooze settings (enabled status, limit, and interval) from the `savedInstanceState`.
+     * Retrieves the saved snooze settings (enabled status, limit, and interval) from the `savedInstanceState`.
      */
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
@@ -123,7 +120,6 @@ class SnoozeAlarmFragment : Fragment() {
             }
         }
     }
-
 
     /**
      * Called when the fragment is being destroyed.
@@ -185,21 +181,6 @@ class SnoozeAlarmFragment : Fragment() {
         radioButtonPairs.forEach { (radioBtn, value) ->
             radioBtn.isChecked = (value == snoozeSettings.snoozeIntervalMinutes)
         }
-    }
-
-    /**
-     * Sets up custom back press behavior to send result and navigate back.
-     */
-    private fun setUpOnBackPressed() {
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    sendResultAndNavigateBack()
-                }
-            }
-        )
     }
 
 

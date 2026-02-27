@@ -1,6 +1,5 @@
 package com.example.smartalarm.feature.timer.presentation.viewmodel
 
-import com.example.smartalarm.feature.timer.domain.facade.contract.TimerUseCasesFacade
 import com.example.smartalarm.feature.timer.framework.jobmanager.contract.ShowTimerJobManager
 import com.example.smartalarm.feature.timer.domain.manager.ShowTimerStateManager
 import com.example.smartalarm.feature.timer.utility.TimerRingtonePlayer

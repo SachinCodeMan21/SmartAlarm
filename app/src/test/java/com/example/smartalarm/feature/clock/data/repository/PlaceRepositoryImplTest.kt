@@ -1,29 +1,6 @@
 package com.example.smartalarm.feature.clock.data.repository
 
-import com.example.smartalarm.feature.clock.data.datasource.contract.PlaceLocalDataSource
-import com.example.smartalarm.feature.clock.data.datasource.contract.PlaceRemoteDataSource
-import com.example.smartalarm.feature.clock.domain.model.PlaceModel
-import io.mockk.coEvery
-import io.mockk.coVerify
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.clock.data.local.entity.PlaceEntity
-import com.example.smartalarm.feature.clock.data.mapper.PlaceMapper.toEntity
-import com.example.smartalarm.feature.clock.data.remote.dto.PlaceDto
-import io.mockk.MockKAnnotations
-import io.mockk.coVerifySequence
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.unmockkAll
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import java.io.IOException
-import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlaceRepositoryImplTest {

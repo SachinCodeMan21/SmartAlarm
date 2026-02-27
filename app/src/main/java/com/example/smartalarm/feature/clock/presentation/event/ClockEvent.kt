@@ -33,9 +33,9 @@ sealed class ClockEvent {
     /**
      * Event to delete a specific time zone from the saved list.
      *
-     * @property deletedTimeZone The [PlaceModel] to be removed from the database.
+     * @property deletedTimeZoneId The [PlaceModel] to be removed from the database.
      */
-    data class DeleteTimeZone(val deletedTimeZone: PlaceModel) : ClockEvent()
+    data class DeleteTimeZone(val deletedTimeZoneId: Long) : ClockEvent()
 
     /**
      * Event to undo a previous time zone deletion by re-inserting it.

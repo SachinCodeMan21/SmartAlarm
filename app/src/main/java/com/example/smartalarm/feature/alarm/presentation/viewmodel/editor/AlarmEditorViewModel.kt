@@ -1,12 +1,13 @@
 package com.example.smartalarm.feature.alarm.presentation.viewmodel.editor
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartalarm.core.di.annotations.DefaultDispatcher
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
-import com.example.smartalarm.core.permission.PermissionManager
+import com.example.smartalarm.core.framework.permission.PermissionManager
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmByIdUseCase
@@ -21,6 +22,7 @@ import com.example.smartalarm.feature.alarm.presentation.mapper.AlarmUiMapper
 import com.example.smartalarm.feature.alarm.presentation.model.editor.AlarmEditorHomeUiModel
 import com.example.smartalarm.feature.alarm.presentation.view.statemanager.contract.AlarmEditorHomeStateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -71,10 +73,8 @@ class AlarmEditorViewModel @Inject constructor(
 {
 
     companion object {
-
         // Delay (in milliseconds) for the save/update alarm progress loader animation.
         const val SAVE_UPDATE_ALARM_PROGRESS_DELAY = 500L
-
     }
 
     // Public UI state derived from domain state
@@ -93,11 +93,13 @@ class AlarmEditorViewModel @Inject constructor(
         )
 
 
-    // Private SharedFlow for emitting UI effects
-    private val _uiEffect = MutableSharedFlow<AlarmEditorEffect>(replay = 0)
+    private val _uiEffect = MutableSharedFlow<AlarmEditorEffect>(
+        extraBufferCapacity = 64,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val uiEffect: SharedFlow<AlarmEditorEffect> = _uiEffect.asSharedFlow()
 
-    // Exposes a public flow for collecting effects
-    val uiEffect = _uiEffect.asSharedFlow()
+
 
 
     // ---------------------------------------------------------------------
@@ -113,7 +115,8 @@ class AlarmEditorViewModel @Inject constructor(
      * @param effect The [AlarmEditorEffect] to emit.
      */
     private fun postEffect(effect: AlarmEditorEffect) {
-        viewModelScope.launch { _uiEffect.emit(effect) }
+        val result = _uiEffect.tryEmit(effect)  // synchronous, no coroutine needed
+        Log.d("TAG", "postEffect tryEmit $effect result=$result")
     }
 
 
@@ -208,13 +211,13 @@ class AlarmEditorViewModel @Inject constructor(
                 postEffect(NavigateToSnoozeAlarmFragment(state.snoozeSettings))
 
             AlarmEditorUserEvent.ActionEvent.SaveOrUpdate ->
+                //postEffect(ShowSaveUpdateLoadingIndicator(true))
                 saveOrUpdateAlarm()
         }
     }
     private fun handleNavigationEvent(event: AlarmEditorUserEvent.NavigationEvent) {
         when (event) {
-            AlarmEditorUserEvent.NavigationEvent.SystemBack,
-            AlarmEditorUserEvent.NavigationEvent.ToolbarBack -> postEffect(FinishEditorActivity)
+            AlarmEditorUserEvent.NavigationEvent.HandleCustomBackNavigation -> postEffect(FinishEditorActivity)
         }
     }
 
@@ -240,21 +243,30 @@ class AlarmEditorViewModel @Inject constructor(
 
         viewModelScope.launch {
             when (val result = getAlarmByIdUseCase(existingAlarmId)) {
-                is Result.Success -> alarmEditorStateManager.setAlarm(result.data)
-                is Result.Error -> {}
+                is MyResult.Success -> alarmEditorStateManager.setAlarm(result.data)
+                is MyResult.Error -> postEffect(ShowError(result.error))
             }
         }
     }
 
     /**
-     * Saves or updates the current alarm based on its state.
+     * Saves a new alarm or updates an existing alarm based on its current state.
      *
-     * This method checks the necessary permissions before proceeding with saving or updating the alarm.
-     * It handles both new and existing alarms, showing a loading indicator during the process and
-     * handling success or error results. After the operation, it triggers appropriate UI updates or error messages.
+     * This function performs the following steps:
+     * 1. Retrieves the current alarm state from [alarmEditorStateManager].
+     * 2. Shows a loading indicator during the save/update process.
+     * 3. Delays briefly to allow the progress UI to display ([SAVE_UPDATE_ALARM_PROGRESS_DELAY]).
+     * 4. If the alarm is new (`id == 0`), it calls [saveAlarmUseCase]; otherwise, it calls [updateAlarmUseCase].
+     * 5. Handles the result:
+     *    - On success, delegates post-processing to [handlePostSaveOrUpdateAlarm].
+     *    - On error, hides the loading indicator and posts an error message via [postEffect].
+     *
+     * @sideEffect Posts UI effects such as:
+     *  - [ShowSaveUpdateLoadingIndicator]
+     *  - [ShowError]
+     *  - [ShowToastMessage] and [FinishEditorActivity] via [handlePostSaveOrUpdateAlarm]
      */
     private fun saveOrUpdateAlarm() = viewModelScope.launch {
-
         val alarm = alarmEditorStateManager.getAlarmState.value
 
         postEffect(ShowSaveUpdateLoadingIndicator(true))
@@ -262,18 +274,18 @@ class AlarmEditorViewModel @Inject constructor(
 
         if (alarm.id == 0) {
             when (val result = saveAlarmUseCase(alarm)) {
-                is Result.Success -> handlePostSaveOrUpdateAlarm(alarm.copy(id = result.data))
-                is Result.Error -> {
+                is MyResult.Success -> handlePostSaveOrUpdateAlarm(alarm.copy(id = result.data))
+                is MyResult.Error -> {
                     postEffect(ShowSaveUpdateLoadingIndicator(false))
-                    //postEffect(ShowError(result.exception.message.toString()))
+                    postEffect(ShowError(result.error))
                 }
             }
         } else {
             when (val result = updateAlarmUseCase(alarm.copy(isEnabled = true))) {
-                is Result.Success -> handlePostSaveOrUpdateAlarm(alarm)
-                is Result.Error -> {
+                is MyResult.Success -> handlePostSaveOrUpdateAlarm(alarm)
+                is MyResult.Error -> {
                     postEffect(ShowSaveUpdateLoadingIndicator(false))
-                    //postEffect(ShowError(result.exception.message.toString()))
+                    postEffect(ShowError(result.error))
                 }
             }
         }
@@ -281,20 +293,32 @@ class AlarmEditorViewModel @Inject constructor(
 
 
     /**
-     * Handles the post events after saving or updating an alarm.
+     * Handles post-processing after saving or updating an alarm.
      *
-     * This method handles post events after a save or update an alarm. It hides the loading indicator,
-     * shows a success message (if the operation was successful), and finishes the activity. If an error occurs,
-     * it displays an error message to the user.
+     * This method performs the following actions after a save or update operation on an alarm:
+     * 1. Hides the loading indicator.
+     * 2. If the operation was successful, shows a success message and finishes the editor activity.
+     * 3. If an error occurs, shows an error message to the user.
+     *
+     * @param alarm The [AlarmModel] that was saved or updated.
+     *
+     * @sideEffect Posts UI effects such as:
+     *  - [ShowSaveUpdateLoadingIndicator]
+     *  - [ShowToastMessage]
+     *  - [FinishEditorActivity]
+     *  - [ShowError]
      */
     private fun handlePostSaveOrUpdateAlarm(alarm: AlarmModel) {
         postEffect(ShowSaveUpdateLoadingIndicator(false))
         when (val result = postSaveOrUpdateAlarmUseCase(alarm)) {
-            is Result.Success -> {
+            is MyResult.Success -> {
                 postEffect(ShowToastMessage(result.data))
                 postEffect(FinishEditorActivity)
             }
-            is Result.Error -> {}
+            is MyResult.Error -> {
+                postEffect(ShowSaveUpdateLoadingIndicator(false))
+                postEffect(ShowError(result.error))
+            }
         }
     }
 

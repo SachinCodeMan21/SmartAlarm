@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.timer.framework.di.modules
 
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
 import com.example.smartalarm.feature.timer.framework.di.annotations.TimerNotificationBuilderMapKey
 import com.example.smartalarm.feature.timer.framework.notification.builder.ActiveTimerNotificationBuilder
 import com.example.smartalarm.feature.timer.framework.notification.builder.CompletedTimerNotificationBuilder

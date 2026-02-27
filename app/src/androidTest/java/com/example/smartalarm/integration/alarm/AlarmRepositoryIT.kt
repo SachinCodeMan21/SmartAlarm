@@ -1,23 +1,6 @@
 package com.example.smartalarm.integration.alarm
 
-import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
-import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
-import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.feature.alarm.domain.model.SnoozeSettings
-import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
-import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
-import com.example.smartalarm.core.model.Result
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import java.time.LocalTime
-import javax.inject.Inject
 
 @HiltAndroidTest
 class AlarmRepositoryIT {

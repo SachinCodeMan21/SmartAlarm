@@ -24,6 +24,6 @@ data class PlaceEntity(
     @ColumnInfo(name = "full_name") val fullName: String,
     @ColumnInfo(name = "primary_name") val primaryName: String,
     @ColumnInfo(name = "time_zone_id") val timeZoneId: String,
-    @ColumnInfo(name = "offset_seconds") val offsetSeconds: Long,
+    @ColumnInfo(name = "offset_seconds") val offsetSeconds: Int,
     @ColumnInfo(name = "current_time") val currentTime: String
 )

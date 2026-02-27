@@ -2,7 +2,8 @@ package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
 import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.DeleteAlarmUseCase
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import javax.inject.Inject
 
 
@@ -22,9 +23,9 @@ class DeleteAlarmUseCaseImpl @Inject constructor(
      * Invokes the use case to delete an alarm by its ID.
      *
      * @param alarmId The ID of the alarm to delete.
-     * @return A [Result] representing the outcome of the delete operation — success or failure.
+     * @return A [MyResult] representing the outcome of the delete operation — success or failure.
      */
-    override suspend fun invoke(alarmId: Int): Result<Unit> {
+    override suspend fun invoke(alarmId: Int): MyResult<Unit, DataError> {
         return alarmRepository.deleteAlarmById(alarmId)
     }
 }

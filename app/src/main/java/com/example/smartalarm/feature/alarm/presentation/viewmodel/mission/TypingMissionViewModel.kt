@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.example.smartalarm.R
-import com.example.smartalarm.core.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
 import com.example.smartalarm.core.utility.extension.toLocalizedString
 import kotlinx.coroutines.CoroutineDispatcher
 

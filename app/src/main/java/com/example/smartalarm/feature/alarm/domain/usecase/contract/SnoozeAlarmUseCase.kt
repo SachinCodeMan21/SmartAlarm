@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.contract
 
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 
 
 /**
@@ -15,7 +16,7 @@ interface SnoozeAlarmUseCase {
      * Snoozes the alarm by updating its state and scheduling the next snooze.
      *
      * @param alarm The [AlarmModel] object containing the alarm details.
-     * @return [Result] A [Result.Success] if the alarm is successfully snoozed, or [Result.Error] if an error occurs.
+     * @return [MyResult] A [MyResult.Success] if the alarm is successfully snoozed, or [MyResult.Error] if an error occurs.
      */
-    suspend operator fun invoke(alarm: AlarmModel): Result<Unit>
+    suspend operator fun invoke(alarm: AlarmModel): MyResult<Unit, DataError>
 }

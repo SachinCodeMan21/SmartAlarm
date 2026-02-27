@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/lapIndexTv"
-        style="@style/TextAppearance.SmartAlarm.LabelMedium"
+        style="@style/TextAppearance.SmartAlarm.BodyMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/lapElapsedTimeTv"
-        style="@style/TextAppearance.SmartAlarm.LabelMedium"
+        style="@style/TextAppearance.SmartAlarm.BodyMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
@@ -36,7 +36,7 @@
 
     <TextView
         android:id="@+id/lapEndTimeTv"
-        style="@style/TextAppearance.SmartAlarm.LabelMedium"
+        style="@style/TextAppearance.SmartAlarm.BodyMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="monospace"

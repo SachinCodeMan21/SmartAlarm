@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.contract
 
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 
 
 /**
@@ -16,7 +17,7 @@ interface StopAlarmUseCase {
      * and stopping any ongoing alarm sound or vibration.
      *
      * @param alarm The [AlarmModel] object containing the alarm details.
-     * @return [Result] A [Result.Success] if the alarm is successfully stopped, or [Result.Error] if an error occurs.
+     * @return [MyResult] A [MyResult.Success] if the alarm is successfully stopped, or [MyResult.Error] if an error occurs.
      */
-    suspend operator fun invoke(alarm: AlarmModel): Result<Unit>
+    suspend operator fun invoke(alarm: AlarmModel): MyResult<Unit, DataError>
 }

@@ -5,48 +5,44 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.smartalarm.databinding.ItemTimezoneLayoutBinding
 import com.example.smartalarm.databinding.SearchItemLayoutBinding
-import com.example.smartalarm.feature.clock.domain.model.PlaceModel
+import com.example.smartalarm.feature.clock.presentation.model.PlaceUiModel
 
 /**
- * [PlaceSearchAdapter] is a [RecyclerView.Adapter] implementation for displaying a list of [PlaceModel]s
- * in a RecyclerView, typically used for place search results.
+ * Adapter for displaying a list of [PlaceUiModel] items in a RecyclerView, typically for search results.
  *
- * This adapter uses a [ListAdapter] with a [DiffUtil.ItemCallback] to efficiently manage updates.
+ * Uses [ListAdapter] with [DiffUtil] for efficient updates.
  *
- * @param onPlaceSelected A callback triggered when a user taps on a place item.
+ * @param onPlaceSelected Callback invoked when a user selects a place.
  */
 class PlaceSearchAdapter(
-    private val onPlaceSelected: (PlaceModel) -> Unit
-) : ListAdapter<PlaceModel, PlaceSearchAdapter.ViewHolder>(diffUtil) {
+    private val onPlaceSelected: (Long) -> Unit
+) : ListAdapter<PlaceUiModel, PlaceSearchAdapter.ViewHolder>(diffUtil) {
 
     companion object {
+
         /**
-         * [DiffUtil.ItemCallback] implementation for efficiently computing differences between lists of [PlaceModel].
+         * DiffUtil callback for efficiently computing differences between lists of [PlaceUiModel].
          */
-        private val diffUtil = object : DiffUtil.ItemCallback<PlaceModel>() {
-            override fun areItemsTheSame(oldItem: PlaceModel, newItem: PlaceModel): Boolean =
+        private val diffUtil = object : DiffUtil.ItemCallback<PlaceUiModel>() {
+
+            override fun areItemsTheSame(oldItem: PlaceUiModel, newItem: PlaceUiModel): Boolean =
                 oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: PlaceModel, newItem: PlaceModel): Boolean =
+            override fun areContentsTheSame(oldItem: PlaceUiModel, newItem: PlaceUiModel): Boolean =
                 oldItem == newItem
         }
     }
 
     /**
-     * [ViewHolder] for binding [ItemTimezoneLayoutBinding] to each item view.
+     * ViewHolder for binding [SearchItemLayoutBinding] to each item view.
      *
      * @param binding The view binding instance associated with the item layout.
      */
     class ViewHolder(val binding: SearchItemLayoutBinding) : RecyclerView.ViewHolder(binding.root)
 
     /**
-     * Creates a new [ViewHolder] for the RecyclerView item.
-     *
-     * @param parent The parent ViewGroup into which the new view will be added.
-     * @param viewType The view type of the new View.
-     * @return A new instance of [ViewHolder].
+     * Inflates the item layout and creates a [ViewHolder].
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = SearchItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -54,16 +50,13 @@ class PlaceSearchAdapter(
     }
 
     /**
-     * Binds a [PlaceModel] to the ViewHolder.
-     *
-     * @param holder The ViewHolder to bind data to.
-     * @param position The position of the item in the adapter.
+     * Binds a [PlaceUiModel] to the ViewHolder.
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val place = getItem(position)
         with(holder.binding) {
-            name.text = place.fullName
-            root.setOnClickListener { onPlaceSelected(place) }
+            name.text = place.name
+            root.setOnClickListener { onPlaceSelected(place.id) }
         }
     }
 }

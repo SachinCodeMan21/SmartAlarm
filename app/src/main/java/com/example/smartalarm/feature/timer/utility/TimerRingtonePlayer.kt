@@ -2,7 +2,7 @@ package com.example.smartalarm.feature.timer.utility
 
 import android.content.Context
 import android.media.RingtoneManager
-import com.example.smartalarm.core.ringtone.BaseRingtonePlayer
+import com.example.smartalarm.core.framework.ringtone.BaseRingtonePlayer
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.timer.presentation.view.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -12,9 +13,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.smartalarm.R
 import android.view.LayoutInflater
-import com.example.smartalarm.core.exception.asUiText
+import com.example.smartalarm.core.utility.exception.asUiText
+import com.example.smartalarm.core.framework.permission.MyPermissionChecker
+import com.example.smartalarm.core.framework.permission.PermissionRationaleDialog
+import com.example.smartalarm.core.framework.permission.model.MyAppPermission
+import com.example.smartalarm.core.framework.permission.MyAppPermissionRequester
+import com.example.smartalarm.core.framework.permission.model.MyPermissionStatus
+import com.example.smartalarm.core.framework.permission.model.PermissionResult
+import com.example.smartalarm.core.framework.permission.model.RequesterType
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.extension.showSnackBar
+import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.databinding.FragmentTimerBinding
 import com.example.smartalarm.feature.timer.presentation.effect.TimerEffect
 import com.example.smartalarm.feature.timer.presentation.event.TimerEvent
@@ -24,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.getValue
 
 
@@ -64,10 +74,29 @@ class TimerFragment : Fragment() {
     private val binding get() = _binding?: error(BINDING_NULL_ERROR)
     private val timerViewModel: TimerViewModel by viewModels()
 
+    @Inject
+    lateinit var permissionChecker: MyPermissionChecker
+
+    private lateinit var permissionRequester : MyAppPermissionRequester
+
+
 
     // ---------------------------------------------------------------------
     // Lifecycle Methods
     // ---------------------------------------------------------------------
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // This is the safest place to initialize it
+        permissionRequester = MyAppPermissionRequester(
+            caller = this,
+            lifecycle = lifecycle, // Use Fragment lifecycle, not viewLifecycle
+            checker = permissionChecker,
+            type = RequesterType.BOTH
+        )
+    }
+
 
     /**
      * Called when the fragment’s UI is being created.
@@ -167,7 +196,12 @@ class TimerFragment : Fragment() {
      */
     private fun setUpButtonListeners() = binding.apply {
         startTimerBtn.setOnClickListener {
-            timerViewModel.handleEvent(TimerEvent.HandleStartTimerClick)
+
+            if (!timerViewModel.getIsTimerRunning()){
+                checkAndStartTimer()
+            }else{
+                timerViewModel.handleEvent(TimerEvent.HandleStartTimerClick)
+            }
         }
         deleteTimerFabBtn.setOnClickListener {
             timerViewModel.handleEvent(TimerEvent.HandleDeleteTimerClick)
@@ -222,6 +256,142 @@ class TimerFragment : Fragment() {
                 }
             }
         }
+    }
+
+
+
+    private fun checkAndStartTimer() {
+        checkNotificationPermission()
+    }
+
+
+
+
+    // Permission Flow
+
+    // Step 1: Runtime — Post Notifications
+    private fun checkNotificationPermission() {
+        val status = permissionChecker.checkRuntimeStatus(
+            requireActivity(),
+            MyAppPermission.Runtime.PostNotifications
+        )
+        when (status) {
+            is MyPermissionStatus.RuntimeStatus.Granted      -> checkExactAlarmPermission()
+            is MyPermissionStatus.RuntimeStatus.ShowRationale -> showNotificationRationale()
+            is MyPermissionStatus.RuntimeStatus.Denied        -> requestNotificationPermission()
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        permissionRequester.requestRuntimePermission(MyAppPermission.Runtime.PostNotifications) { result ->
+            when (result) {
+                is PermissionResult.RuntimePermissionResult.Granted          -> checkExactAlarmPermission()
+                is PermissionResult.RuntimePermissionResult.Denied           -> showNotificationRationale()
+                is PermissionResult.RuntimePermissionResult.PermanentlyDenied -> showNotificationDeniedDialog()
+            }
+        }
+    }
+
+    private fun showNotificationRationale() {
+        PermissionRationaleDialog.showRationale(
+            fragmentManager = childFragmentManager,
+            title = "Notification Permission Required",
+            message = "The timer needs to show a notification so it keeps running reliably in the background and you can control it from your lock screen.",
+            positiveText = "Grant Permission",
+            negativeText = "Cancel",
+            onPositive = { requestNotificationPermission() },
+            onNegative = { requireContext().showToast("Timer requires notification permission") }
+        )
+    }
+
+    private fun showNotificationDeniedDialog() {
+        PermissionRationaleDialog.showGoToSettings(
+            fragmentManager = childFragmentManager,
+            title = "Notification Permission Blocked",
+            message = "Notifications are blocked. Please enable them in settings to use the timer.",
+            onPositive = {
+                permissionRequester.requestAppSettings(MyAppPermission.Runtime.PostNotifications) { granted ->
+                    if (granted) checkExactAlarmPermission()
+                    else{ requireContext().showToast("Timer requires notification permission") }
+                }
+            },
+            onNegative = { requireContext().showToast("Timer requires notification permission") }
+        )
+    }
+
+
+
+
+    // Step 2: Special — Schedule Exact Alarms
+    private fun checkExactAlarmPermission() {
+        val status = permissionChecker.checkSpecialStatus(MyAppPermission.Special.ScheduleExactAlarms)
+        when (status) {
+            is MyPermissionStatus.SpecialStatus.Granted -> checkFullScreenIntentPermission()
+            is MyPermissionStatus.SpecialStatus.Denied  -> showExactAlarmRationale()
+        }
+    }
+
+    private fun showExactAlarmRationale() {
+        PermissionRationaleDialog.showRationale(
+            fragmentManager = childFragmentManager,
+            title = "Exact Alarm Permission Required",
+            message = "The timer needs to schedule exact alarms so it fires precisely when your countdown ends.",
+            positiveText = "Go to Settings",
+            negativeText = "Cancel",
+            onPositive = { requestExactAlarmPermission() },
+            onNegative = { requireContext().showToast("Timer requires exact alarm permission") }
+        )
+    }
+
+    private fun requestExactAlarmPermission() {
+        permissionRequester.requestSpecialPermission(MyAppPermission.Special.ScheduleExactAlarms) { result ->
+            when (result) {
+                is PermissionResult.SpecialPermissionResult.Granted -> checkFullScreenIntentPermission()
+                is PermissionResult.SpecialPermissionResult.Denied  -> requireContext().showToast("Timer requires exact alarm permission")
+            }
+        }
+    }
+
+
+
+
+
+    // Step 3: Special — Full Screen Intent
+    private fun checkFullScreenIntentPermission() {
+        val status = permissionChecker.checkSpecialStatus(MyAppPermission.Special.FullScreenIntent)
+        when (status) {
+            is MyPermissionStatus.SpecialStatus.Granted -> onAllPermissionsGranted()
+            is MyPermissionStatus.SpecialStatus.Denied  -> showFullScreenIntentRationale()
+        }
+    }
+
+    private fun showFullScreenIntentRationale() {
+        PermissionRationaleDialog.showRationale(
+            fragmentManager = childFragmentManager,
+            title = "Full Screen Notification Required",
+            message = "The timer needs to display a full screen alert when your countdown finishes, even if your phone is locked.",
+            positiveText = "Go to Settings",
+            negativeText = "Cancel",
+            onPositive = { requestFullScreenIntentPermission() },
+            onNegative = { requireContext().showToast("Timer requires full screen notification permission") }
+        )
+    }
+
+    private fun requestFullScreenIntentPermission() {
+        permissionRequester.requestSpecialPermission(MyAppPermission.Special.FullScreenIntent) { result ->
+            when (result) {
+                is PermissionResult.SpecialPermissionResult.Granted -> onAllPermissionsGranted()
+                is PermissionResult.SpecialPermissionResult.Denied  -> requireContext().showToast("Timer requires full screen notification permission")
+            }
+        }
+    }
+
+
+
+
+    // All permissions cleared — start the timer
+    private fun onAllPermissionsGranted() {
+        timerViewModel.handleEvent(TimerEvent.HandleStartTimerClick)
     }
 
 

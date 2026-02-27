@@ -18,64 +18,120 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_back"
             app:title="About" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:padding="24dp">
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_l">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/about_guideline_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="@dimen/guideline_about_top" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/about_guideline_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="@dimen/guideline_about_start" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/about_guideline_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="@dimen/guideline_about_end" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/about_guideline_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="@dimen/guideline_about_bottom" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardIcon"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_marginTop="32dp"
-                app:cardCornerRadius="28dp"
-                app:cardElevation="0dp">
+                app:cardCornerRadius="@dimen/spacing_m"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toTopOf="@id/about_guideline_bottom"
+                app:layout_constraintEnd_toStartOf="@+id/about_guideline_end"
+                app:layout_constraintStart_toStartOf="@+id/about_guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/about_guideline_top"
+                app:layout_constraintVertical_bias="0.08">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="24dp"
+                    android:contentDescription="@string/smart_alarm_app_icon"
+                    android:padding="@dimen/spacing_l"
                     android:src="@mipmap/ic_launcher" />
+
+
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
+                android:id="@+id/tvAppName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Smart Alarm"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:text="@string/smart_alarm"
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/about_guideline_end"
+                app:layout_constraintStart_toStartOf="@+id/about_guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/cardIcon" />
 
             <TextView
                 android:id="@+id/tvVersion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Version 1.0"
+                android:text="@string/version_1_0"
                 android:textAppearance="?attr/textAppearanceLabelLarge"
-                android:textColor="?attr/colorOutline" />
+                android:textColor="?attr/colorOutline"
+                app:layout_constraintEnd_toStartOf="@+id/about_guideline_end"
+                app:layout_constraintStart_toStartOf="@+id/about_guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvAppName" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tvDescription"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/spacing_l"
                 android:gravity="center"
-                android:text="Helping you wake up refreshed and ready to take on the day with mission-based discipline."
+                android:text="@string/about_app_desc"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintEnd_toStartOf="@+id/about_guideline_end"
+                app:layout_constraintStart_toStartOf="@+id/about_guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvVersion" />
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+                android:id="@+id/cardActions"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                app:cardElevation="0dp">
+                android:layout_marginTop="@dimen/margin_l"
+                app:cardElevation="0dp"
+                app:layout_constraintWidth_max="@dimen/default_button_maxWidth"
+                android:layout_marginBottom="@dimen/spacing_m"
+                app:layout_constraintBottom_toTopOf="@+id/tvCopyright"
+                app:layout_constraintEnd_toStartOf="@+id/about_guideline_end"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/about_guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+                app:layout_constraintVertical_chainStyle="spread_inside">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -86,64 +142,72 @@
                         android:id="@+id/btnRate"
                         style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
-                        android:text="Rate on Play Store"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
+                        android:layout_height="wrap_content"
                         android:gravity="start|center_vertical"
+                        android:padding="@dimen/spacing_m"
+                        android:text="@string/rate_on_play_store"
+                        android:textColor="?attr/colorOnSurface"
                         app:icon="@drawable/ic_rating"
-                        app:iconPadding="16dp"
-                        android:textColor="?attr/colorOnSurface" />
+                        app:iconPadding="@dimen/spacing_m" />
 
                     <com.google.android.material.divider.MaterialDivider
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp" />
+                        android:layout_marginHorizontal="@dimen/spacing_m" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnPrivacy"
                         style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
-                        android:text="Privacy Policy"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:gravity="start|center_vertical"
+                        android:padding="@dimen/spacing_m"
+                        android:text="@string/privacy_policy"
+                        android:textColor="?attr/colorOnSurface"
                         app:icon="@drawable/ic_privacy"
-                        app:iconPadding="16dp"
-                        android:textColor="?attr/colorOnSurface" />
+                        app:iconPadding="@dimen/spacing_m" />
 
                     <com.google.android.material.divider.MaterialDivider
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp" />
+                        android:layout_marginHorizontal="@dimen/spacing_m" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTerms"
                         style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
-                        android:text="Terms of Service"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:gravity="start|center_vertical"
+                        android:padding="@dimen/spacing_m"
+                        android:text="@string/terms_of_service"
+                        android:textColor="?attr/colorOnSurface"
                         app:icon="@drawable/ic_description"
-                        app:iconPadding="@dimen/spacing_s"
-                        android:textColor="?attr/colorOnSurface" />
+                        app:iconPadding="@dimen/spacing_s" />
 
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
+                android:id="@+id/tvCopyright"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
-                android:text="© 2026 Smart Alarm Inc."
+                android:text="@string/_2026_smart_alarm_inc"
                 android:textAppearance="?attr/textAppearanceLabelSmall"
-                android:textColor="?attr/colorOutline" />
+                android:textColor="?attr/colorOutline"
+                android:textSize="@dimen/text_size_xs"
+                app:layout_constraintBottom_toTopOf="@+id/about_guideline_bottom"
+                app:layout_constraintEnd_toStartOf="@+id/about_guideline_end"
+                app:layout_constraintStart_toStartOf="@+id/about_guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/cardActions" />
 
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

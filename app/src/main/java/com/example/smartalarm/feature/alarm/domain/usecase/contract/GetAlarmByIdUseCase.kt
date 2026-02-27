@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.contract
 
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 
 /**
  * Use case interface for retrieving a specific alarm by its unique ID.
@@ -15,9 +16,9 @@ interface GetAlarmByIdUseCase {
      * Retrieves an alarm by its unique identifier.
      *
      * @param alarmId The unique identifier of the alarm to retrieve.
-     * @return A [Result] containing the [AlarmModel] if retrieval is successful, or an error if the retrieval fails.
+     * @return A [MyResult] containing the [AlarmModel] if retrieval is successful, or an error if the retrieval fails.
      *         The [Result] wrapper is used to represent either a successful outcome (with the [AlarmModel])
      *         or a failure (with an error).
      */
-    suspend operator fun invoke(alarmId: Int): Result<AlarmModel>
+    suspend operator fun invoke(alarmId: Int): MyResult<AlarmModel, DataError>
 }

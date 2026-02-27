@@ -2,11 +2,11 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.mission
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartalarm.core.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
 import com.example.smartalarm.feature.alarm.domain.model.MissionType
@@ -227,8 +227,6 @@ class MyAlarmViewModel @Inject constructor(
 
     private fun finishMissionActivity() {
         currentAlarm?.let {
-            //alarmServiceController.stopAlarmService()
-            //postEffect(FinishActivity)
             if (isPreview) postEffect(FinishActivity)
         }
     }
@@ -242,11 +240,11 @@ class MyAlarmViewModel @Inject constructor(
 
     private fun updateAlarm(alarm: AlarmModel, onSuccess: () -> Unit) = viewModelScope.launch(dispatcher) {
         when (val result = updateAlarmUseCase(alarm)) {
-            is Result.Success -> {
+            is MyResult.Success -> {
                 onSuccess()
             }
-            is Result.Error -> {
-                //postEffect(ShowToastMessage(result.exception.message.toString()))
+            is MyResult.Error -> {
+                postEffect(ShowErrorMessage(result.error))
             }
         }
     }

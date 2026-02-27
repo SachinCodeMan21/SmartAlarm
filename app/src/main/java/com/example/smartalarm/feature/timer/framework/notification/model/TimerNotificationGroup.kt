@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.timer.framework.notification.model
 
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.channel.AppNotificationChannel
+import com.example.smartalarm.core.framework.notification.channel.AppNotificationChannel
 import com.example.smartalarm.feature.alarm.framework.notification.model.NotificationGroupKeys
 
 

@@ -1,7 +1,7 @@
 package com.example.testutils.sharedFake
 
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
-import com.example.smartalarm.core.utility.sharedPreference.impl.SharedPrefsHelperImpl
+import com.example.smartalarm.core.framework.sharedPreference.contract.SharedPrefsHelper
+import com.example.smartalarm.core.framework.sharedPreference.impl.SharedPrefsHelperImpl
 import javax.inject.Inject
 
 /**

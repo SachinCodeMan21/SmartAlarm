@@ -1,10 +1,9 @@
 package com.example.smartalarm.feature.timer.domain.usecase.impl
 
-import com.example.smartalarm.core.exception.DataError
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.domain.usecase.contract.RestartTimerUseCase
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.framework.scheduler.TimerScheduler
@@ -35,9 +34,10 @@ class RestartTimerUseCaseImpl @Inject constructor(
         val restartedTimer = timer.copy(
             startTime = 0L,
             remainingTime = timer.targetTime,
-            // targetTime remains the same
             isTimerRunning = false,
-            status = TimerStatus.STOPPED
+            status = TimerStatus.STOPPED,
+            isTimerSnoozed = false,        // UI progress will now use targetTime
+            snoozedTargetTime = 0L
         )
 
         // 2. Persistence: Save the reset state to local storage

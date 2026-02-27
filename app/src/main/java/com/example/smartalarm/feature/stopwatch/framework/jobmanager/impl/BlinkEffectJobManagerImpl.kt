@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.stopwatch.framework.jobmanager.impl
 
-import com.example.smartalarm.core.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
 import com.example.smartalarm.feature.stopwatch.framework.jobmanager.contract.BlinkEffectJobManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

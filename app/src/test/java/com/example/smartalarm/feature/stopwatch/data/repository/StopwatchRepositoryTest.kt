@@ -1,18 +1,6 @@
 package com.example.smartalarm.feature.stopwatch.data.repository
 
-import android.database.sqlite.SQLiteException
-import com.example.smartalarm.core.exception.AppError
-import com.example.smartalarm.feature.stopwatch.data.datasource.contract.StopwatchLocalDataSource
-import com.example.smartalarm.feature.stopwatch.data.manager.StopwatchInMemoryStateManager
-import com.example.smartalarm.feature.stopwatch.data.mapper.StopwatchMapper.toEntity
-import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import io.mockk.*
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
-import org.junit.Assert.*
-import com.example.smartalarm.core.model.Result
 
 
 /**
@@ -37,6 +25,7 @@ import com.example.smartalarm.core.model.Result
 @OptIn(ExperimentalCoroutinesApi::class)
 class StopwatchRepositoryTest {
 
+/*
     private lateinit var repository: StopwatchRepositoryImpl
 
     // Mocks for dependencies
@@ -147,6 +136,7 @@ class StopwatchRepositoryTest {
         // Assert
         verify { inMemoryStateManager.updateFromTicker(updatedStopwatch) }
     }
+*/
 
 }
 

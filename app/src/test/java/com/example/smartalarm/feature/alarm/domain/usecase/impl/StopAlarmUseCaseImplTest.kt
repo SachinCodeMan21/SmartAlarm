@@ -1,24 +1,6 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
-import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
-import org.junit.Assert.*
-import io.mockk.*
-import io.mockk.impl.annotations.InjectMockKs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
-import io.mockk.impl.annotations.MockK
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
-import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
-import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.feature.alarm.domain.model.SnoozeSettings
-import com.example.smartalarm.feature.alarm.framework.manager.contract.AlarmRingtoneManager
-import kotlinx.coroutines.test.advanceUntilIdle
-import org.junit.After
-import java.time.LocalTime
 
 /**
  * Unit tests for [StopAlarmUseCaseImpl].

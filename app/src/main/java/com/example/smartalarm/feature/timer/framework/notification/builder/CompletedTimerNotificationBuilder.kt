@@ -1,16 +1,13 @@
 package com.example.smartalarm.feature.timer.framework.notification.builder
 
 import android.app.Notification
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
-import com.example.smartalarm.core.notification.channel.AppNotificationChannel
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.channel.AppNotificationChannel
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotification
-import com.example.smartalarm.feature.timer.presentation.view.activity.ShowTimerActivity
 import javax.inject.Inject
 import javax.inject.Singleton
 

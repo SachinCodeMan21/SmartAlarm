@@ -1,30 +1,6 @@
 package com.example.smartalarm.feature.clock.presentation.viewmodel
 
-import app.cash.turbine.test
-import com.example.smartalarm.feature.clock.domain.model.PlaceModel
-import com.example.smartalarm.feature.clock.domain.usecase.contract.ClockUseCases
-import com.example.smartalarm.feature.clock.framework.jobmanager.contract.ClockUpdaterJob
-import com.example.smartalarm.feature.clock.presentation.event.ClockEvent
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import  com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.clock.domain.model.ClockModel
-import com.example.smartalarm.feature.clock.presentation.effect.ClockEffect
-import io.mockk.MockKAnnotations
-import io.mockk.slot
-import io.mockk.unmockkAll
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import kotlin.test.Test
 
 @ExperimentalCoroutinesApi
 class ClockViewModelTest {

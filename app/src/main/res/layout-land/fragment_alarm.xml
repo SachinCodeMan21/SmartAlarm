@@ -8,6 +8,21 @@
     tools:context=".feature.alarm.presentation.view.fragment.home.AlarmFragment">
 
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/alarm_editor_home_guideline_start"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/alarm_home_guideline_start_percent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/alarm_editor_home_guideline_end"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/alarm_home_guideline_end_percent" />
+
+
     <!-- Alarm Recyclerview [Show All the User Alarms] -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/alarm_rv"
@@ -18,7 +33,7 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add_alarm_btn"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/alarm_editor_home_guideline_start"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/alarm_item_layout" />
 

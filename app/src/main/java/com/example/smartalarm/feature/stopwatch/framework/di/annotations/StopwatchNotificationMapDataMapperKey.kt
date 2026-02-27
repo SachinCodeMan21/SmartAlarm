@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.stopwatch.framework.di.annotations
 
 import com.example.smartalarm.feature.stopwatch.framework.notification.enums.StopwatchNotificationDataMapperKey
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import dagger.MapKey
 
 /**

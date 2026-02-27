@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.alarm.framework.notification.model
 
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.channel.AppNotificationChannel
+import com.example.smartalarm.core.framework.notification.channel.AppNotificationChannel
 
 
 sealed class AlarmNotificationGroup(

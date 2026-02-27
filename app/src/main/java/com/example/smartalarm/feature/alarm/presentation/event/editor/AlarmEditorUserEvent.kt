@@ -56,7 +56,6 @@ sealed interface AlarmEditorUserEvent {
     /* 5️⃣ Navigation Events         */
     /* ---------------------------- */
     sealed interface NavigationEvent : AlarmEditorUserEvent {
-        data object SystemBack : NavigationEvent
-        data object ToolbarBack : NavigationEvent
+        data object HandleCustomBackNavigation : NavigationEvent
     }
 }

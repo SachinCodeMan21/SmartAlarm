@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.timer.presentation.effect
 
-import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.utility.exception.DataError
 
 /**
  * Represents one-time UI effects emitted by the TimerViewModel to be handled by the UI layer.

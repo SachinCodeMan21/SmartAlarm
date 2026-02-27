@@ -1,7 +1,7 @@
 package com.example.testutils.sharedModules
 
-import com.example.smartalarm.core.di.modules.SharedPreferenceModule
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
+import com.example.smartalarm.core.framework.di.modules.SharedPreferenceModule
+import com.example.smartalarm.core.framework.sharedPreference.contract.SharedPrefsHelper
 import com.example.testutils.sharedFake.FakeSharedPrefsHelper
 import dagger.Binds
 import dagger.Module

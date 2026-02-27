@@ -36,7 +36,7 @@
         app:layout_constraintGuide_percent="0.95"  />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/labelTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#f5eff7"
@@ -58,7 +58,7 @@
         app:layout_constraintBottom_toTopOf="@+id/swipe_container"
         app:layout_constraintEnd_toStartOf="@+id/show_alarm_guideline_end"
         app:layout_constraintStart_toStartOf="@+id/show_alarm_guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/labelTv"
         tools:text="07:00 am" />
 
     <TextView
@@ -124,7 +124,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:alpha="0.4"
-                android:contentDescription="@string/swipe_left_to_snooze"
+                android:contentDescription="@string/drag_left_to_snooze"
                 android:src="@drawable/ic_snooze_thumb" />
 
             <!-- Snooze count TextView -->
@@ -149,7 +149,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="@dimen/spacing_m"
             android:alpha="0.4"
-            android:contentDescription="@string/swipe_right_to_stop"
+            android:contentDescription="@string/drag_right_to_stop"
             android:src="@drawable/ic_stop_thumb" />
 
         <!-- Draggable thumb (starts in center) -->

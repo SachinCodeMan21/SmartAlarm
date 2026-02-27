@@ -44,8 +44,8 @@ class LanguageActivity : AppCompatActivity() {
     private fun setUpToolbar() {
         binding.languageToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
-
     private fun setupLanguageRecyclerView() {
+
         val languageItems = getLanguageItemList()
 
         // Create and set up the language adapter with a click listener
@@ -58,7 +58,6 @@ class LanguageActivity : AppCompatActivity() {
             adapter = languageAdapter
         }
     }
-
     private fun getLanguageItemList(): List<LanguageItem> {
         // Predefined list of languages
         val languages = listOf(

@@ -45,14 +45,13 @@ class TimeFormatterImpl @Inject constructor(
         return "$localizedHour:$localizedMinute $amPmString"
     }
 
-
     override fun getFormattedDayAndTime(hour: Int, minute: Int): String {
 
         // Get the current day of the week as an integer (0 = Sunday, 6 = Saturday)
         val currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
 
         // Get the day name from the string-array resource using the day index
-        val dayOfWeek = resourceProvider.getStringArray(R.array.alarm_weekday_full)[currentDayOfWeek - 1]
+        val dayOfWeek = resourceProvider.getStringArray(R.array.full_weekdays)[currentDayOfWeek - 1]
 
         // Extract the first 3 letters of the day name
         val shortDay = dayOfWeek.take(3)
@@ -81,7 +80,7 @@ class TimeFormatterImpl @Inject constructor(
             else -> {
                 val dayIndex = alarmCal.get(Calendar.DAY_OF_WEEK) - 1
                 val day = resourceProvider
-                    .getStringArray(R.array.alarm_weekday_full)[dayIndex]
+                    .getStringArray(R.array.full_weekdays)[dayIndex]
                 day.take(3)
             }
         }
@@ -106,6 +105,65 @@ class TimeFormatterImpl @Inject constructor(
     }
 
 
+
+    //----------------------
+    // Time Formatting
+    //----------------------
+
+    /**
+     * Formats the given time in "hh:mm a" format.
+     * Example: 02:30 PM
+     */
+    override fun formatClockTime(timeInMillis: Long): String {
+
+        val calendar = Calendar.getInstance().apply {
+            this.timeInMillis = timeInMillis
+        }
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val amPmString = if (hour < 12) {
+            resourceProvider.getString(R.string.am)
+        } else {
+            resourceProvider.getString(R.string.pm)
+        }
+
+        val formattedHour = if (hour == 0) 12 else if (hour > 12) hour - 12 else hour
+        val localizedHour = numberFormatter.formatLocalizedNumber(formattedHour.toLong(), true)
+        val localizedMinute = numberFormatter.formatLocalizedNumber(minute.toLong(), true)
+
+        return "$localizedHour:$localizedMinute $amPmString"
+    }
+
+    /**
+     * Formats the given date in "dd MMM yyyy" format.
+     * Example: 14 Oct 2022
+     */
+    override fun formatDayMonth(dateInMillis: Long): String {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = dateInMillis
+        }
+
+        // Localize the day of the month (with optional leading zero formatting)
+        val day = numberFormatter.formatLocalizedNumber(calendar.get(Calendar.DAY_OF_MONTH).toLong(), false)
+
+        // Localize the month using the array of month names
+        val monthIndex = calendar.get(Calendar.MONTH) // Get the month index (0-11)
+        val month = resourceProvider.getStringArray(R.array.month_names)[monthIndex]
+
+        // Localize the year using the number formatter
+        val year = numberFormatter.formatLocalizedNumber(calendar.get(Calendar.YEAR).toLong(), false)
+
+        // Localize the day of the week (e.g., "Monday", "Tuesday")
+        val dayOfWeekIndex = calendar.get(Calendar.DAY_OF_WEEK) - 1  // Adjust for zero-indexed array
+        val dayOfWeek = resourceProvider.getStringArray(R.array.full_weekdays)[dayOfWeekIndex]
+
+        // Return the formatted date with localized day, month, and year
+        return "$dayOfWeek, $day $month $year"
+    }
+
+
+
     //----------------
     // Timer Methods
     //----------------
@@ -128,7 +186,6 @@ class TimeFormatterImpl @Inject constructor(
         // Return the formatted string using the provided format resource
         return resourceProvider.getString(R.string.formatted_timer_time, hours, minutes, seconds)
     }
-
 
     override fun formatStringDigitsToMillis(input: String): Long {
 

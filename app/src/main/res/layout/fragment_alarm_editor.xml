@@ -14,21 +14,21 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/alarm_home_guideline_top"
+            android:id="@+id/alarm_editor_home_guideline_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="@dimen/alarm_editor_guideline_top_percent" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/alarm_home_guideline_start"
+            android:id="@+id/alarm_editor_home_guideline_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="@dimen/alarm_editor_guideline_start_percent" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/alarm_home_guideline_end"
+            android:id="@+id/alarm_editor_home_guideline_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -44,9 +44,9 @@
             android:hint="@string/enter_label"
             android:padding="@dimen/spacing_s"
             app:hintTextColor="?attr/colorPrimary"
-            app:layout_constraintEnd_toStartOf="@+id/alarm_home_guideline_end"
-            app:layout_constraintStart_toStartOf="@+id/alarm_home_guideline_start"
-            app:layout_constraintTop_toTopOf="@+id/alarm_home_guideline_top"
+            app:layout_constraintEnd_toStartOf="@+id/alarm_editor_home_guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/alarm_editor_home_guideline_start"
+            app:layout_constraintTop_toTopOf="@+id/alarm_editor_home_guideline_top"
             app:layout_constraintWidth_max="@dimen/default_editText_maxWidth">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -65,8 +65,8 @@
             layout="@layout/fragment_alarm_editor_time_picker_block"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/alarm_home_guideline_end"
-            app:layout_constraintStart_toEndOf="@id/alarm_home_guideline_start"
+            app:layout_constraintEnd_toStartOf="@id/alarm_editor_home_guideline_end"
+            app:layout_constraintStart_toEndOf="@id/alarm_editor_home_guideline_start"
             app:layout_constraintTop_toBottomOf="@id/labelTIL" />
 
         <!-- Weekdays Block [Lets The User Select At Which Days The Alarm Should Repeat]-->
@@ -75,8 +75,8 @@
             layout="@layout/fragment_alarm_editor_weekdays_block"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/alarm_home_guideline_end"
-            app:layout_constraintStart_toEndOf="@id/alarm_home_guideline_start"
+            app:layout_constraintEnd_toStartOf="@id/alarm_editor_home_guideline_end"
+            app:layout_constraintStart_toEndOf="@id/alarm_editor_home_guideline_start"
             app:layout_constraintTop_toBottomOf="@id/time_picker_block" />
 
         <!-- Mission Block [Lets The User Select His Preferred Missions For Stooping the Alarm]-->
@@ -85,8 +85,8 @@
             layout="@layout/fragment_alarm_editor_mission_block"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/alarm_home_guideline_end"
-            app:layout_constraintStart_toEndOf="@id/alarm_home_guideline_start"
+            app:layout_constraintEnd_toStartOf="@id/alarm_editor_home_guideline_end"
+            app:layout_constraintStart_toEndOf="@id/alarm_editor_home_guideline_start"
             app:layout_constraintTop_toBottomOf="@id/weekdays_block" />
 
         <!-- Sound Block [Lets The User Set The Alarm Sound & Manipulate the Volume, Vibration] -->
@@ -95,8 +95,8 @@
             layout="@layout/fragment_alarm_editor_sound_vibration_block"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/alarm_home_guideline_end"
-            app:layout_constraintStart_toEndOf="@id/alarm_home_guideline_start"
+            app:layout_constraintEnd_toStartOf="@id/alarm_editor_home_guideline_end"
+            app:layout_constraintStart_toEndOf="@id/alarm_editor_home_guideline_start"
             app:layout_constraintTop_toBottomOf="@id/mission_block" />
 
         <!-- Snooze Block [Lets The User Handle The Preferred Alarm Snooze Settings]-->
@@ -105,8 +105,8 @@
             layout="@layout/fragment_alarm_editor_snooze_block"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/alarm_home_guideline_end"
-            app:layout_constraintStart_toEndOf="@id/alarm_home_guideline_start"
+            app:layout_constraintEnd_toStartOf="@id/alarm_editor_home_guideline_end"
+            app:layout_constraintStart_toEndOf="@id/alarm_editor_home_guideline_start"
             app:layout_constraintTop_toBottomOf="@id/sound_block" />
 
         <!-- Save/Update Alarm Button [Save the Newly Created/ Edited Alarm] -->
@@ -119,8 +119,8 @@
             android:text="@string/save"
             android:textColor="?attr/colorOnPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/alarm_home_guideline_end"
-            app:layout_constraintStart_toEndOf="@id/alarm_home_guideline_start"
+            app:layout_constraintEnd_toStartOf="@id/alarm_editor_home_guideline_end"
+            app:layout_constraintStart_toEndOf="@id/alarm_editor_home_guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/snooze_block"
             app:layout_constraintWidth_max="@dimen/default_button_maxWidth"
             app:layout_constraintWidth_percent="0.6" />

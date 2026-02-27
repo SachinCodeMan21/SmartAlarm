@@ -175,12 +175,12 @@ class AlarmEditorActivity : AppCompatActivity()
 
     /**
      * Registers a activity back press callback to handle editor activity system back navigation events.
-     * Delegates the back navigation event to the [AlarmEditorViewModel] by sending a navigation event.
+     * Delegates the back navigation event to the [onSupportNavigateUp].
      */
     private fun setUpBackPressedCallback() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                alarmEditorViewModel.handleUserEvent(AlarmEditorUserEvent.NavigationEvent.SystemBack)
+                onSupportNavigateUp()
             }
         })
     }
@@ -202,7 +202,7 @@ class AlarmEditorActivity : AppCompatActivity()
             ?.childFragmentManager?.fragments?.firstOrNull()
 
         when (currentFragment) {
-            is AlarmEditorHomeFragment -> alarmEditorViewModel.handleUserEvent(AlarmEditorUserEvent.NavigationEvent.ToolbarBack)
+            is AlarmEditorHomeFragment -> alarmEditorViewModel.handleUserEvent(AlarmEditorUserEvent.NavigationEvent.HandleCustomBackNavigation)
             is SnoozeAlarmFragment -> currentFragment.onToolbarBackPressed()
         }
 

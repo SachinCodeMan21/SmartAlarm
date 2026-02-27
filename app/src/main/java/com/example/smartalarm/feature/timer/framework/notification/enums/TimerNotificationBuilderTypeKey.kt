@@ -1,8 +1,8 @@
 package com.example.smartalarm.feature.timer.framework.notification.enums
 
-import com.example.smartalarm.core.notification.marker.AppNotificationBuilderTypeKey
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
-import com.example.smartalarm.core.notification.factory.AppNotificationBuilderFactory
+import com.example.smartalarm.core.framework.notification.marker.AppNotificationBuilderTypeKey
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.factory.AppNotificationBuilderFactory
 
 /**
  * Enum representing the distinct types of timer notifications.

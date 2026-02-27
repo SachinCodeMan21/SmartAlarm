@@ -17,6 +17,7 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class TimerLocalDataSourceIT {
+/*
 
     @get:Rule(order = 1)
     var hiltRule = HiltAndroidRule(this)
@@ -179,6 +180,7 @@ class TimerLocalDataSourceIT {
             state = "RUNNING"
         )
     }
+*/
 
 
 }

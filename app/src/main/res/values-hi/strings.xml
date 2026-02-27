@@ -20,18 +20,6 @@
     // # Permission Dialog Related Strings
     // ---------------------------------------------------------------------
 
-    <!-- Permission Dialog Titles -->
-    <string name="permission_required_title">अनुमति आवश्यक है</string>
-    <string name="full_screen_permission_title">फुल-स्क्रीन अधिसूचना अनुमति आवश्यक है</string>
-    <string name="schedule_exact_alarm_permission_title">सटीक अलार्म अधिसूचना अनुमति आवश्यक है</string>
-    <string name="notification_permission_required_title">सूचना अनुमति आवश्यक है</string>
-
-    <!-- Permission Dialog Messages -->
-    <string name="full_screen_permission_message">अलार्म ट्रिगर होने पर अधिसूचनाएँ दिखाने के लिए कृपया अपनी सेटिंग्स में फुल-स्क्रीन अधिसूचना अनुमति प्रदान करें।</string>
-    <string name="schedule_exact_alarm_permission_message">अलार्म और टाइमर शेड्यूल करने के लिए कृपया अपनी सेटिंग्स में सटीक अलार्म अनुमति प्रदान करें।</string>
-    <string name="post_notification_permission_rationale_message">इस ऐप को अलार्म, टाइमर और स्टॉपवॉच के लिए समय पर सूचनाएँ भेजने के लिए सूचना अनुमति की आवश्यकता है।</string>
-    <string name="app_permission_setting_dialog_message">%1$s अनुमति इस ऐप के सही तरीके से काम करने के लिए आवश्यक है। कृपया इसे अपने सिस्टम सेटिंग्स में सक्षम करें।</string>
-
     <!-- Dialog Button Action Messages -->
     <string name="grant_permission">अनुमति दें</string>
     <string name="deny">अस्वीकृत करें</string>
@@ -225,7 +213,7 @@
     <!--  D] Alarm Activity Fragments Strings -->
 
     <!-- 1] Show Alarm Mission Strings -->
-    <string-array name="alarm_weekday_full">
+    <string-array name="full_weekdays">
         <item>रविवार</item>  <!-- Sunday -->
         <item>सोमवार</item>  <!-- Monday -->
         <item>मंगलवार</item> <!-- Tuesday -->
@@ -323,7 +311,6 @@
     <string name="_1_00">+१:००</string>
     <string name="play_pause_timer">टाइमर को चलाएँ/रोकें</string>
     <string name="timer_title">%1$s टाइमर</string>
-    <string name="active_timer">सक्रिय टाइमर</string>
     <string name="completed_timer">पूरा हुआ टाइमर</string>
     <string name="add_one_minute">१ मिनट जोड़ें</string>
     <string name="hour_formatted_stopwatch_time">%1$sघ : %2$sमि : %3$sसे</string>
@@ -331,6 +318,21 @@
     <string name="sec_formatted_stopwatch_time">%1$sसे</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$sसे : %2$sमिसे</string>
     <string name="timer_dashboard">टाइमर डैशबोर्ड</string> <!-- Hindi -->
+
+    <!-- Active Timer Notification String -->
+    <string name="active_timer">सक्रिय टाइमर</string>
+    <string name="time_remaining">⏳ शेष समय: %1$s</string>
+    <string name="timer_running_count"> • %1$d चल रहा है</string>
+    <string name="timer_paused_count"> • %1$d स्थगित</string>
+    <string name="timer_label">टाइमर #%1$d</string>
+
+    <!-- Completed Timer Notification String -->
+    <string name="time_after_completion">✅ पूर्णता के बाद समय: %1$s</string>
+    <string name="completed_timer_completed_count">%1$d पूर्ण</string>
+
+    <!-- Missed Timer -->
+    <string name="missed_timer">चूका हुआ टाइमर</string>
+    <string name="missed_timer_target_time">टाइमर लक्ष्य समय: %1$s</string>
 
 
 

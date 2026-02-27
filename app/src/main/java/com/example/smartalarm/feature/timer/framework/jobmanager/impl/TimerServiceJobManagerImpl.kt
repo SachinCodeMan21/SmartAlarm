@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.timer.framework.jobmanager.impl
 
-import com.example.smartalarm.core.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.framework.jobmanager.contract.TimerServiceJobManager
 import kotlinx.coroutines.CoroutineDispatcher

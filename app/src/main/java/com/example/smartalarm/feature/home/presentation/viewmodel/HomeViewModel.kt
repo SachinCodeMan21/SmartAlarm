@@ -1,11 +1,10 @@
 package com.example.smartalarm.feature.home.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.model.NotificationIntentData
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
+import com.example.smartalarm.core.framework.notification.model.NotificationIntentData
+import com.example.smartalarm.core.framework.sharedPreference.contract.SharedPrefsHelper
 import com.example.smartalarm.feature.home.presentation.effect.HomeEffect
 import com.example.smartalarm.feature.home.presentation.effect.HomeEffect.*
 import com.example.smartalarm.feature.home.presentation.event.HomeEvent

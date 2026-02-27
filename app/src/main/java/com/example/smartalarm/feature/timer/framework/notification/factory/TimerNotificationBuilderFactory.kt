@@ -1,8 +1,8 @@
 package com.example.smartalarm.feature.timer.framework.notification.factory
 
 import android.content.Context
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
-import com.example.smartalarm.core.notification.factory.AppNotificationBuilderFactory
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.factory.AppNotificationBuilderFactory
 import com.example.smartalarm.feature.timer.framework.notification.enums.TimerNotificationBuilderTypeKey
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotification
 import dagger.hilt.android.qualifiers.ApplicationContext

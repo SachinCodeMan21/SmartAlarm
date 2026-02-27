@@ -1,11 +1,12 @@
 package com.example.smartalarm.feature.clock.presentation.viewmodel
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartalarm.core.di.annotations.IoDispatcher
-import com.example.smartalarm.core.exception.MyResult
-import com.example.smartalarm.feature.clock.domain.model.ClockModel
+import com.example.smartalarm.R
+import com.example.smartalarm.core.utility.exception.MyResult
+import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
+import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
+import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
 import com.example.smartalarm.feature.clock.domain.usecase.contract.ClockUseCases
 import com.example.smartalarm.feature.clock.presentation.effect.ClockEffect
 import com.example.smartalarm.feature.clock.presentation.event.ClockEvent
@@ -14,272 +15,171 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
-import com.example.smartalarm.feature.clock.framework.jobmanager.contract.ClockUpdaterJob
+import com.example.smartalarm.feature.clock.domain.usecase.contract.UpdateClockUseCase
+import com.example.smartalarm.feature.clock.presentation.mapper.PlaceUiMapper
+import com.example.smartalarm.feature.clock.presentation.model.ClockUiModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
-
+import kotlinx.coroutines.isActive
+import java.util.concurrent.TimeUnit
 
 @HiltViewModel
 class ClockViewModel @Inject constructor(
     private val clockUseCases: ClockUseCases,
-    private val clockUpdater: ClockUpdaterJob,
-    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val systemClockHelper: SystemClockHelper,
+    private val timeFormatter: TimeFormatter,
+    private val updateClockUseCase: UpdateClockUseCase,
+    private val resourceProvider: ResourceProvider,
 ) : ViewModel() {
 
-    private val _uiModel = MutableStateFlow(ClockModel())
-    val uiModel: StateFlow<ClockModel> = _uiModel
+    private val _uiModel = MutableStateFlow(ClockUiModel())
+    val uiModel: StateFlow<ClockUiModel> = _uiModel
 
     private val _uiEffect = Channel<ClockEffect>(Channel.BUFFERED)
     val uiEffect: Flow<ClockEffect> = _uiEffect.receiveAsFlow()
 
+    private var cachedPlacesMap: Map<Long, PlaceModel> = emptyMap()
+    private var deletedPlace: PlaceModel? = null
+    private var updateJob: Job? = null
+
+
+
+    // ---------------------------------------------------------------------
+    // UI Effects
+    // ---------------------------------------------------------------------
+    private fun postEffect(effect: ClockEffect) {
+        viewModelScope.launch { _uiEffect.send(effect) }
+    }
+
+
+
+    // ---------------------------------------------------------------------
+    // Event Delegate
+    // ---------------------------------------------------------------------
     fun onEvent(event: ClockEvent) {
         when (event) {
             is ClockEvent.LoadSelectedTimeZones -> loadTimeZones()
-            is ClockEvent.StopClockUiUpdates -> clockUpdater.stopClockUpdaterJob()
-            is ClockEvent.DeleteTimeZone -> deleteTimeZone(event.deletedTimeZone)
-            is ClockEvent.UndoDeletedTimeZone -> undoDeletedTimeZone(event.deletedTimeZone)
-            is ClockEvent.AddNewTimeZone -> postEffect(ClockEffect.NavigateToAddTimeZoneActivity)
+            is ClockEvent.StopClockUiUpdates -> stopClockUpdater()
+            is ClockEvent.DeleteTimeZone -> deleteTimeZone(event.deletedTimeZoneId)
+            is ClockEvent.UndoDeletedTimeZone -> undoDeletedTimeZone()
+            is ClockEvent.AddNewTimeZone -> postEffect(ClockEffect.NavigateToAddTimeZoneScreen)
             is ClockEvent.ShowToastMessage -> postEffect(ClockEffect.ShowToast(event.message))
         }
     }
 
+
+    // ---------------------------------------------------------------------
+    // Load and Update Time Zones
+    // ---------------------------------------------------------------------
     private fun loadTimeZones() {
-        viewModelScope.launch(ioDispatcher) {
-            when (val result = clockUseCases.getAllSavedPlaces()) {
-                is MyResult.Success -> startClockUpdates(result.data)
-                is MyResult.Error -> {
-                    // Handle specific DataError types here if needed
-                    postEffect(ClockEffect.ShowToast("Failed to load time zones"))
-                }
-            }
-        }
-    }
-
-    private fun startClockUpdates(savedPlaces: List<PlaceModel>) {
-        clockUpdater.startClockUpdaterJob(
-            scope = viewModelScope,
-            savedPlaces = savedPlaces,
-            onUpdate = { updatedPlaces, time, date ->
-                _uiModel.value = ClockModel(
-                    formattedTime = time,
-                    formattedDate = date,
-                    savedPlaces = updatedPlaces
-                )
-            },
-            onError = { error ->
-                postEffect(ClockEffect.ShowToast("Update Error: ${error.localizedMessage}"))
-            }
-        )
-    }
-
-    private fun deleteTimeZone(deletedTimeZone: PlaceModel) {
-        viewModelScope.launch(ioDispatcher) {
-            when (val result = clockUseCases.deletePlaceById(deletedTimeZone.id)) {
-                is MyResult.Success -> {
-                    val updatedList = _uiModel.value.savedPlaces.filterNot { it.id == deletedTimeZone.id }
-                    _uiModel.update { it.copy(savedPlaces = updatedList) }
-                    postEffect(ClockEffect.DeleteTimeZone(deletedTimeZone))
-                }
-                is MyResult.Error -> {
-                    postEffect(ClockEffect.ShowToast("Could not delete item"))
-                }
-            }
-        }
-    }
-
-    private fun undoDeletedTimeZone(deletedTimeZone: PlaceModel) {
-        viewModelScope.launch(ioDispatcher) {
-            when (val result = clockUseCases.insertPlace(deletedTimeZone)) {
-                is MyResult.Success -> {
-                    val updatedList = _uiModel.value.savedPlaces + deletedTimeZone
-                    _uiModel.update { it.copy(savedPlaces = updatedList) }
-                    postEffect(ClockEffect.ShowToast("Undo successful"))
-                }
-                is MyResult.Error -> {
-                    postEffect(ClockEffect.ShowToast("Failed to restore time zone"))
-                }
-            }
-        }
-    }
-
-    private fun postEffect(effect: ClockEffect) {
         viewModelScope.launch {
-            _uiEffect.send(effect)
+            when (val result = clockUseCases.getAllSavedPlaces()) {
+                is MyResult.Success -> {
+                    cachedPlacesMap = result.data.associateBy { it.id }
+                    startClockUpdater(result.data)
+                }
+                is MyResult.Error -> postEffect(ClockEffect.ShowToast("Failed to load time zones"))
+            }
         }
     }
+
+    private fun startClockUpdater(savedPlaces: List<PlaceModel>) {
+
+        stopClockUpdater() // cancel existing job
+
+        updateJob = viewModelScope.launch {
+
+            while (isActive) {
+
+                val now = systemClockHelper.getCurrentTime()
+                val formattedTime = timeFormatter.formatClockTime(now)
+                val formattedDate = timeFormatter.formatDayMonth(now)
+
+                val updatedPlaces = updateClockUseCase(savedPlaces)
+                cachedPlacesMap = updatedPlaces.associateBy { it.id }
+
+                val savedPlacesUiModelList = PlaceUiMapper.mapToUiList(updatedPlaces)
+                _uiModel.value = ClockUiModel(
+                    formattedTime = formattedTime,
+                    formattedDate = formattedDate,
+                    savedPlaces = savedPlacesUiModelList
+                )
+
+                val delayMillis = TimeUnit.MINUTES.toMillis(1) - (now % TimeUnit.MINUTES.toMillis(1))
+                delay(delayMillis)
+            }
+        }
+    }
+
+    private fun stopClockUpdater() {
+        updateJob?.cancel()
+        updateJob = null
+    }
+
+
+
+
+    // ---------------------------------------------------------------------
+    // Delete / Undo
+    // ---------------------------------------------------------------------
+
+    private fun deleteTimeZone(deletedPlaceId: Long) {
+
+        val placeToDelete = cachedPlacesMap[deletedPlaceId] ?: return // get from cache
+
+        viewModelScope.launch {
+            when (clockUseCases.deletePlaceById(deletedPlaceId)) {
+
+                is MyResult.Success -> {
+                    // Cache the deleted place for undo
+                    deletedPlace = placeToDelete
+
+                    // Remove from cache map
+                    cachedPlacesMap = cachedPlacesMap - deletedPlaceId
+
+                    // Remove from UI model
+                    val updatedList = _uiModel.value.savedPlaces.filterNot { it.id == deletedPlaceId }
+                    _uiModel.update { it.copy(savedPlaces = updatedList) }
+
+                    postEffect(ClockEffect.DeleteTimeZone(placeToDelete))
+                }
+
+                is MyResult.Error -> postEffect(ClockEffect.ShowToast(resourceProvider.getString(R.string.could_not_delete_item)))
+            }
+        }
+    }
+
+    private fun undoDeletedTimeZone() {
+
+        val place = deletedPlace ?: return // Nothing to undo
+
+        viewModelScope.launch {
+
+            when (clockUseCases.insertPlace(place)) {
+                is MyResult.Success -> {
+
+                    // Restore in cache map
+                    cachedPlacesMap = cachedPlacesMap + (place.id to place)
+
+                    // Restore in UI model
+                    val updatedList = PlaceUiMapper.mapToUiList(cachedPlacesMap.values.toList())
+                    _uiModel.update { it.copy(savedPlaces = updatedList) }
+
+                    postEffect(ClockEffect.ShowToast(resourceProvider.getString(R.string.undo_timezone_successful)))
+
+                    deletedPlace = null
+
+                }
+
+                is MyResult.Error -> postEffect(ClockEffect.ShowToast(resourceProvider.getString(R.string.failed_to_restore_time_zone)))
+            }
+        }
+    }
+
 }
 
-/**
- * ViewModel responsible for managing the clock UI state and handling user events.
- *
- * This ViewModel:
- * - Loads and observes saved time zones
- * - Starts and stops a periodic time update loop
- * - Handles user actions such as deleting, undoing deletion, or navigation
- * - Emits one-time UI effects (e.g., navigation or toast messages)
- *
- * @param clockUseCases Use cases for interacting with time zone data.
- * @param ioDispatcher Coroutine dispatcher for background work.
- */
-//@HiltViewModel
-//class ClockViewModel @Inject constructor(
-//    private val clockUseCases: ClockUseCases,
-//    private val clockUpdater: ClockUpdaterJob,
-//    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
-//) : ViewModel()
-//{
-//
-//    /**
-//     * Internal mutable state that holds the current UI model for the clock screen.
-//     */
-//    private val _uiModel = MutableStateFlow(ClockModel())
-//
-//    /**
-//     * Public [StateFlow] that exposes the current clock UI state to the UI layer.
-//     */
-//    val uiModel: StateFlow<ClockModel> = _uiModel
-//
-//    /**
-//     * Internal channel used to emit one-time UI effects such as navigation or toasts.
-//     *
-//     * These are not part of the persistent UI state and are consumed only once.
-//     */
-//    private val _uiEffect = Channel<ClockEffect>(Channel.BUFFERED)
-//
-//    /**
-//     * Public [Flow] that the UI collects to receive one-time side effects.
-//     */
-//    val uiEffect: Flow<ClockEffect> = _uiEffect.receiveAsFlow()
-//
-//
-//
-//    // ---------------------------------------------------------------------
-//    // Public Clock UI Event Handling
-//    // ---------------------------------------------------------------------
-//
-//    /**
-//     * Handles UI events and dispatches the appropriate actions or effects.
-//     */
-//    fun onEvent(event: ClockEvent) {
-//        when (event) {
-//            is ClockEvent.LoadSelectedTimeZones -> loadTimeZones()
-//            is ClockEvent.StopClockUiUpdates -> clockUpdater.stopClockUpdaterJob()
-//            is ClockEvent.DeleteTimeZone -> deleteTimeZone(event.deletedTimeZone)
-//            is ClockEvent.UndoDeletedTimeZone -> undoDeletedTimeZone(event.deletedTimeZone)
-//            is ClockEvent.AddNewTimeZone -> postEffect(ClockEffect.NavigateToAddTimeZoneActivity)
-//            is ClockEvent.ShowToastMessage -> postEffect(ClockEffect.ShowToast(event.message))
-//        }
-//    }
-//
-//    // ---------------------------------------------------------------------
-//    // Data Loading & Undo Actions
-//    // ---------------------------------------------------------------------
-//
-//    /**
-//     * Loads all saved time zones asynchronously and starts the time update loop.
-//     *
-//     * Emits a toast effect if loading fails.
-//     */
-//    private fun loadTimeZones() {
-//        viewModelScope.launch(ioDispatcher) {
-//            when (val result = clockUseCases.getAllSavedPlaces()) {
-//                is Result.Success -> startClockUpdates(result.data)
-//                is Result.Error -> {}//postEffect(ClockEffect.ShowToast("Error: ${result.exception.localizedMessage}"))
-//            }
-//        }
-//    }
-//
-//
-//    /**
-//     * Starts a repeating background job that updates the clock UI every minute.
-//     *
-//     * @param savedPlaces The list of time zones to display and update.
-//     */
-//    private fun startClockUpdates(savedPlaces: List<PlaceModel>) {
-//        clockUpdater.startClockUpdaterJob(
-//            scope = viewModelScope,
-//            savedPlaces = savedPlaces,
-//            onUpdate = { updatedPlaces, time, date ->
-//                _uiModel.value = ClockModel(
-//                    formattedTime = time,
-//                    formattedDate = date,
-//                    savedPlaces = updatedPlaces
-//                )
-//            },
-//            onError = { error ->
-//                postEffect(ClockEffect.ShowToast("Error: ${error.localizedMessage}"))
-//            }
-//        )
-//    }
-//
-//
-//    /**
-//     * Deletes a time zone (place) from the data source and updates the UI state.
-//     *
-//     * This function:
-//     * - Calls the use case to delete the specified [PlaceModel] by its ID.
-//     * - If successful, removes the time zone from the current UI state list.
-//     * - Emits a [ClockEffect.DeleteTimeZone] to inform the UI.
-//     * - Emits a toast message if the deletion fails.
-//     *
-//     * @param deletedTimeZone The [PlaceModel] representing the time zone to be deleted.
-//     */
-//    private fun deleteTimeZone(deletedTimeZone: PlaceModel) {
-//        viewModelScope.launch(ioDispatcher) {
-//            when (val result = clockUseCases.deletePlaceById(deletedTimeZone.id)) {
-//                is Result.Success -> {
-//                    val updatedList = _uiModel.value.savedPlaces.filterNot { it.id == deletedTimeZone.id }
-//                    _uiModel.emit(_uiModel.value.copy(savedPlaces = updatedList))
-//                    postEffect(ClockEffect.DeleteTimeZone(deletedTimeZone))
-//                }
-//
-//                is Result.Error -> {
-//                    //postEffect(ClockEffect.ShowToast("Delete failed: ${result.exception.localizedMessage ?: "Unknown error"}"))
-//                }
-//            }
-//        }
-//    }
-//
-//
-//    /**
-//     * Re-inserts a previously deleted time zone (place) into the data source and updates the UI state.
-//     *
-//     * This function:
-//     * - Calls the use case to insert the given [PlaceModel] back into the database.
-//     * - If successful, appends the restored time zone to the current UI state's saved places list.
-//     * - Emits a toast message to indicate success or failure.
-//     *
-//     * @param deletedTimeZone The [PlaceModel] representing the time zone to be restored.
-//     */
-//    private fun undoDeletedTimeZone(deletedTimeZone: PlaceModel) {
-//        viewModelScope.launch(ioDispatcher) {
-//            when (val result = clockUseCases.insertPlace(deletedTimeZone)) {
-//                is Result.Success -> {
-//                    val updatedList = _uiModel.value.savedPlaces + deletedTimeZone
-//                    _uiModel.emit(_uiModel.value.copy(savedPlaces = updatedList))
-//                    postEffect(ClockEffect.ShowToast("Undo successful"))
-//                }
-//
-//                is Result.Error -> {} //postEffect( ClockEffect.ShowToast("Undo failed: ${result.exception.localizedMessage ?: "Unknown error"}") )
-//            }
-//        }
-//    }
-//
-//
-//    /**
-//     * Sends a one-time UI effect, such as a toast or navigation event.
-//     *
-//     * @param effect The [ClockEffect] to emit.
-//     */
-//    private fun postEffect(effect: ClockEffect) {
-//        viewModelScope.launch(ioDispatcher) {
-//            _uiEffect.send(effect)
-//        }
-//    }
-//
-//}

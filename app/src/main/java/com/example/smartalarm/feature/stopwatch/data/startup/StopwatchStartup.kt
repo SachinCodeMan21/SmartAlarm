@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.stopwatch.data.startup
 
-import com.example.smartalarm.core.startup.AppStartupTask
+import com.example.smartalarm.core.application.startup.AppStartupTask
 import com.example.smartalarm.feature.stopwatch.data.sync.StopwatchDbSyncManager
 import javax.inject.Inject
 import javax.inject.Singleton

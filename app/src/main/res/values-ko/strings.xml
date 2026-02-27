@@ -16,16 +16,6 @@
     // # Permission Dialog Related Strings
     // ---------------------------------------------------------------------
 
-    <string name="permission_required_title">권한 필요</string>
-    <string name="full_screen_permission_title">전체 화면 알림 권한 필요</string>
-    <string name="schedule_exact_alarm_permission_title">정확한 알람 예약 권한 필요</string>
-    <string name="notification_permission_required_title">알림 권한 필요</string>
-
-    <string name="full_screen_permission_message">알람이 울릴 때 전체 화면으로 알림을 표시하려면 전체 화면 알림 권한을 허용해 주세요.</string>
-    <string name="schedule_exact_alarm_permission_message">알람과 타이머를 정확히 예약하려면 ‘정확한 알람 예약’ 권한을 허용해 주세요.</string>
-    <string name="post_notification_permission_rationale_message">이 앱은 알람, 타이머, 스톱워치를 정확하고 신속하게 알려드리기 위해 알림 권한이 필요합니다.</string>
-    <string name="app_permission_setting_dialog_message">%1$s 권한은 앱이 정상 작동하는 데 필요합니다. 시스템 설정에서 활성화해 주세요.</string>
-
     <string name="grant_permission">허용</string>
     <string name="deny">거부</string>
     <string name="cancel">취소</string>
@@ -170,7 +160,7 @@
     <string name="max_snooze_limit_picker">최대 스누즈 횟수 선택</string>
 
     <!-- Alarm Ringing Screen -->
-    <string-array name="alarm_weekday_full">
+    <string-array name="full_weekdays">
         <item>일요일</item>
         <item>월요일</item>
         <item>화요일</item>
@@ -287,7 +277,6 @@
     <string name="_1_00">+1:00</string>
     <string name="play_pause_timer">재생/일시정지</string>
     <string name="timer_title">%1$s 타이머</string>
-    <string name="active_timer">진행 중 타이머</string>
     <string name="completed_timer">완료된 타이머</string>
     <string name="add_one_minute">1분 추가</string>
     <string name="hour_formatted_stopwatch_time">%1$sh : %2$sm : %3$ss</string>
@@ -295,6 +284,21 @@
     <string name="sec_formatted_stopwatch_time">%1$ss</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
     <string name="timer_dashboard">타이머 대시보드</string>
+
+    <!-- Active Timer Notification String -->
+    <string name="active_timer">활성 타이머</string>
+    <string name="time_remaining">⏳ 남은 시간: %1$s</string>
+    <string name="timer_running_count"> • %1$d 실행 중</string>
+    <string name="timer_paused_count"> • %1$d 일시 중지</string>
+    <string name="timer_label">타이머 #%1$d</string>
+
+    <!-- Completed Timer Notification String -->
+    <string name="time_after_completion">✅ 완료 후 시간: %1$s</string>
+    <string name="completed_timer_completed_count">%1$d 완료됨</string>
+
+    <!-- Missed Timer -->
+    <string name="missed_timer">놓친 타이머</string>
+    <string name="missed_timer_target_time">타이머 목표 시간: %1$s</string>
 
     // ---------------------------------------------------------------------
     // # Stopwatch Screen Related Strings

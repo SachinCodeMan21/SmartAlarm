@@ -15,6 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.example.smartalarm.R
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
+import com.example.smartalarm.core.utility.exception.asUiText
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.databinding.FragmentShowAlarmBinding
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
@@ -26,7 +27,6 @@ import com.example.smartalarm.feature.alarm.presentation.model.mission.ShowAlarm
 import com.example.smartalarm.feature.alarm.presentation.view.handler.AlarmSwipeHandler
 import com.example.smartalarm.feature.alarm.presentation.viewmodel.mission.MyAlarmViewModel
 import com.example.smartalarm.feature.alarm.presentation.viewmodel.mission.ShowAlarmViewModel
-import com.example.smartalarm.feature.alarm.utility.getFormattedTime
 import com.example.smartalarm.feature.alarm.utility.getLocalizedDay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -77,7 +77,6 @@ class ShowAlarmFragment : Fragment() {
 
     @Inject
     lateinit var vibrationManager: VibrationManager
-
     private lateinit var alarmSwipeHandler: AlarmSwipeHandler
 
 
@@ -129,7 +128,6 @@ class ShowAlarmFragment : Fragment() {
         else{ args.previewMission?.let { showAlarmViewmodel.handleEvent(ShowAlarmEvent.LoadPreview(it)) } }
     }
 
-
     /**
      * Called when the view previously created by `onCreateView` has been detached.
      *
@@ -179,19 +177,21 @@ class ShowAlarmFragment : Fragment() {
                         is ShowAlarmEffect.StartMissionFlow -> startMissionFlow(newEffect.alarmModel)
                         is ShowAlarmEffect.FinishActivity -> requireActivity().finish()
                         is ShowAlarmEffect.ShowToastMessage -> requireContext().showToast(newEffect.toastMessage)
+                        is ShowAlarmEffect.ShowError -> {
+                            val errorMessage  = newEffect.error.asUiText().asString(requireContext())
+                            requireContext().showToast(errorMessage)
+                        }
                     }
                 }
             }
         }
     }
 
-
     /**
      * Sets up the swipe gesture for the draggable thumb.
      * Allows user to drag left for snooze or right for stop/complete mission.
      */
     private fun setUpSwipeGesture() {
-
         alarmSwipeHandler = AlarmSwipeHandler(
             binding = binding,
             context = requireContext(),
@@ -206,14 +206,9 @@ class ShowAlarmFragment : Fragment() {
                 requireContext().showToast(message)
             }
         )
-
         lifecycle.addObserver(alarmSwipeHandler)
         alarmSwipeHandler.setupSwipeGesture()
-
-
     }
-
-
 
     /**
      * Sets up click listeners for the UI buttons.
@@ -229,6 +224,8 @@ class ShowAlarmFragment : Fragment() {
         }
 
     }
+
+
 
 
 
@@ -248,8 +245,9 @@ class ShowAlarmFragment : Fragment() {
      * @param newState The [ShowAlarmUiModel] containing the current state of the alarm.
      */
     private fun updateUI(newState: ShowAlarmUiModel) = with(binding) {
-        alarmTime.text = newState.alarmTime.getFormattedTime(requireContext())
+        alarmTime.text = newState.formattedAlarmTime
         alarmDay.text = getLocalizedDay(requireContext())
+        labelTv.text = newState.alarmLabel
         snoozeCountText.text = getString(R.string.snooze_left,sharedMissionViewModel.getLocalizedNumber(newState.snoozeCount,false))
         exitPreviewBtn.isVisible = args.isPreview
         alarmSwipeHandler.updateState(
@@ -257,6 +255,7 @@ class ShowAlarmFragment : Fragment() {
             isMissionAvailable = newState.isMissionAvailable
         )
     }
+
 
 
 

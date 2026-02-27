@@ -4,8 +4,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
-import com.example.smartalarm.core.notification.model.NotificationAction
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.model.NotificationAction
 import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
@@ -14,13 +14,11 @@ import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerKe
 import com.example.smartalarm.feature.timer.framework.broadcast.receiver.TimerReceiver
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotificationData
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotificationModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 
 class CompletedNotificationTimerDataMapper @Inject constructor(
     private val timeFormatter: TimeFormatter,
-    @param:ApplicationContext private val appContext: Context
 ) : AppNotificationDataMapper<
         TimerNotificationModel.CompletedTimerModel,
         TimerNotificationData
@@ -39,8 +37,8 @@ class CompletedNotificationTimerDataMapper @Inject constructor(
         val timer = model.timer
         val remainingTime = timeFormatter.formatMillisToTimerTextFormat(timer.remainingTime)
 
-        val formattedBigText = buildBigText(model, remainingTime)
-        val contentText = buildContentText(model, timer)
+        val formattedBigText = buildBigText(context, model, remainingTime)
+        val contentText = buildContentText(context, model, timer)
         val actions = buildCompletedTimerActions(context, model)
         // ✅ Create once, then reuse
         if (cachedFullScreenIntent == null) {
@@ -62,44 +60,50 @@ class CompletedNotificationTimerDataMapper @Inject constructor(
     // -------------------------
 
     private fun buildBigText(
+        context: Context, // Add context parameter to access resources
         model: TimerNotificationModel.CompletedTimerModel,
         remainingTime: String
     ): String {
 
         if (model.totalCount <= 1) {
-            return "✅ Time After Completion: $remainingTime"
+            return context.getString(R.string.time_after_completion, remainingTime)
         }
 
         return buildString {
-            append("✅ Time After Completion: $remainingTime")
+            append(context.getString(R.string.time_after_completion, remainingTime))
             append("\n")
-            append("${model.completedCount} completed")
+            append(context.getString(R.string.completed_timer_completed_count, model.completedCount))
 
             if (model.runningCount > 0) {
-                append(" • ${model.runningCount} running")
+                append(" ")
+                append(context.getString(R.string.timer_running_count, model.runningCount))
             }
             if (model.pausedCount > 0) {
-                append(" • ${model.pausedCount} paused")
+                append(" ")
+                append(context.getString(R.string.timer_paused_count, model.pausedCount))
             }
         }
     }
 
     private fun buildContentText(
+        context: Context, // Add context parameter to access resources
         model: TimerNotificationModel.CompletedTimerModel,
         timer: TimerModel
     ): String {
 
         if (model.totalCount <= 1) {
-            return "Timer #${timer.timerId}"
+            return context.getString(R.string.timer_label, timer.timerId)
         }
 
         return buildString {
-            append("${model.completedCount} completed")
+            append(context.getString(R.string.completed_timer_completed_count, model.completedCount))
             if (model.runningCount > 0) {
-                append(" • ${model.runningCount} running")
+                append(" ")
+                append(context.getString(R.string.timer_running_count, model.runningCount))
             }
             if (model.pausedCount > 0) {
-                append(" • ${model.pausedCount} paused")
+                append(" ")
+                append(context.getString(R.string.timer_paused_count, model.pausedCount))
             }
         }
     }
@@ -191,7 +195,7 @@ class CompletedNotificationTimerDataMapper @Inject constructor(
     }
 
 
-    private fun buildContentIntent(context: Context, ): PendingIntent {
+    private fun buildContentIntent(context: Context): PendingIntent {
         val intent = Intent(context, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_NOTIFICATION_ACTION, HomeActivity.ACTION_TIMER_COMPLETED)
             putExtra(HomeActivity.EXTRA_START_DESTINATION, R.id.timerFragment)

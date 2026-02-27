@@ -1,42 +1,6 @@
 package com.example.smartalarm.feature.timer.presentation.viewmodel
 
-import app.cash.turbine.test
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
-import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
-import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.usecase.contract.GetAllTimersUseCase
-import com.example.smartalarm.feature.timer.domain.usecase.contract.SaveTimerUseCase
-import com.example.smartalarm.feature.timer.presentation.event.TimerEvent
-import com.example.smartalarm.feature.timer.presentation.view.statemanager.contract.TimerInputStateManager
-import io.mockk.MockKAnnotations
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
-import io.mockk.just
-import io.mockk.unmockkAll
-import io.mockk.verify
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import kotlin.test.Test
-import kotlin.test.assertTrue
-import com.example.smartalarm.R
-import com.example.smartalarm.feature.timer.presentation.effect.TimerEffect
-import io.mockk.coVerify
-import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class TimerViewModelTest {

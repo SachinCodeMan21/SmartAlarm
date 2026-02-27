@@ -4,9 +4,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
-import com.example.smartalarm.core.notification.model.NotificationAction
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.model.NotificationAction
 import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
+import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerBroadCastAction
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 
 class ActiveTimerNotificationDataMapper @Inject constructor(
-    private val timeFormatter: TimeFormatter
+    private val timeFormatter: TimeFormatter,
 ) : AppNotificationDataMapper<
         TimerNotificationModel.ActiveTimerModel,
         TimerNotificationData
@@ -33,8 +34,8 @@ class ActiveTimerNotificationDataMapper @Inject constructor(
         val remainingTime =
             timeFormatter.formatMillisToTimerTextFormat(timer.remainingTime)
 
-        val formattedBigText = buildBigText(model, remainingTime)
-        val contentText = buildContentText(model, timer)
+        val formattedBigText = buildBigText(context, model, remainingTime)
+        val contentText = buildContentText(context, model, timer)
         val actions = buildActiveTimerActions(context, model)
         val contentIntent = buildContentIntent(context, timer)
 
@@ -54,38 +55,41 @@ class ActiveTimerNotificationDataMapper @Inject constructor(
     // -------------------------
 
     private fun buildBigText(
+        context: Context, // Add context parameter to access resources
         model: TimerNotificationModel.ActiveTimerModel,
         remainingTime: String
     ): String {
 
         if (model.totalCount <= 1) {
-            return "⏳ Time remaining: $remainingTime"
+            return context.getString(R.string.time_remaining, remainingTime)
         }
 
         return buildString {
-            append("⏳ Time remaining: $remainingTime")
+            append(context.getString(R.string.time_remaining, remainingTime))
             append("\n")
-            append(" • ${model.runningCount} running")
+            append(context.getString(R.string.timer_running_count, model.runningCount))
             if (model.pausedCount > 0) {
                 append("\n")
-                append(" • ${model.pausedCount} paused")
+                append(context.getString(R.string.timer_paused_count, model.pausedCount))
             }
         }
     }
 
     private fun buildContentText(
+        context: Context, // Add context parameter to access resources
         model: TimerNotificationModel.ActiveTimerModel,
         timer: TimerModel
     ): String {
 
         if (model.totalCount <= 1) {
-            return "Timer #${timer.timerId}"
+            return context.getString(R.string.timer_label, timer.timerId)
         }
 
         return buildString {
-            append("${model.runningCount} running")
+            append(context.getString(R.string.timer_running_count, model.runningCount))
             if (model.pausedCount > 0) {
-                append(" • ${model.pausedCount} paused")
+                append(" ")
+                append(context.getString(R.string.timer_paused_count, model.pausedCount))
             }
         }
     }

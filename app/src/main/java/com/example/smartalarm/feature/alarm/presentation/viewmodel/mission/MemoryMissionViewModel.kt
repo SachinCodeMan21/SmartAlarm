@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
-import com.example.smartalarm.core.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.enums.Difficulty
 import com.example.smartalarm.feature.alarm.domain.model.Mission

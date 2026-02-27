@@ -1,8 +1,8 @@
 package com.example.smartalarm.feature.timer.framework.notification.enums
 
-import com.example.smartalarm.core.notification.marker.AppNotificationDataMapperKey
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
-import com.example.smartalarm.core.notification.factory.NotificationDataMapperFactory
+import com.example.smartalarm.core.framework.notification.marker.AppNotificationDataMapperKey
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.factory.NotificationDataMapperFactory
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotificationData
 

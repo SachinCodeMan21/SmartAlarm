@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_m">
+        android:padding="@dimen/spacing_l">
 
         <!-- Snooze Enable Card -->
         <com.google.android.material.card.MaterialCardView
@@ -186,6 +186,7 @@
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

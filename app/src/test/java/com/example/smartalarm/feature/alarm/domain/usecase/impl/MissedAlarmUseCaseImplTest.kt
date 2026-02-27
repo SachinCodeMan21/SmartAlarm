@@ -4,23 +4,7 @@ import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmU
 import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
 import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
 import com.example.smartalarm.feature.alarm.utility.helper.contract.AlarmTimeHelper
-import org.junit.Assert.*
-import io.mockk.*
-import io.mockk.impl.annotations.InjectMockKs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
-import io.mockk.impl.annotations.MockK
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
-import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
-import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.feature.alarm.domain.model.SnoozeSettings
-import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel
-import kotlinx.coroutines.test.advanceUntilIdle
-import org.junit.After
-import java.time.LocalTime
 
 /**
  * Unit tests for the [MissedAlarmUseCaseImpl] class. This test suite validates the behavior of the `invoke` method

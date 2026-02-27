@@ -1,8 +1,7 @@
 package com.example.smartalarm.feature.timer.framework.di.modules
 
-import com.example.smartalarm.core.database.MyDatabase
-import com.example.smartalarm.core.startup.AppStartupTask
-import com.example.smartalarm.feature.stopwatch.data.startup.StopwatchStartup
+import com.example.smartalarm.core.data.database.MyDatabase
+import com.example.smartalarm.core.application.startup.AppStartupTask
 import com.example.smartalarm.feature.timer.data.local.dao.TimerDao
 import com.example.smartalarm.feature.timer.data.startup.ShowTimerStartup
 import dagger.Module

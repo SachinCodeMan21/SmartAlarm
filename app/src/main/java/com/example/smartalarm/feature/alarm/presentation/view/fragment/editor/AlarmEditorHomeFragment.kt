@@ -1,6 +1,7 @@
 package com.example.smartalarm.feature.alarm.presentation.view.fragment.editor
 
 import android.app.Activity
+import android.content.Context
 import androidx.core.view.isVisible
 import android.content.Intent
 import android.media.RingtoneManager
@@ -23,10 +24,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.permission.MyAppPermissionRequester
+import com.example.smartalarm.core.framework.permission.MyPermissionChecker
+import com.example.smartalarm.core.framework.permission.PermissionFlowDelegate
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.Constants.PACKAGE
 import com.example.smartalarm.core.utility.extension.showToast
-import com.example.smartalarm.core.permission.PermissionManager
+import com.example.smartalarm.core.framework.permission.model.AppFeature
+import com.example.smartalarm.core.framework.permission.model.MyAppPermission
+import com.example.smartalarm.core.framework.permission.model.RequesterType
+import com.example.smartalarm.core.framework.permission.model.Requirement
+import com.example.smartalarm.core.utility.exception.asUiText
 import com.example.smartalarm.databinding.FragmentAlarmEditorBinding
 import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
@@ -42,7 +50,6 @@ import com.example.smartalarm.feature.alarm.presentation.event.editor.AlarmEdito
 import com.example.smartalarm.feature.alarm.presentation.view.activity.AlarmActivity
 import com.example.smartalarm.feature.alarm.presentation.view.bottomSheet.BaseMissionBottomSheet
 import com.example.smartalarm.feature.alarm.presentation.view.bottomSheet.MissionPickerBottomSheet
-import com.example.smartalarm.feature.alarm.presentation.view.handler.PermissionHandler
 import com.example.smartalarm.feature.alarm.presentation.viewmodel.editor.AlarmEditorViewModel
 import com.example.smartalarm.feature.alarm.utility.getParcelableExtraCompat
 import com.example.smartalarm.feature.alarm.utility.onProgressChangedListener
@@ -77,7 +84,8 @@ import javax.inject.Inject
  * interactions are processed reactively, keeping the UI in sync with the underlying data.
  */
 @AndroidEntryPoint
-class AlarmEditorHomeFragment : Fragment() {
+class AlarmEditorHomeFragment : Fragment()
+{
 
     companion object {
 
@@ -102,25 +110,57 @@ class AlarmEditorHomeFragment : Fragment() {
     // Non-Final Instance Fields
     private lateinit var weekdayViews: List<TextView>
     private lateinit var missionAdapter: AlarmMissionAdapter
-    private lateinit var alarmEditorPermissionHandler: PermissionHandler
     private lateinit var alarmRingtonePickerLauncher: ActivityResultLauncher<Intent>
 
 
-    // Injected Dependencies
-    @Inject
-    lateinit var permissionManager: PermissionManager
-
 
     // Flag to track if the Switch has been initially triggered (to prevent handling the default state first event)
-    private var isInitialSwitchTriggerFlag : Boolean = true
+    private var isInitialSwitchTriggerFlag: Boolean = true
 
     // Flag to track if the SeekBar has been initially triggered (to prevent handling the default state first event)
-    private var isInitialSeekBarTriggerFlag : Boolean = true
+    private var isInitialSeekBarTriggerFlag: Boolean = true
+
+
+
+    @Inject
+    lateinit var permissionChecker: MyPermissionChecker
+    private lateinit var permissionFlowDelegate: PermissionFlowDelegate
+    private lateinit var permissionRequester: MyAppPermissionRequester
 
 
     // ---------------------------------------------------------------------
     // 1] Lifecycle Methods
     // ---------------------------------------------------------------------
+
+    /**
+     * Called when the fragment is attached to its host context.
+     * This is the safest place to initialize resources that depend on the context,
+     * lifecycle, or other fragment-specific components.
+     *
+     * Initializes the `permissionRequester` and `permissionFlowDelegate` instances.
+     * The `permissionRequester` is responsible for requesting permissions, while the
+     * `permissionFlowDelegate` handles the flow of permission checks and requests
+     * based on the fragment's lifecycle.
+     *
+     * @param context The context to which the fragment is attached.
+     */
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // This is the safest place to initialize it
+        permissionRequester = MyAppPermissionRequester(
+            caller = this,
+            lifecycle = lifecycle, // Use Fragment lifecycle, not viewLifecycle
+            checker = permissionChecker,
+            type = RequesterType.BOTH
+        )
+
+        permissionFlowDelegate = PermissionFlowDelegate(
+            fragment = this,
+            checker = permissionChecker,
+            requester = permissionRequester
+        )
+    }
 
     /**
      * Initializes the alarm editor state when the fragment is created.
@@ -141,7 +181,11 @@ class AlarmEditorHomeFragment : Fragment() {
      *
      * Uses view binding to inflate and return the root layout.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentAlarmEditorBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -161,16 +205,11 @@ class AlarmEditorHomeFragment : Fragment() {
         registerAlarmSoundPickerLauncher()
     }
 
-    /**
-     * Called when the fragment's is being destroyed.
-     *
-     * - Clears the binding reference to prevent memory leaks.
-     */
-    override fun onDestroy() {
-        super.onDestroy()
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
-
 
 
     // ---------------------------------------------------------------------
@@ -209,7 +248,12 @@ class AlarmEditorHomeFragment : Fragment() {
             },
             onMissionItemClick = { position, mission ->
                 removeLabelFocus()
-                viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.ItemClicked(position, mission))
+                viewModel.handleUserEvent(
+                    AlarmEditorUserEvent.MissionEvent.ItemClicked(
+                        position,
+                        mission
+                    )
+                )
             },
             onRemoveMissionClick = {
                 removeLabelFocus()
@@ -224,8 +268,9 @@ class AlarmEditorHomeFragment : Fragment() {
         }
 
         // Setting up correct saveAlarmButton title
-        val saveUpdateBtnTitle = getString(if (args.existingAlarmId !=0 ) R.string.update else R.string.save)
-        saveOrUpdateAlarmBtn.text =  saveUpdateBtnTitle
+        val saveUpdateBtnTitle =
+            getString(if (args.existingAlarmId != 0) R.string.update else R.string.save)
+        saveOrUpdateAlarmBtn.text = saveUpdateBtnTitle
 
     }
 
@@ -238,14 +283,22 @@ class AlarmEditorHomeFragment : Fragment() {
     private fun setUpListeners() = with(binding) {
 
         alarmLabelET.doAfterTextChanged {
-            viewModel.handleUserEvent(AlarmEditorUserEvent.AlarmEvent.LabelChanged(it?.trim().toString()))
+            viewModel.handleUserEvent(
+                AlarmEditorUserEvent.AlarmEvent.LabelChanged(
+                    it?.trim().toString()
+                )
+            )
         }
 
         timePickerBlock.apply {
             val notifyTimeChanged = {
                 removeLabelFocus()
                 viewModel.handleUserEvent(
-                    AlarmEditorUserEvent.AlarmEvent.TimeChanged(hoursPicker.value, minutePicker.value, amPmPicker.value)
+                    AlarmEditorUserEvent.AlarmEvent.TimeChanged(
+                        hoursPicker.value,
+                        minutePicker.value,
+                        amPmPicker.value
+                    )
                 )
             }
             listOf(hoursPicker, minutePicker, amPmPicker).forEach { picker ->
@@ -272,7 +325,7 @@ class AlarmEditorHomeFragment : Fragment() {
         soundBlock.apply {
 
             alarmVolumeSeekBar.onProgressChangedListener { progress, _ ->
-                if (!isInitialSeekBarTriggerFlag){
+                if (!isInitialSeekBarTriggerFlag) {
                     viewModel.handleUserEvent(AlarmEditorUserEvent.SoundEvent.VolumeChanged(progress))
                 }
                 removeLabelFocus()
@@ -280,8 +333,12 @@ class AlarmEditorHomeFragment : Fragment() {
             }
 
             vibrateSwitch.setOnCheckedChangeListener { _, isChecked ->
-                if (!isInitialSwitchTriggerFlag){
-                    viewModel.handleUserEvent(AlarmEditorUserEvent.SoundEvent.VibrationToggled(isChecked))
+                if (!isInitialSwitchTriggerFlag) {
+                    viewModel.handleUserEvent(
+                        AlarmEditorUserEvent.SoundEvent.VibrationToggled(
+                            isChecked
+                        )
+                    )
                 }
                 removeLabelFocus()
                 isInitialSwitchTriggerFlag = false
@@ -301,7 +358,7 @@ class AlarmEditorHomeFragment : Fragment() {
 
         saveOrUpdateAlarmBtn.setOnClickListener {
             removeLabelFocus()
-            viewModel.handleUserEvent(AlarmEditorUserEvent.ActionEvent.SaveOrUpdate)
+            checkAndSaveAlarm()
         }
 
     }
@@ -313,15 +370,15 @@ class AlarmEditorHomeFragment : Fragment() {
      */
     private fun setUpUIStateObserver() {
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { newState ->
-                    with(newState){
+                    with(newState) {
                         updateAlarmLabel(label)
-                        updateTimePickerBlock(hour,minute,amPm)
-                        updateWeekdaysBlock(isDailyAlarm,selectedDays)
-                        updateMissionBlock(missionItemList,formattedMissionSlotText)
-                        updateSoundBlock(volume,isVibrateEnabled,alarmSoundTitle)
+                        updateTimePickerBlock(hour, minute, amPm)
+                        updateWeekdaysBlock(isDailyAlarm, selectedDays)
+                        updateMissionBlock(missionItemList, formattedMissionSlotText)
+                        updateSoundBlock(volume, isVibrateEnabled, alarmSoundTitle)
                         updateSnoozeBlock(formattedSnoozedText)
                     }
                 }
@@ -335,42 +392,59 @@ class AlarmEditorHomeFragment : Fragment() {
      * permission requests, showing bottom sheets for mission selection, showing toasts, loaders, and finish activity .
      */
     private fun setUpUIEffectObserver() {
-        lifecycleScope.launch {
-           repeatOnLifecycle(Lifecycle.State.STARTED){
-               viewModel.uiEffect.collectLatest { newEffect ->
-                   when(newEffect){
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.uiEffect.collect { newEffect ->
+                    when (newEffect) {
 
-                       // Navigation Effects
-                       is AlarmEditorEffect.NavigateToSnoozeAlarmFragment -> navigateToAlarmSnoozeFragment(newEffect.snoozeSettings)
-                       is AlarmEditorEffect.NavigateToAlarmActivityForMissionPreview -> navigateToAlarmMissionActivity(newEffect.previewAlarmModel)
+                        // Navigation Effects
+                        is AlarmEditorEffect.NavigateToSnoozeAlarmFragment -> navigateToAlarmSnoozeFragment(
+                            newEffect.snoozeSettings
+                        )
 
+                        is AlarmEditorEffect.NavigateToAlarmActivityForMissionPreview -> navigateToAlarmMissionActivity(
+                            newEffect.previewAlarmModel
+                        )
 
-                       // Permission & Ringtone Launchers
-                       is AlarmEditorEffect.LaunchPostNotificationPermissionRequest -> alarmEditorPermissionHandler.requestPostNotification()
-                       is AlarmEditorEffect.LaunchFullScreenNotificationPermissionRequest -> alarmEditorPermissionHandler.requestFullScreenNotificationPermission()
-                       is AlarmEditorEffect.LaunchExactAlarmPermissionRequest -> alarmEditorPermissionHandler.requestExactAlarmPermission()
-                       is AlarmEditorEffect.LaunchAlarmSoundPicker -> alarmRingtonePickerLauncher.launch(createRingtonePickerIntent(newEffect.existingAlarmSound))
+                        // Permission & Ringtone Launchers
+                        is AlarmEditorEffect.LaunchAlarmSoundPicker -> alarmRingtonePickerLauncher.launch(
+                            createRingtonePickerIntent(newEffect.existingAlarmSound)
+                        )
 
+                        // Show Mission Picker, SelectedMission BottomSheet
+                        is AlarmEditorEffect.ShowMissionPickerBottomSheet -> {
+                            newEffect.apply {
+                                showMissionPickerBottomSheet(
+                                    position,
+                                    existingMission,
+                                    usedMissions
+                                )
+                            }
+                        }
 
-                       // Show Mission Picker, SelectedMission BottomSheet
-                       is AlarmEditorEffect.ShowMissionPickerBottomSheet -> {
-                           newEffect.apply { showMissionPickerBottomSheet(position, existingMission, usedMissions) }
-                       }
-                       is AlarmEditorEffect.ShowSelectedMissionBottomSheet -> {
-                           newEffect.apply { showSelectedMissionBottomSheet(position, selectedMission)  }
-                       }
+                        is AlarmEditorEffect.ShowSelectedMissionBottomSheet -> {
+                            newEffect.apply {
+                                showSelectedMissionBottomSheet(
+                                    position,
+                                    selectedMission
+                                )
+                            }
+                        }
 
-                       // Show Loader, Toast
-                       is AlarmEditorEffect.ShowSaveUpdateLoadingIndicator -> handleShowSaveUpdateLoading(newEffect.isLoading)
-                       is AlarmEditorEffect.ShowToastMessage -> showToastMessage(newEffect.toastMessage)
-                       is AlarmEditorEffect.ShowError -> showToastMessage(newEffect.message)
+                        // Show Loader, Toast
+                        is AlarmEditorEffect.ShowSaveUpdateLoadingIndicator ->  handleShowSaveUpdateLoading(newEffect.isLoading)
 
-                       // Finish Editor Activity
-                       is AlarmEditorEffect.FinishEditorActivity ->  activity?.finish()
+                        is AlarmEditorEffect.ShowToastMessage -> showToastMessage(newEffect.toastMessage)
+                        is AlarmEditorEffect.ShowError -> {
+                            val errorMessage = newEffect.error.asUiText().asString(requireContext())
+                            showToastMessage(errorMessage)
+                        }
 
-                   }
-               }
-           }
+                        // Finish Editor Activity
+                        is AlarmEditorEffect.FinishEditorActivity -> { activity?.finish() }
+                    }
+                }
+            }
         }
     }
 
@@ -388,17 +462,21 @@ class AlarmEditorHomeFragment : Fragment() {
      * and handles the selected URI to notify the ViewModel with the user's choice.
      */
     private fun registerAlarmSoundPickerLauncher() {
-        alarmRingtonePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val uri = result.data?.getParcelableExtraCompat<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-                uri?.let {
-                    viewModel.handleUserEvent(AlarmEditorUserEvent.SoundEvent.RingtoneSelected(it.toString()))
+        alarmRingtonePickerLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val uri =
+                        result.data?.getParcelableExtraCompat<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                    uri?.let {
+                        viewModel.handleUserEvent(
+                            AlarmEditorUserEvent.SoundEvent.RingtoneSelected(
+                                it.toString()
+                            )
+                        )
+                    }
                 }
             }
-        }
     }
-
-
 
 
     // ---------------------------------------------------------------------
@@ -409,7 +487,7 @@ class AlarmEditorHomeFragment : Fragment() {
         binding.alarmLabelET.setTextIfDifferent(label)
     }
 
-    private fun updateTimePickerBlock(hour:Int, minute:Int, amPm:Int) {
+    private fun updateTimePickerBlock(hour: Int, minute: Int, amPm: Int) {
         binding.timePickerBlock.apply {
             hoursPicker.setValueIfDifferent(hour)
             minutePicker.setValueIfDifferent(minute)
@@ -417,7 +495,7 @@ class AlarmEditorHomeFragment : Fragment() {
         }
     }
 
-    private fun updateWeekdaysBlock(isDailyAlarm: Boolean, selectedDays:Set<DayOfWeek>) {
+    private fun updateWeekdaysBlock(isDailyAlarm: Boolean, selectedDays: Set<DayOfWeek>) {
         binding.weekdaysBlock.apply {
 
             isDailyCheckBox.setCheckedIfDifferent(isDailyAlarm)
@@ -426,8 +504,10 @@ class AlarmEditorHomeFragment : Fragment() {
                 val day = DayOfWeek.getDayAtPositionOrNull(i)
                 day?.let {
                     val isSelected = day in selectedDays
-                    val bgRes = if (isSelected) R.drawable.selected_circular_background else R.drawable.unselected_circular_background
-                    val textColor = if (isSelected) android.R.color.white else android.R.color.darker_gray
+                    val bgRes =
+                        if (isSelected) R.drawable.selected_circular_background else R.drawable.unselected_circular_background
+                    val textColor =
+                        if (isSelected) android.R.color.white else android.R.color.darker_gray
                     view.setBackgroundDrawableIfDifferent(bgRes)
                     view.setTextColorIfDifferent(textColor)
                 }
@@ -435,14 +515,17 @@ class AlarmEditorHomeFragment : Fragment() {
         }
     }
 
-    private fun updateMissionBlock(missionItemList:List<MissionItem>, formattedMissionSlotText: String ) {
+    private fun updateMissionBlock(
+        missionItemList: List<MissionItem>,
+        formattedMissionSlotText: String
+    ) {
         binding.missionBlock.apply {
             missionAdapter.submitList(missionItemList)
             missionCount.text = formattedMissionSlotText
         }
     }
 
-    private fun updateSoundBlock(volume:Int, isVibrateEnabled: Boolean, alarmSoundTitle:String) {
+    private fun updateSoundBlock(volume: Int, isVibrateEnabled: Boolean, alarmSoundTitle: String) {
         binding.soundBlock.apply {
             alarmVolumeSeekBar.setProgressIfDifferent(volume)
             vibrateSwitch.setCheckedIfDifferent(isVibrateEnabled)
@@ -455,9 +538,6 @@ class AlarmEditorHomeFragment : Fragment() {
     }
 
 
-
-
-
     // ---------------------------------------------------------------------
     //  4] Handles UI Effects
     // ---------------------------------------------------------------------
@@ -468,7 +548,7 @@ class AlarmEditorHomeFragment : Fragment() {
      * This is triggered when the user selects a mission preview, passing the alarm data to the AlarmActivity
      * for display and interaction, allowing the user to review the alarm details and mission before saving.
      */
-    private fun navigateToAlarmMissionActivity(alarmPreviewModel : AlarmModel){
+    private fun navigateToAlarmMissionActivity(alarmPreviewModel: AlarmModel) {
         val intent = Intent(requireContext(), AlarmActivity::class.java)
         intent.putExtra(AlarmKeys.ALARM_ID, alarmPreviewModel.id)
         intent.putExtra(AlarmActivity.PREVIEW_MISSION_KEY, alarmPreviewModel)
@@ -480,7 +560,9 @@ class AlarmEditorHomeFragment : Fragment() {
      * This provides a dedicated screen for managing snooze behavior before finalizing the alarm setup.
      */
     private fun navigateToAlarmSnoozeFragment(snoozeSettings: SnoozeSettings) {
-        val action = AlarmEditorHomeFragmentDirections.actionAlarmEditorFragmentToSnoozeFragment(snoozeSettings)
+        val action = AlarmEditorHomeFragmentDirections.actionAlarmEditorFragmentToSnoozeFragment(
+            snoozeSettings
+        )
         findNavController().navigate(action)
     }
 
@@ -490,7 +572,7 @@ class AlarmEditorHomeFragment : Fragment() {
         binding.saveOrUpdateAlarmBtn.visibility = if (isLoading) View.INVISIBLE else View.VISIBLE
     }
 
-    private fun showToastMessage(toastMessage: String){
+    private fun showToastMessage(toastMessage: String) {
         requireContext().showToast(toastMessage)
     }
 
@@ -505,7 +587,11 @@ class AlarmEditorHomeFragment : Fragment() {
      * @param existingMission The mission currently assigned to this slot, or `null` if none.
      * @param usedMissions Missions assigned to other slots, used to filter out unavailable types.
      */
-    private fun showMissionPickerBottomSheet(position: Int, existingMission: Mission?, usedMissions: List<Mission>) {
+    private fun showMissionPickerBottomSheet(
+        position: Int,
+        existingMission: Mission?,
+        usedMissions: List<Mission>
+    ) {
         val usedTypes = usedMissions.map { it.type }.toSet()
         MissionPickerBottomSheet.newInstance(
             existingMission = existingMission,
@@ -529,16 +615,79 @@ class AlarmEditorHomeFragment : Fragment() {
     }
 
 
+    //-------------------------------
+    // 5] Permission Handling
+    //------------------------------
+
+    /**
+     * Checks for the required permissions for setting alarms and handles the permission flow.
+     * If all required permissions are granted, it triggers the `SaveOrUpdate` event in the view model.
+     *
+     * The method defines the following permissions and their associated rationale:
+     * - Post Notifications
+     * - Schedule Exact Alarms
+     * - Full Screen Intent
+     *
+     * If any permission is denied, appropriate rationale messages are shown, and in case of permanent denial,
+     * relevant information is displayed to the user.
+     */
+    private fun checkAndSaveAlarm() {
+
+        val alarmRequirements = listOf(
+
+            Requirement(
+                permission = MyAppPermission.Runtime.PostNotifications,
+                rationaleTitle = getString(R.string.alarm_notification_permission_rationale_title),
+                rationaleMessage = getString(R.string.alarm_notification_permission_rationale_message),
+                toastOnDeny = getString(R.string.alarm_notification_permission_denied_toast),
+                permanentlyDeniedTitle = getString(R.string.alarm_notification_permission_permanently_denied_title),
+                permanentlyDeniedMessage = getString(R.string.alarm_notification_permission_permanently_denied_message),
+                feature = AppFeature.ALARM,
+            ),
+            Requirement(
+                permission = MyAppPermission.Special.ScheduleExactAlarms,
+                rationaleTitle = getString(R.string.alarm_exact_alarm_permission_rationale_title),
+                rationaleMessage = getString(R.string.alarm_exact_alarm_permission_rationale_message),
+                toastOnDeny = getString(R.string.alarm_exact_alarm_permission_denied_toast),
+                feature = AppFeature.ALARM
+            ),
+            Requirement(
+                permission = MyAppPermission.Special.FullScreenIntent,
+                rationaleTitle = getString(R.string.alarm_full_screen_permission_rationale_title),
+                rationaleMessage = getString(R.string.alarm_full_screen_permission_rationale_message),
+                toastOnDeny = getString(R.string.alarm_full_screen_permission_denied_toast),
+                feature = AppFeature.ALARM,
+            )
+        )
+
+        // Run the chain
+        permissionFlowDelegate.run(alarmRequirements) {
+            viewModel.handleUserEvent(AlarmEditorUserEvent.ActionEvent.SaveOrUpdate)
+        }
+
+    }
+
+
+
 
     // ---------------------------------------------------------------------
-    //  5] Helper Method
+    //  6] Helper Method
     // ---------------------------------------------------------------------
 
-    private fun removeLabelFocus(){
+    /**
+     * Removes the focus from the alarm label input field if it is currently focused.
+     */
+    private fun removeLabelFocus() {
         if (binding.alarmLabelET.isFocused)
             binding.alarmLabelET.clearFocus()
     }
 
+    /**
+     * Creates an intent to open the ringtone picker, allowing the user to select an alarm sound.
+     *
+     * @param existingAlarmSound The URI of the existing alarm sound to pre-select in the picker.
+     * @return The intent for launching the ringtone picker with the provided configuration.
+     */
     fun createRingtonePickerIntent(existingAlarmSound: String): Intent {
         return Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
             putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)

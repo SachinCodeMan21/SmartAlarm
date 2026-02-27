@@ -1,19 +1,16 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
-import com.example.smartalarm.R
-import com.example.smartalarm.core.exception.ExceptionMapper
-import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.DeleteAlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SwipedAlarmUseCase
 import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
 import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
+import com.example.smartalarm.core.framework.sharedPreference.contract.SharedPrefsHelper
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
 import com.example.smartalarm.feature.alarm.framework.controller.contract.AlarmServiceController
 import com.example.smartalarm.feature.alarm.framework.manager.contract.AlarmRingtoneManager
 import com.example.smartalarm.feature.alarm.framework.manager.contract.VibrationManager
-import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel
 import javax.inject.Inject
 
 
@@ -31,7 +28,6 @@ class SwipedAlarmUseCaseImpl @Inject constructor(
     private val vibrationManager: VibrationManager,
     private val alarmServiceController: AlarmServiceController,
     private val sharedPrefsHelper: SharedPrefsHelper,
-    private val resourceProvider: ResourceProvider
 ) : SwipedAlarmUseCase {
 
     /**
@@ -47,13 +43,15 @@ class SwipedAlarmUseCaseImpl @Inject constructor(
     override suspend fun invoke(
         swipedAlarmId: Int,
         alarmState: AlarmState
-    ): Result<Unit> {
+    ): MyResult<Unit, DataError> {
         return when (val result = deleteAlarmUseCase(swipedAlarmId)) {
-            is Result.Success -> cancelAlarm(swipedAlarmId, alarmState)  // If delete is successful, proceed to cancel
-            is Result.Error -> Result.Error(
-             //   Exception(resourceProvider.getString(R.string.error_failed_to_delete_alarm))
-                result.error
-            ) // If delete fails, return error
+            is MyResult.Success ->{
+                cancelAlarm(swipedAlarmId, alarmState)  // If delete is successful, proceed to cancel
+                MyResult.Success(Unit)
+            }
+            is MyResult.Error -> {
+                MyResult.Error(result.error)
+            }
         }
     }
 
@@ -66,33 +64,18 @@ class SwipedAlarmUseCaseImpl @Inject constructor(
      *
      * @param alarmId The ID of the alarm to be canceled.
      * @param alarmState The state of the alarm (e.g., RINGING, INACTIVE, etc.).
-     * @return A [Result] indicating success or failure of the cancellation.
+     * @return A [MyResult] indicating success or failure of the cancellation.
      */
-    private fun cancelAlarm(
-        alarmId: Int,
-        alarmState: AlarmState
-    ): Result<Unit> {
-        return try {
-            // Cancel all scheduled alarms (smart, snooze, timeout)
-            alarmSchedular.cancelAllScheduledAlarms(alarmId)
+    private fun cancelAlarm(alarmId: Int, alarmState: AlarmState) {
+        alarmSchedular.cancelAllScheduledAlarms(alarmId)
 
-            if (alarmState == AlarmState.RINGING) {
-                // If the alarm is ringing, stop all associated actions (service, ringtone, vibration)
-                sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
-                alarmServiceController.stopAlarmService()
-                alarmRingtoneManager.stopAlarmRingtone()
-                vibrationManager.stopVibration()
-            } else {
-                // If the alarm is not ringing, simply cancel the notification
-                alarmNotificationManager.cancelAlarmNotification(alarmId)
-                //alarmNotificationManager.cancelNotification(alarmId)
-            }
-
-            // Return success after cancellation
-            Result.Success(Unit)
-        } catch (exception: Exception) {
-            // Return an error result in case of failure
-            Result.Error(ExceptionMapper.map(exception))
+        if (alarmState == AlarmState.RINGING) {
+            sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
+            alarmServiceController.stopAlarmService()
+            alarmRingtoneManager.stopAlarmRingtone()
+            vibrationManager.stopVibration()
+        } else {
+            alarmNotificationManager.cancelAlarmNotification(alarmId)
         }
     }
 }

@@ -98,13 +98,20 @@
 
 
     <!-- Alarm Screen Dimens   -->
+
+    <!-- 1] Alarm Home Screen   -->
     <dimen name="empty_alarm_img_max_size">56dp</dimen>
-    <dimen name="alarm_item_mission_img_size">20dp</dimen>
     <dimen name="edit_alarm_weekday_max_size">48dp</dimen>
-    <dimen name="video_preview_size">200dp</dimen>
+    <dimen name="alarm_item_mission_img_size">20dp</dimen>
+    <item name="alarm_home_guideline_start_percent" format="float" type="dimen">0.02</item>
+    <item name="alarm_home_guideline_end_percent" format="float" type="dimen">0.98</item>
+
+    <!-- 2] Alarm Editor Home Screen   -->
     <item name="alarm_editor_guideline_top_percent" format="float" type="dimen">0.0</item>
     <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.05</item>
     <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.95</item>
+
+    <!-- 3] Alarm Mission  Screen   -->
     <item name="memory_mission_grid_max_width_percent" format="float" type="dimen">0.8</item>
     <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.0</item>
     <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.8</item>
@@ -145,6 +152,18 @@
     <!-- Setting Screen Dimens   -->
     <item name="guideline_setting_start" format="float" type="dimen">0.05</item>
     <item name="guideline_setting_end" format="float" type="dimen">0.95</item>
+
+    <!-- Language Screen Dimens   -->
+    <item name="guideline_language_start" format="float" type="dimen">0.02</item>
+    <item name="guideline_language_end" format="float" type="dimen">0.98</item>
+    <item name="guideline_language_bottom" format="float" type="dimen">0.98</item>
+
+    <!-- About Screen Dimens   -->
+    <item name="guideline_about_top" format="float" type="dimen">0.02</item>
+    <item name="guideline_about_start" format="float" type="dimen">0.02</item>
+    <item name="guideline_about_end" format="float" type="dimen">0.98</item>
+    <item name="guideline_about_bottom" format="float" type="dimen">0.98</item>
+
 
     <!-- Help Screen Dimens   -->
     <item name="guideline_help_container" format="float" type="dimen">0.95</item>

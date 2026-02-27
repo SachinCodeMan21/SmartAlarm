@@ -1,33 +1,27 @@
 package com.example.smartalarm.feature.clock.presentation.uiState
 
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
+import com.example.smartalarm.feature.clock.presentation.model.PlaceUiModel
+
 
 /**
- * Represents the different UI states for the place search screen.
- *
- * Used by the UI layer to render appropriate content based on the current state of the place search operation.
+ * Represents the UI state of the place search screen.
  */
 sealed class PlaceSearchUiState {
 
-    /**
-     * The initial idle state before any search has been triggered.
-     */
+    /** The initial idle state before any search has been triggered. */
     object Initial : PlaceSearchUiState()
 
-    /**
-     * Indicates that a search is currently in progress.
-     */
+    /** Indicates that a search is currently in progress. */
     object Loading : PlaceSearchUiState()
 
     /**
-     * Represents a successful search with a list of [PlaceModel] results.
+     * Represents a successful search with a list of [PlaceUiModel] results.
      *
-     * @param places The list of places returned from the search.
+     * @param places The list of places ready for UI display.
      */
-    data class Success(val places: List<PlaceModel>) : PlaceSearchUiState()
+    data class Success(val places: List<PlaceUiModel>) : PlaceSearchUiState()
 
-    /**
-     * Indicates that an error occurred during the search process.
-     */
+    /** Indicates that an error occurred during the search process. */
     object Error : PlaceSearchUiState()
 }

@@ -1,8 +1,8 @@
 package com.example.smartalarm.feature.timer.data.repository
 
-import com.example.smartalarm.core.exception.DataError
-import com.example.smartalarm.core.exception.GeneralErrorMapper
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
+import com.example.smartalarm.core.utility.extension.myRunCatchingResult
 import com.example.smartalarm.feature.timer.data.datasource.contract.TimerLocalDataSource
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
@@ -10,7 +10,6 @@ import com.example.smartalarm.feature.timer.data.manager.TimerInMemoryStateManag
 import com.example.smartalarm.feature.timer.data.mapper.TimerMapper.toEntity
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
-
 
 
 /**
@@ -42,26 +41,17 @@ class TimerRepositoryImpl @Inject constructor(
     /**
      * Persists a timer. Maps SQLite/Room exceptions to [DataError.Local].
      */
-    override suspend fun persistTimer(timerModel: TimerModel): MyResult<Unit, DataError> {
-        return try {
+    override suspend fun persistTimer(timerModel: TimerModel): MyResult<Unit, DataError> =
+        myRunCatchingResult {
             val entity = timerModel.toEntity()
             localDataSource.saveTimer(entity)
-            MyResult.Success(Unit)
-        } catch (e: Throwable) {
-            // Converts Throwable into our specific DataError.Local or Unexpected
-            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
         }
-    }
 
     /**
      * Deletes a timer. Maps potential IO or Database errors to [DataError.Local].
      */
-    override suspend fun deleteTimerById(timerId: Int): MyResult<Unit, DataError> {
-        return try {
+    override suspend fun deleteTimerById(timerId: Int): MyResult<Unit, DataError> =
+        myRunCatchingResult {
             localDataSource.deleteTimerById(timerId)
-            MyResult.Success(Unit)
-        } catch (e: Throwable) {
-            MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
         }
-    }
 }

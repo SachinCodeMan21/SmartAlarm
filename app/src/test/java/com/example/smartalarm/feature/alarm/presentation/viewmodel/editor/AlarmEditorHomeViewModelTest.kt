@@ -1,43 +1,6 @@
 package com.example.smartalarm.feature.alarm.presentation.viewmodel.editor
 
-import app.cash.turbine.test
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
-import com.example.smartalarm.core.permission.PermissionManager
-import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.feature.alarm.domain.model.Mission
-import com.example.smartalarm.feature.alarm.domain.model.MissionType
-import com.example.smartalarm.feature.alarm.domain.model.SnoozeSettings
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmByIdUseCase
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.PostSaveOrUpdateAlarmUseCase
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.SaveAlarmUseCase
-import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
-import com.example.smartalarm.feature.alarm.presentation.effect.editor.AlarmEditorEffect
-import com.example.smartalarm.feature.alarm.presentation.event.editor.AlarmEditorSystemEvent
-import com.example.smartalarm.feature.alarm.presentation.event.editor.AlarmEditorUserEvent
-import com.example.smartalarm.feature.alarm.presentation.mapper.AlarmUiMapper
-import com.example.smartalarm.feature.alarm.presentation.view.statemanager.contract.AlarmEditorHomeStateManager
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
-import io.mockk.unmockkAll
-import io.mockk.verify
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import kotlin.test.Test
-import kotlin.test.assertIs
 
 @ExperimentalCoroutinesApi
 class AlarmEditorHomeViewModelTest {

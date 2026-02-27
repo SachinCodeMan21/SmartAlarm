@@ -2,7 +2,7 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.mission
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmByIdUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SnoozeAlarmUseCase
@@ -47,7 +47,8 @@ class ShowAlarmViewModel @Inject constructor(
     private val stopAlarmUseCase: StopAlarmUseCase,
     private val alarmServiceController: AlarmServiceController,
     private val alarmRingtoneManager: AlarmRingtoneManager,
-    private val vibrationManager: VibrationManager
+    private val vibrationManager: VibrationManager,
+    private val showAlarmUIMapper: ShowAlarmUIMapper
 ) : ViewModel()
 {
 
@@ -72,7 +73,7 @@ class ShowAlarmViewModel @Inject constructor(
      * @param alarm The alarm data used to update the UI.
      */
     private fun updateState(alarm: AlarmModel) {
-        val uiModel = ShowAlarmUIMapper.toUiModel(alarm)
+        val uiModel = showAlarmUIMapper.toUiModel(alarm)
         currentAlarm = alarm
         _uiState.value = uiModel
     }
@@ -119,8 +120,10 @@ class ShowAlarmViewModel @Inject constructor(
 
         viewModelScope.launch {
             when (val result = getAlarmByIdUseCase(alarmId)) {
-                is Result.Success -> updateState(result.data)
-                is Result.Error -> {} // postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
+                is MyResult.Success -> updateState(result.data)
+                is MyResult.Error -> {
+                    postEffect(ShowAlarmEffect.ShowError(result.error))
+                }
             }
         }
     }
@@ -133,11 +136,13 @@ class ShowAlarmViewModel @Inject constructor(
 
         viewModelScope.launch {
             when (val result = snoozeAlarmUseCase(alarm)) {
-                is Result.Success -> {
+                is MyResult.Success -> {
                     //alarmServiceController.stopAlarmService()
                     //postEffect(ShowAlarmEffect.FinishActivity)
                 }
-                is Result.Error -> {} //postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
+                is MyResult.Error -> {
+                    postEffect(ShowAlarmEffect.ShowError(result.error))
+                }
             }
         }
     }
@@ -151,12 +156,15 @@ class ShowAlarmViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (alarm.missions.isEmpty()) {
+
                 when (val result = stopAlarmUseCase(alarm)) {
-                    is Result.Success -> {
+                    is MyResult.Success -> {
                         //alarmServiceController.stopAlarmService()
                         //postEffect(ShowAlarmEffect.FinishActivity)
                     }
-                    is Result.Error -> {} //postEffect(ShowAlarmEffect.ShowToastMessage(result.exception.message.toString()))
+                    is MyResult.Error -> {
+                        postEffect(ShowAlarmEffect.ShowError(result.error))
+                    }
                 }
             } else {
                 if (isPreview) {

@@ -1,12 +1,12 @@
 package com.example.smartalarm.feature.stopwatch.presentation.view
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -16,12 +16,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartalarm.R
-import com.example.smartalarm.core.exception.asUiText
-import com.example.smartalarm.core.permission.PermissionChecker
-import com.example.smartalarm.core.permission.PermissionRequester
-import com.example.smartalarm.core.permission.model.AppPermission
-import com.example.smartalarm.core.permission.PermissionCoordinator
-import com.example.smartalarm.core.permission.model.AppFeature
+import com.example.smartalarm.core.utility.exception.asUiText
+import com.example.smartalarm.core.framework.permission.MyPermissionChecker
+import com.example.smartalarm.core.framework.permission.PermissionFlowDelegate
+import com.example.smartalarm.core.framework.permission.model.AppFeature
+import com.example.smartalarm.core.framework.permission.model.MyAppPermission
+import com.example.smartalarm.core.framework.permission.MyAppPermissionRequester
+import com.example.smartalarm.core.framework.permission.model.RequesterType
+import com.example.smartalarm.core.framework.permission.model.Requirement
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.FragmentStopwatchBinding
@@ -82,20 +84,38 @@ class StopwatchFragment : Fragment() {
     private lateinit var stopWatchLapAdapter: StopWatchLapAdapter
 
 
-
-    @Inject
-    lateinit var checker: PermissionChecker
-
-    private lateinit var permissionCoordinator: PermissionCoordinator
-
     /** Stores the previous number of recorded laps to manage animations and scrolling. */
     private var previousLapsCount = 0
 
+
+    @Inject
+    lateinit var permissionChecker: MyPermissionChecker
+    private lateinit var permissionRequester: MyAppPermissionRequester
+    private lateinit var permissionFlowDelegate: PermissionFlowDelegate
 
 
     // ---------------------------------------------------------------------
     // Lifecycle Methods
     // ---------------------------------------------------------------------
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // This is the safest place to initialize it
+        permissionRequester = MyAppPermissionRequester(
+            caller = this,
+            lifecycle = lifecycle, // Use Fragment lifecycle, not viewLifecycle
+            checker = permissionChecker,
+            type = RequesterType.BOTH
+        )
+
+        permissionFlowDelegate = PermissionFlowDelegate(
+            fragment = this,
+            checker = permissionChecker,
+            requester = permissionRequester
+        )
+    }
+
 
     /**
      * Inflates and returns the stopwatch fragment layout.
@@ -127,8 +147,8 @@ class StopwatchFragment : Fragment() {
         setUpLapRecyclerView()
         setUpUIStateObserver()
         setUpUIEffectObserver()
-        setUpPermissionCoordinator()
     }
+
 
     /**
      * Hands off stopwatch execution to a foreground service when the UI is no longer visible.
@@ -154,8 +174,6 @@ class StopwatchFragment : Fragment() {
     }
 
 
-
-
     // ---------------------------------------------------------------------
     // UI Setup Methods
     // ---------------------------------------------------------------------
@@ -178,15 +196,17 @@ class StopwatchFragment : Fragment() {
             stopWatchViewModel.handleEvent(StopwatchEvent.ResetStopwatch)
         }
 
+
         toggleStopwatchBtn.setOnClickListener {
-            if (stopWatchViewModel.getIsStopwatchRunning()){
-                stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
+
+            if (stopWatchViewModel.getIsStopwatchRunning()) {
+                stopWatchViewModel.handleEvent(
+                    StopwatchEvent.ToggleRunState
+                )
+                return@setOnClickListener
             }
-            else{
-                permissionCoordinator.runPermissionGatekeeper(listOf(AppPermission.Runtime.PostNotifications),requireActivity(), AppFeature.STOPWATCH){
-                    stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
-                }
-            }
+
+            requestNotificationPermission()
         }
 
         recordLapStopwatchBtn.setOnClickListener {
@@ -238,57 +258,20 @@ class StopwatchFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             stopWatchViewModel.uiEffect.collect { effect ->
                 when (effect) {
-                    is StopwatchEffect.BlinkVisibilityChanged -> binding.stopwatchTimeTextGroup.isVisible = effect.isVisible
+                    is StopwatchEffect.BlinkVisibilityChanged -> binding.stopwatchTimeTextGroup.isVisible =
+                        effect.isVisible
+
                     is StopwatchEffect.ShowError -> {
                         val message = effect.error.asUiText().asString(requireContext())
                         binding.root.showSnackBar(message, Snackbar.LENGTH_SHORT)
                     }
+
                     is StopwatchEffect.StartForegroundService -> startStopwatchService()
                     is StopwatchEffect.StopForegroundService -> stopStopwatchService()
                 }
             }
         }
     }
-
-
-    /**
-     * Initializes the PermissionCoordinator for handling runtime permissions in this fragment.
-     *
-     * This sets up a centralized mechanism to:
-     *  - Check whether permissions are granted,
-     *  - Request permissions when needed, and
-     *  - Provide rationales to the user if the system indicates it is necessary.
-     *
-     * Using a coordinator ensures permission logic is consistent, decoupled from UI code,
-     * and lifecycle-aware, preventing memory leaks and redundant permission requests.
-     */
-    private fun setUpPermissionCoordinator() {
-
-        val requester = PermissionRequester(
-            caller = this,
-            lifecycleOwner = this,
-            context = requireContext(),
-            permissionChecker = checker,
-            rationaleProvider = { permissionName ->
-                ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    permissionName
-                )
-            }
-        )
-
-        permissionCoordinator = PermissionCoordinator(
-            context = requireContext(),
-            requester = requester,
-            checker = checker,
-            fragmentManager = childFragmentManager,
-            lifecycleOwner = viewLifecycleOwner
-        )
-
-    }
-
-
-
 
 
     // ---------------------------------------------------------------------
@@ -357,7 +340,6 @@ class StopwatchFragment : Fragment() {
     }
 
 
-
     // ---------------------------------------------------------------------
     // Effect Handler Methods
     // ---------------------------------------------------------------------
@@ -395,5 +377,27 @@ class StopwatchFragment : Fragment() {
             this.action = action
         }
     }
+
+
+    // ---------------------------------------------------------------------
+    // Permission Methods
+    // ---------------------------------------------------------------------
+
+    private fun requestNotificationPermission() {
+        val requirement = Requirement(
+            permission = MyAppPermission.Runtime.PostNotifications,
+            rationaleTitle = getString(R.string.stopwatch_notification_permission_rationale_title),
+            rationaleMessage = getString(R.string.stopwatch_notification_permission_rationale_message),
+            permanentlyDeniedTitle = getString(R.string.stopwatch_notification_permission_permanently_denied_title),
+            permanentlyDeniedMessage = getString(R.string.stopwatch_notification_permission_permanently_denied_message),
+            toastOnDeny = getString(R.string.stopwatch_notification_permission_denied_toast),
+            feature = AppFeature.STOPWATCH
+        )
+
+        permissionFlowDelegate.run(requirements = listOf(requirement)) {
+            stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
+        }
+    }
+
 
 }

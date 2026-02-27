@@ -4,8 +4,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
-import com.example.smartalarm.core.notification.model.NotificationAction
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.model.NotificationAction
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity

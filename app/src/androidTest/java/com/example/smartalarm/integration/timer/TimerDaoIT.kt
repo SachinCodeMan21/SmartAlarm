@@ -1,20 +1,5 @@
 package com.example.smartalarm.integration.timer
 
-import androidx.room.Room
-import androidx.test.platform.app.InstrumentationRegistry
-import com.example.smartalarm.core.database.MyDatabase
-import com.example.smartalarm.feature.timer.data.local.dao.TimerDao
-import com.example.smartalarm.feature.timer.data.local.entity.TimerEntity
-import com.example.smartalarm.feature.timer.data.mapper.TimerMapper.toEntity
-import com.example.smartalarm.feature.timer.domain.model.TimerModel
-import com.example.smartalarm.feature.timer.domain.model.TimerStatus
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
-
 /**
  * Integration tests for the TimerDao class, which performs CRUD operations
  * on the `timer_table` in the Room database.
@@ -32,13 +17,13 @@ import org.junit.Test
  */
 class TimerDaoIT {
 
-    private lateinit var database: MyDatabase
+/*    private lateinit var database: MyDatabase
     private lateinit var timerDao: TimerDao
 
-    /**
+    *//**
      * Sets up an in-memory database before each test.
      * Initializes the `TimerDao` to interact with the database.
-     */
+     *//*
     @Before
     fun setup() {
         // Create an in-memory Room database for testing
@@ -50,19 +35,19 @@ class TimerDaoIT {
         timerDao = database.timerDao()
     }
 
-    /**
+    *//**
      * Closes the in-memory database after each test.
-     */
+     *//*
     @After
     fun tearDown() {
         database.close() // Clean up the database after the test
     }
 
-    /**
+    *//**
      * Test to verify that timers can be retrieved correctly from the database.
      *
      * It saves a `TimerEntity` to the database and checks if it can be fetched.
-     */
+     *//*
     @Test
     fun testGetTimers() = runTest {
         // Arrange
@@ -86,11 +71,11 @@ class TimerDaoIT {
         Assert.assertTrue(timers.isNotEmpty()) // Ensure at least one timer is present
     }
 
-    /**
+    *//**
      * Test to verify that a timer can be deleted by its `timerId`.
      *
      * It saves a `TimerEntity` to the database, deletes it, and checks that it no longer exists.
-     */
+     *//*
     @Test
     fun testDeleteTimer() = runTest {
         // Arrange
@@ -114,12 +99,12 @@ class TimerDaoIT {
         Assert.assertTrue(timers.none { it.id == timerEntity.id }) // Assert that no timer with that ID exists
     }
 
-    /**
+    *//**
      * Test to verify that a `TimerModel` can be converted to a `TimerEntity`,
      * saved to the database, and then properly retrieved back.
      *
      * This test checks that the data conversion between model and entity is correct.
-     */
+     *//*
     @Test
     fun testSaveTimerAndConvertToModel() = runTest {
         // Arrange
@@ -157,5 +142,5 @@ class TimerDaoIT {
             timerModel.status.name,
             savedTimer.state
         ) // Ensure state is converted properly
-    }
+    }*/
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- Meta Data -->
     <string name="app_name">SmartAlarm</string>
     <string name="google_api_key" translatable="false">AIzaSyDV41n8TtAZvffXa4noYukHytxcWMUe9gw</string>
@@ -17,68 +18,6 @@
     // ---------------------------------------------------------------------
     // # Permission Dialog Related Strings
     // ---------------------------------------------------------------------
-
-    <!-- Permission Dialog Titles -->
-    <string name="permission_required_title">Permission Required</string>
-    <string name="full_screen_permission_title">Full-Screen Notification Permission Required</string>
-    <string name="schedule_exact_alarm_permission_title">Schedule Exact Alarm Notification Permission Required</string>
-    <string name="notification_permission_required_title">Notification Permission Required</string>
-
-
-    <!-- Permission Dialog Messages -->
-    <string name="stopwatch_notification_permission_rationale">Notification permission is required to show the running stopwatch in the notification area so you can track time while using other apps. </string>
-    <string name="perm_friendly_name_notifications">Notifications</string>
-    <string name="perm_friendly_name_activity">Activity Tracking</string>
-    <string name="perm_friendly_name_fullscreen">Full-screen Reminders</string>
-    <string name="perm_friendly_name_alarms">Exact Alarms</string>
-
-
-
-
-    <string name="perm_notif_title">Notification Required</string>
-    <string name="perm_notif_rationale">We need notifications to alert you when your alarm rings. Without this, you might miss it!</string>
-    <string name="perm_notif_permanent">Notifications are blocked. Please enable them in settings so we can wake you up.</string>
-
-    <string name="perm_exact_alarm_title">Precise Timing Required</string>
-    <string name="perm_exact_alarm_rationale">To wake you up at the exact second you set, we need the Exact Alarm permission. Otherwise, the alarm might be late.</string>
-
-    <string name="perm_full_screen_title">Wake Up Screen</string>
-    <string name="perm_full_screen_rationale">Allowing this lets the alarm show over your lockscreen so you can stop it easily without unlocking your phone.</string>
-
-    <string name="perm_activity_title">Step Tracking</string>
-    <string name="perm_activity_rationale">We use activity sensors to detect if you are awake and moving after the alarm goes off.</string>
-    <string name="perm_activity_permanent">Motion tracking is disabled. To use the "Step to Dismiss" feature, please enable Physical Activity in Settings.</string>
-
-
-    <string name="full_screen_permission_message">To allow the app to show notifications when the alarm triggers, please grant the full-screen notification permission in your settings.</string>
-    <string name="schedule_exact_alarm_permission_message">To allow the app to schedule alarms and timers please grant schedule exact alarm  permission in your settings.</string>
-    <string name="post_notification_permission_rationale_message">This app requires notification permission to reliably deliver alerts for alarms, timers and stopwatches, ensuring timely and accurate notifications.</string>
-    <string name="app_permission_setting_dialog_message">The %1$s permission is required for this app to function properly. Please enable it in your system settings.</string>
-    <string name="activity_recognition_permission_required_title">Activity Recognition Permission Required</string>
-    <string name="activity_recognition_permission_rationale_message">This app needs access to detect your steps. Please grant Activity Recognition permission to continue.</string>
-
-    <string name="notifications_permission_permanent_denial">You have permanently denied notification permissions. To receive notifications, please open the app settings and enable them.</string>
-    <string name="activity_recognition_permission_permanent_denial">You have permanently denied Activity Recognition permission. To track your steps and see progress, please open the app settings and enable it.</string>
-
-    <!-- Full-screen notification (overlay) -->
-    <string name="fullscreen_notification_rationale_title">
-        Full-Screen Notification Permission
-    </string>
-    <string name="fullscreen_notification_rationale_message">
-        We need access to show full-screen notifications on top of other apps so you don’t miss important alerts.
-    </string>
-    <string name="fullscreen_notification_permission_permanent_denial">
-        You have permanently denied the permission to show overlays. Please enable it manually in your app settings.
-    </string>
-
-    <!-- Set exact alarm -->
-    <string name="set_alarm_rationale_title">
-        Set Alarm Permission
-    </string>
-    <string name="set_alarm_rationale_message">
-        We need permission to set alarms for reminders, notifications, and events you care about.
-    </string>
-
 
     <!-- Dialog Button Action Messages -->
     <string name="grant_permission">Grant Permission</string>
@@ -116,7 +55,6 @@
     // ---------------------------------------------------------------------
     // # Alarm Screen Related Strings
     // ---------------------------------------------------------------------
-
 
     <!-- Common Alarm Strings  -->
     <string name="create_new_alarm">Create New Alarm</string>
@@ -161,9 +99,6 @@
         <item>F</item>
         <item>S</item>
     </string-array>
-
-
-    <!-- 4]  Alarm Fragment Adapter Strings -->
 
 
     <!--   B]  Alarm Editor Activity Strings -->
@@ -253,7 +188,7 @@
     <!--  D] Alarm Activity Fragments Strings -->
 
     <!-- 1] Show Alarm Mission Strings -->
-    <string-array name="alarm_weekday_full">
+    <string-array name="full_weekdays">
         <item>Sunday</item>
         <item>Monday</item>
         <item>Tuesday</item>
@@ -262,11 +197,12 @@
         <item>Friday</item>
         <item>Saturday</item>
     </string-array>
-    <string name="swipe_left_to_snooze">Swipe left to snooze</string>
-    <string name="swipe_right_to_stop">Swipe right to stop</string>
+    <string name="drag_left_to_snooze">Drag left to snooze</string>
+    <string name="drag_right_to_stop">Drag right to stop</string>
     <string name="drag_to_snooze_or_stop">Drag to snooze or stop</string>
     <string name="no_snooze_left">No Snooze Left</string>
     <string name="snooze_left"> %1$s Left </string>
+    <string name="exit_preview">Exit Preview</string>
 
 
     <!-- Mission Fragment Common Strings -->
@@ -274,7 +210,6 @@
     <string name="mission_completed">Mission Completed!</string>
     <string name="great_job_you_completed_all_rounds">Great job! You completed all rounds.</string>
     <string name="submit">Submit</string>
-
 
     <!-- 1] Memory Mission Strings -->
     <string name="memorize_the_glowing_squares">Memorize the glowing squares!</string>
@@ -342,16 +277,66 @@
     <string name="stopAlarm">Stop Alarm</string>
 
 
-    <string name="exit_preview">Exit Preview</string>
+    <!-- Alarm Feature Permission Strings  -->
+
+    <!-- Alarm - Notification Permission -->
+    <string name="alarm_notification_permission_rationale_title">Notification Permission Required</string>
+    <string name="alarm_notification_permission_rationale_message">The alarm needs to show a notification so it can alert you even when the app is in the background.</string>
+    <string name="alarm_notification_permission_denied_toast">Alarm requires notification permission</string>
+    <string name="alarm_notification_permission_permanently_denied_title">Notification Permission Blocked</string>
+    <string name="alarm_notification_permission_permanently_denied_message">Notifications are blocked. Please enable them in app settings to use the alarm.</string>
+
+    <!-- Alarm - Exact Alarm Permission -->
+    <string name="alarm_exact_alarm_permission_rationale_title">Exact Alarm Permission Required</string>
+    <string name="alarm_exact_alarm_permission_rationale_message">The alarm needs to schedule exact alarms so it fires at precisely the time you set.</string>
+    <string name="alarm_exact_alarm_permission_denied_toast">Alarm requires exact alarm permission</string>
+
+    <!-- Alarm - Full Screen Intent Permission -->
+    <string name="alarm_full_screen_permission_rationale_title">Full Screen Notification Required</string>
+    <string name="alarm_full_screen_permission_rationale_message">The alarm needs to display a full screen alert when it fires, even if your phone is locked.</string>
+    <string name="alarm_full_screen_permission_denied_toast">Alarm requires full screen notification permission</string>
+
 
 
     // ---------------------------------------------------------------------
     // # Clock Screen Related Strings
     // ---------------------------------------------------------------------
+
     <string name="add_new_timezone">Add New TimeZone</string>
     <string name="selected_timezones_list">Timezones list</string>
     <string name="no_result_found">No Result Found!</string>
     <string name="search">Search</string>
+    <string name="timezone_deleted">%1$s Timezone Deleted</string>
+    <string name="undo_timezone_successful">Undo successful</string>
+    <string name="failed_to_restore_time_zone">Failed to restore time zone</string>
+
+
+    <string-array name="month_names">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <!-- Days of the Week (localized, first three characters) -->
+    <string-array name="day_names">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
+
 
     // ---------------------------------------------------------------------
     // # Timer Screen Related Strings
@@ -374,6 +359,7 @@
     <string name="unable_to_start_the_timer">Unable to start the timer at the moment. Please try again later.</string>
     <string name="failed_to_load_timers">Failed to load timers. Please try again later.</string>
 
+
     // ---------------------------------------------------------------------
     // # Show Timer Screen Related Strings
     // ---------------------------------------------------------------------
@@ -383,8 +369,6 @@
     <string name="_1_00">+1:00</string>
     <string name="play_pause_timer">Play Pause Timer</string>
     <string name="timer_title">%1$s Timer</string>
-    <string name="active_timer">Active Timers</string>
-    <string name="missed_timer">Missed Timers</string>
     <string name="completed_timer">Completed Timers</string>
     <string name="add_one_minute">Add 1 Min</string>
     <string name="hour_formatted_stopwatch_time">%1$sh : %2$sm : %3$ss</string>
@@ -392,6 +376,44 @@
     <string name="sec_formatted_stopwatch_time">%1$ss</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
     <string name="timer_dashboard">Timer Dashboard</string>
+
+    <!--Active Timer Notification String-->
+    <string name="active_timer">Active Timer</string>
+    <string name="time_remaining">⏳ Time remaining: %1$s</string>
+    <string name="timer_running_count"> • %1$d running</string>
+    <string name="timer_paused_count"> • %1$d paused</string>
+    <string name="timer_label">Timer #%1$d</string>
+
+    <!--Completed Timer Notification String-->
+    <string name="time_after_completion">✅ Time After Completion: %1$s</string>
+    <string name="completed_timer_completed_count">%1$d completed</string>
+
+    <!--Missed Timer Strings-->
+    <string name="missed_timer">Missed Timer</string>
+    <string name="missed_timer_target_time">Timer Target Time: %1$s</string>
+
+
+    <!-- Timer Feature Permission Strings  -->
+
+    <!-- Notification Permission -->
+    <string name="timer_notification_permission_rationale_title">Notification Permission Required</string>
+    <string name="timer_notification_permission_rationale_message">The timer needs to show a notification so it can alert you even when the app is in the background.</string>
+    <string name="timer_notification_permission_denied_toast">Timer requires notification permission</string>
+    <string name="timer_notification_permission_permanently_denied_title">Notification Permission Blocked</string>
+    <string name="timer_notification_permission_permanently_denied_message">Notifications are blocked. Please enable them in app settings to use the timer.</string>
+
+    <!-- Exact Alarm Permission -->
+    <string name="timer_exact_alarm_permission_rationale_title">Exact Alarm Permission Required</string>
+    <string name="timer_exact_alarm_permission_rationale_message">The timer needs to schedule exact alarms so it fires at precisely the time you set.</string>
+    <string name="timer_exact_alarm_permission_denied_toast">Timer requires exact alarm permission</string>
+
+    <!-- Full Screen Intent Permission -->
+    <string name="timer_full_screen_permission_rationale_title">Full Screen Notification Required</string>
+    <string name="timer_full_screen_permission_rationale_message">The timer needs to display a full screen alert when it fires, even if your phone is locked.</string>
+    <string name="timer_full_screen_permission_denied_toast">Timer requires full screen notification permission</string>
+
+
+
 
 
     // ---------------------------------------------------------------------
@@ -406,6 +428,14 @@
     <string name="record_lap_time">Record lap time</string>
     <string name="lap_index"># Lap</string>
 
+    <!-- Stopwatch Feature Permission Strings -->
+    <string name="stopwatch_notification_permission_rationale_title">Notification Permission Required</string>
+    <string name="stopwatch_notification_permission_rationale_message">To keep the stopwatch running reliably in the background and allow lock screen controls, notification permission is required.</string>
+    <string name="stopwatch_notification_permission_permanently_denied_title">Notification Permission Blocked</string>
+    <string name="stopwatch_notification_permission_permanently_denied_message">Notifications are blocked. Please enable them in app settings.</string>
+    <string name="stopwatch_notification_permission_denied_toast">Permission Denied</string>
+    <string name="could_not_delete_item">Could not delete item</string>
+
     <!-- Stopwatch Viewmodel Specific Error Strings -->
     <string name="failed_to_restore_stopwatch_state">Failed to restore the stopwatch state. Please try again.</string>
     <string name="failed_to_start_stopwatch">Failed to start the stopwatch. Please try again.</string>
@@ -415,8 +445,9 @@
 
 
 
+
     // ---------------------------------------------------------------------
-    //  Setting Related Strings
+    // Setting Related Strings
     // ---------------------------------------------------------------------
     <string name="change_language">Change language</string>
     <string name="language">Language</string>
@@ -433,12 +464,61 @@
     <string name="japanese">Japanese</string>
     <string name="hindi">Hindi</string>
 
+
+
+    // ---------------------------------------------------------------------
+    // About Screen Strings
+    // ---------------------------------------------------------------------
+
+    <string name="smart_alarm">Smart Alarm</string>
+    <string name="version_1_0">Version 1.0</string>
+    <string name="about_app_desc">Helping you wake up refreshed and ready to take on the day with mission-based discipline.</string>
+    <string name="rate_on_play_store">Rate on Play Store</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="_2026_smart_alarm_inc">© 2026 Smart Alarm Inc.</string>
+    <string name="smart_alarm_app_icon">smart alarm app icon</string>
+    <string name="undo_successful">Undo Successful</string>
+
+
+
+
+    // ---------------------------------------------------------------------
+    // Help Screen Strings
+    // ---------------------------------------------------------------------
+
+    <string name="help_support_title">Help &amp; Support</string>
+    <string name="section_system_reliability">System Reliability</string>
+    <string name="section_faq">Frequently Asked Questions</string>
+    <string name="section_missions_snoozing">Missions &amp; Snoozing</string>
+    <string name="section_world_clock">World Clock</string>
+    <string name="section_timer">Timer</string>
+    <string name="section_stopwatch">Stopwatch</string>
+    <string name="btn_email_support">Email Support</string>
+
+    <string name="title_required_permissions">Required Permissions</string>
+    <string name="desc_required_permissions">• Exact Alarm: Ensures missions trigger on time.\n• Full Screen Notification: Allows missions to show over the lock screen.\n• Activity Recognition: Required for Walking/Shaking missions.\n• Battery Optimization: Set to \'Unrestricted\' so the app never sleeps.</string>
+
+    <string name="title_scheduling_dismissing">Scheduling &amp; Dismissing</string>
+    <string name="desc_scheduling_dismissing">Create an alarm by tapping \'+\'. In the edit screen, you can add up to 5 unique missions. Note: The alarm will automatically dismiss ONLY when all chosen missions are completed.</string>
+    <string name="title_why_snooze_disappeared">Why did the Snooze button disappear?</string>
+    <string name="desc_why_snooze_disappeared">If you set a Snooze Limit, the button will be disabled once the limit is reached, forcing you to complete your missions to stop the sound.</string>
+
+    <string name="title_global_time">Global Time Tracking</string>
+    <string name="desc_global_time">Tap \'+\' to add global cities. Your local time is pinned at the top for instant comparison with added timezones.</string>
+    <string name="title_managing_countdowns">Managing Countdowns</string>
+    <string name="desc_managing_countdowns">Set a duration and tap start. Your timer will continue to run in the background even if you close the app or lock your screen.</string>
+    <string name="title_laps_splits">Laps and Split Times</string>
+    <string name="desc_laps_splits">Use the \'Lap\' button while the stopwatch is running to record specific intervals. Perfect for tracking exercise sets.</string>
+
+
+
+
     // ---------------------------------------------------------------------
     // # Notification Related Strings
     // ---------------------------------------------------------------------
 
     <string name="notification">Notification</string>
-
     <string name="today" translatable="false">Today</string>
     <string name="tomorrow" translatable="false">Tomorrow</string>
 
@@ -494,12 +574,11 @@
     <string name="exact_alarm">Exact Alarm</string>
 
 
-    <string name="failed_to_retrieve_the_alarm_details">Failed to retrieve the alarm details. Please try again later.</string>
-    <string name="failed_to_save_the_alarm_details">Failed to save the alarm details. Please try again later.</string>
-    <string name="failed_to_update_the_alarm_details">Failed to update the alarm details. Please try again later.</string>
-    <string name="failed_to_perform_post_save_action">Failed to perform alarm post save scheduling. Please try again later.</string>
-    <string name="failed_to_perform_post_update_action">Failed to perform alarm post update scheduling. Please try again later.</string>
 
+
+    // ---------------------------------------------------------------------
+    // # Exceptions Related Strings
+    // ---------------------------------------------------------------------
 
     <!-- Exception Strings -->
     <string name="error_timeout">Network timeout</string>
@@ -511,7 +590,6 @@
     <string name="error_db_migration_failed">Database migration failed</string>
     <string name="error_unknown">An unknown error occurred</string>
     <string name="error_generic">An error occurred</string>
-
 
 
     <!-- Data Error Exceptions -->
@@ -535,36 +613,6 @@
     <string name="error_file_too_large">The data you are trying to send is too large.</string>
     <string name="error_server_down">Our servers are currently having trouble. Please wait.</string>
     <string name="error_generic_network">A network error occurred.</string>
-
     <string name="error_unexpected_system">An unexpected system error occurred. Please try again or contact support.</string>
-
-
-
-   <!--  Help Section  -->
-    <string name="help_support_title">Help &amp; Support</string>
-    <string name="section_system_reliability">System Reliability</string>
-    <string name="section_faq">Frequently Asked Questions</string>
-    <string name="section_missions_snoozing">Missions &amp; Snoozing</string>
-    <string name="section_world_clock">World Clock</string>
-    <string name="section_timer">Timer</string>
-    <string name="section_stopwatch">Stopwatch</string>
-
-    <string name="title_required_permissions">Required Permissions</string>
-    <string name="desc_required_permissions">• Exact Alarm: Ensures missions trigger on time.\n• Full Screen Notification: Allows missions to show over the lock screen.\n• Activity Recognition: Required for Walking/Shaking missions.\n• Battery Optimization: Set to \'Unrestricted\' so the app never sleeps.</string>
-
-    <string name="title_scheduling_dismissing">Scheduling &amp; Dismissing</string>
-    <string name="desc_scheduling_dismissing">Create an alarm by tapping \'+\'. In the edit screen, you can add up to 5 unique missions. Note: The alarm will automatically dismiss ONLY when all chosen missions are completed.</string>
-    <string name="title_why_snooze_disappeared">Why did the Snooze button disappear?</string>
-    <string name="desc_why_snooze_disappeared">If you set a Snooze Limit, the button will be disabled once the limit is reached, forcing you to complete your missions to stop the sound.</string>
-
-    <string name="title_global_time">Global Time Tracking</string>
-    <string name="desc_global_time">Tap \'+\' to add global cities. Your local time is pinned at the top for instant comparison with added timezones.</string>
-    <string name="title_managing_countdowns">Managing Countdowns</string>
-    <string name="desc_managing_countdowns">Set a duration and tap start. Your timer will continue to run in the background even if you close the app or lock your screen.</string>
-    <string name="title_laps_splits">Laps and Split Times</string>
-    <string name="desc_laps_splits">Use the \'Lap\' button while the stopwatch is running to record specific intervals. Perfect for tracking exercise sets.</string>
-
-    <string name="btn_email_support">Email Support</string>
-
 
 </resources>

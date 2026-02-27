@@ -1,6 +1,7 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.contract
 
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 
 
@@ -18,7 +19,7 @@ interface ToggleAlarmUseCase {
      *
      * @param alarmModel The alarm model containing the current alarm details.
      * @param isEnabled A boolean indicating whether the alarm should be enabled or disabled.
-     * @return A [Result] indicating success or failure of the operation.
+     * @return A [MyResult] indicating success or failure of the operation.
      */
-    suspend operator fun invoke(alarmModel: AlarmModel, isEnabled: Boolean): Result<String>
+    suspend operator fun invoke(alarmModel: AlarmModel, isEnabled: Boolean): MyResult<String, DataError>
 }

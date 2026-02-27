@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.timer.domain.usecase.impl
 
-import com.example.smartalarm.core.exception.DataError
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.domain.usecase.contract.SaveTimerUseCase

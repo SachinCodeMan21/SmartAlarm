@@ -4,9 +4,9 @@ import android.app.Notification
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
-import com.example.smartalarm.core.notification.channel.AppNotificationChannel
-import com.example.smartalarm.core.notification.model.NotificationAction
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.channel.AppNotificationChannel
+import com.example.smartalarm.core.framework.notification.model.NotificationAction
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotification
 import javax.inject.Inject
 import javax.inject.Singleton

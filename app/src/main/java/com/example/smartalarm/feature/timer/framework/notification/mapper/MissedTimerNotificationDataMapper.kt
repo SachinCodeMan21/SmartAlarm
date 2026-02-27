@@ -4,7 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
@@ -21,12 +21,15 @@ class MissedTimerNotificationDataMapper @Inject constructor(
         model: TimerNotificationModel.MissedTimerModel
     ): TimerNotificationData {
 
-        val contentText = buildContentText(model)
+        // Format the target time using the timeFormatter
+        val formattedTargetTime = timeFormatter.formatMillisToTimerTextFormat(model.timer.targetTime)
+
+        val contentText = buildContentText(context, model)
         val contentIntent = buildContentIntent(context, model.timer)
 
         return TimerNotificationData(
             timer = model.timer,
-            formattedBigText = "Missed Timer Time : ${timeFormatter.formatMillisToTimerTextFormat(model.timer.targetTime)}",
+            formattedBigText = context.getString(R.string.missed_timer_target_time, formattedTargetTime),
             id = model.timer.timerId,
             title = context.getString(R.string.missed_alarm),
             contentText = contentText,
@@ -35,9 +38,14 @@ class MissedTimerNotificationDataMapper @Inject constructor(
         )
     }
 
-    // Build content text (e.g., "Alarm missed. Timer #123")
-    private fun buildContentText(model: TimerNotificationModel.MissedTimerModel): String {
-        return "Timer Target Time : ${model.timer.targetTime}"
+    // Build content text (e.g., "Missed Timer Target Time: 02:30 PM")
+    private fun buildContentText(
+        context: Context,
+        model: TimerNotificationModel.MissedTimerModel
+    ): String {
+        // Format the target time using the time formatter
+        val formattedTargetTime = timeFormatter.formatMillisToTimerTextFormat(model.timer.targetTime)
+        return context.getString(R.string.missed_timer_target_time, formattedTargetTime)
     }
 
     // Content intent that opens the HomeActivity or any other relevant activity

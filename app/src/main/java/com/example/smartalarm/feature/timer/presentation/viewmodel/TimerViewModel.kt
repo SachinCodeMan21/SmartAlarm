@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.presentation.effect.TimerEffect
 import com.example.smartalarm.feature.timer.presentation.event.TimerEvent
@@ -207,6 +207,10 @@ class TimerViewModel @Inject constructor(
                 postEffect(TimerEffect.ShowError(result.error))
             }
         }
+    }
+
+    fun getIsTimerRunning() : Boolean{
+        return _uiState.value.isDeleteTimerButtonVisible
     }
 
 }

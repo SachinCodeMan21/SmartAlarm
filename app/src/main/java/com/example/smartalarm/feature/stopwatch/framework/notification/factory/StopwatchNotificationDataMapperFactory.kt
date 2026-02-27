@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.stopwatch.framework.notification.factory
 
-import com.example.smartalarm.core.notification.factory.NotificationDataMapperFactory
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.factory.NotificationDataMapperFactory
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.feature.stopwatch.framework.notification.enums.StopwatchNotificationDataMapperKey
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotification
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotificationData

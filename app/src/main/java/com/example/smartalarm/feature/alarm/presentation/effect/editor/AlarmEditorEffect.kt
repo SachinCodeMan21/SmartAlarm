@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.alarm.presentation.effect.editor
 
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.domain.model.SnoozeSettings
@@ -40,29 +41,6 @@ sealed class AlarmEditorEffect {
     data class NavigateToSnoozeAlarmFragment(val snoozeSettings: SnoozeSettings) : AlarmEditorEffect()
 
 
-
-
-    // Permission & Ringtone Launchers
-
-    /**
-     * Effect to request the user's permission to post notifications before saving or updating the alarm.
-     * The alarm cannot be saved/updated without this permission if notifications are required.
-     */
-    object LaunchPostNotificationPermissionRequest : AlarmEditorEffect()
-
-    /**
-     * Effect to request permission for full-screen notifications before saving or updating an alarm.
-     * This is required for high-priority alarms that need to take over the screen [the triggered scheduled alarm].
-     */
-    object LaunchFullScreenNotificationPermissionRequest : AlarmEditorEffect()
-
-    /**
-     * Effect to request permission for exact alarm scheduling before saving or updating an alarm.
-     * This is needed to set precise alarm times, even in power-saving modes.
-     */
-    object LaunchExactAlarmPermissionRequest : AlarmEditorEffect()
-
-
     /**
      * Effect to launch the alarm sound (ringtone) picker.
      *
@@ -96,8 +74,6 @@ sealed class AlarmEditorEffect {
     data class ShowSelectedMissionBottomSheet(val position: Int, val selectedMission: Mission) : AlarmEditorEffect()
 
 
-
-
     // Show Loader, Toast
 
     /**
@@ -119,8 +95,8 @@ sealed class AlarmEditorEffect {
     /**
      * Effect to display an error message to the user (e.g., via a SnackBar or Toast).
      *
-     * @param message The human-readable error message to be displayed.
+     * @param error The human-readable error message to be displayed.
      */
-    data class ShowError(val message: String) : AlarmEditorEffect()
+    data class ShowError(val error: DataError) : AlarmEditorEffect()
 
 }

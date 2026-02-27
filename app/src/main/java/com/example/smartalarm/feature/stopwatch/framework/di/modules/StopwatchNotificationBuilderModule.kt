@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.stopwatch.framework.di.modules
 
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
 import com.example.smartalarm.feature.stopwatch.framework.di.annotations.StopwatchNotificationBuilderMapKey
 import com.example.smartalarm.feature.stopwatch.framework.notification.builder.ActiveStopwatchNotificationBuilder
 import com.example.smartalarm.feature.stopwatch.framework.notification.enums.StopwatchNotificationBuilderTypeKey

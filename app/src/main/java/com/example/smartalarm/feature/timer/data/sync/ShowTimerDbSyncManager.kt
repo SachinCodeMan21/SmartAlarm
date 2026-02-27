@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.timer.data.sync
 
-import com.example.smartalarm.core.di.annotations.ApplicationScope
+import com.example.smartalarm.core.framework.di.annotations.ApplicationScope
 import com.example.smartalarm.feature.timer.data.datasource.contract.TimerLocalDataSource
 import com.example.smartalarm.feature.timer.data.manager.TimerInMemoryStateManager
 import com.example.smartalarm.feature.timer.data.mapper.TimerMapper.toDomainModel

@@ -1,33 +1,11 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
-import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
-import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SaveAlarmUseCase
 import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
 import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
 import com.example.smartalarm.feature.alarm.utility.helper.contract.AlarmTimeHelper
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert.*
-import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
-import com.example.smartalarm.feature.alarm.domain.model.SnoozeSettings
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.unmockkAll
-import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Before
-import java.time.LocalTime
-import kotlin.test.Test
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel
-import io.mockk.Runs
-import io.mockk.just
-import io.mockk.verify
 
 /**
  * Unit tests for the [UndoAlarmUseCaseImpl] class, which restores a deleted alarm by saving it back to the system,

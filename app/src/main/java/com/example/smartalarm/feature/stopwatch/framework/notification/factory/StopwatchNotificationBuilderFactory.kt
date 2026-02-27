@@ -1,8 +1,8 @@
 package com.example.smartalarm.feature.stopwatch.framework.notification.factory
 
 import android.content.Context
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
-import com.example.smartalarm.core.notification.factory.AppNotificationBuilderFactory
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.factory.AppNotificationBuilderFactory
 import com.example.smartalarm.feature.stopwatch.framework.notification.enums.StopwatchNotificationBuilderTypeKey
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotification
 import dagger.hilt.android.qualifiers.ApplicationContext

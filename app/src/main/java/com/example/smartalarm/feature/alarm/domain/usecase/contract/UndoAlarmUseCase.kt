@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.contract
 
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 
 
 /**
@@ -16,7 +17,7 @@ interface UndoAlarmUseCase {
      * Restores the alarm by saving it back into the system and scheduling it if enabled.
      *
      * @param undoAlarm The alarm model that needs to be restored.
-     * @return A [Result] indicating the success or failure of the operation.
+     * @return A [MyResult] indicating the success or failure of the operation.
      */
-    suspend operator fun invoke(undoAlarm: AlarmModel): Result<String>
+    suspend operator fun invoke(undoAlarm: AlarmModel): MyResult<Unit, DataError>
 }

@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.alarm.framework.di.modules
 
-import com.example.smartalarm.core.database.MyDatabase
+import com.example.smartalarm.core.data.database.MyDatabase
 import com.example.smartalarm.feature.alarm.data.local.dao.AlarmDao
 import dagger.Module
 import dagger.Provides

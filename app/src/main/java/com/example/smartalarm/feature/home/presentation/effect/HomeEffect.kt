@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.home.presentation.effect
 
-import com.example.smartalarm.core.notification.model.NotificationIntentData
+import com.example.smartalarm.core.framework.notification.model.NotificationIntentData
 import com.example.smartalarm.feature.home.presentation.viewmodel.HomeViewModel
 
 /**

@@ -1,22 +1,8 @@
 package com.example.smartalarm.feature.home.presentation.viewmodel
 
-import app.cash.turbine.test
-import com.example.smartalarm.feature.home.presentation.effect.HomeEffect
-import com.example.smartalarm.feature.home.presentation.event.HomeEvent
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
+import com.example.smartalarm.core.framework.sharedPreference.contract.SharedPrefsHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import com.example.smartalarm.R
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.unmockkAll
-import io.mockk.verify
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Test
 
 /**
  * Unit tests for [HomeViewModel], validating event handling logic and the UI effects emitted through the `uiEffect` flow.

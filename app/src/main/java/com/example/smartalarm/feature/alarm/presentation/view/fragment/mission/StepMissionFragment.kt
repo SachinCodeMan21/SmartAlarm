@@ -26,7 +26,7 @@ import com.example.smartalarm.core.utility.extension.getParcelableCompat
 import com.example.smartalarm.core.utility.extension.isSdk29AndAbove
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.core.utility.extension.toLocalizedString
-import com.example.smartalarm.core.permission.PermissionManager
+import com.example.smartalarm.core.framework.permission.PermissionManager
 import com.example.smartalarm.databinding.FragmentStepMissionBinding
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.presentation.effect.mission.MissionEffect

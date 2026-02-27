@@ -81,12 +81,15 @@
 
 
     <!--  Alarm Specific Screen Sizes  -->
+
+    <!-- 1] Alarm Home Screen   -->
     <dimen name="empty_alarm_img_max_size">64dp</dimen>
     <dimen name="alarm_item_mission_img_size">24dp</dimen>
     <dimen name="edit_alarm_weekday_max_size">48dp</dimen>
+
     <item name="alarm_editor_guideline_top_percent" format="float" type="dimen">0.0</item>
-    <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.15</item>
-    <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.85</item>
+    <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.12</item>
+    <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.88</item>
     <item name="memory_mission_grid_max_width_percent" format="float" type="dimen">0.5</item>
     <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.05</item>
     <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.5</item>
@@ -113,5 +116,11 @@
     <item name="guideline_stopwatch_anim_end" format="float" type="dimen">0.75</item>
     <item name="guideline_stopwatch_bottom" format="float" type="dimen">0.85</item>
     <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">0.0</item>
+
+
+    <!-- About Screen Dimens   -->
+    <item name="guideline_about_start" format="float" type="dimen">0.15</item>
+    <item name="guideline_about_end" format="float" type="dimen">0.85</item>
+    <item name="guideline_about_bottom" format="float" type="dimen">0.9</item>
 
 </resources>

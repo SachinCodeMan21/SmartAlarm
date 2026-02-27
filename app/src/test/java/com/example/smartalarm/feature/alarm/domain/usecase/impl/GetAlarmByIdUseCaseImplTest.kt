@@ -1,26 +1,10 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
-import org.junit.Assert.*
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.InjectMockKs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.*
-import org.junit.Before
-import org.junit.Test
-import java.time.LocalTime
-import kotlin.test.assertTrue
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.R
-import io.mockk.MockKAnnotations
-import io.mockk.clearAllMocks
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.verify
-import org.junit.After
 
 /**
  * Unit tests for [GetAlarmByIdUseCaseImpl], which is responsible for retrieving an alarm by its ID.
@@ -32,9 +16,9 @@ import org.junit.After
  *
  * Test cases:
  * - **`invoke should return Success when alarm is found`**: Verifies that when an alarm is successfully retrieved from the repository,
- *   the result is wrapped in a [Result.Success] containing the [AlarmModel].
+ *   the result is wrapped in a [MyResult.Success] containing the [AlarmModel].
  * - **`invoke should return Error when alarm retrieval fails`**: Verifies that if an error occurs while retrieving the alarm,
- *   the result is wrapped in a [Result.Error] containing a localized error message.
+ *   the result is wrapped in a [MyResult.Error] containing a localized error message.
  *
  * @see GetAlarmByIdUseCaseImpl for the use case implementation.
  */

@@ -2,8 +2,8 @@ package com.example.smartalarm.feature.timer.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartalarm.core.di.annotations.DefaultDispatcher
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.timer.data.mapper.TimerMapper
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.presentation.effect.ShowTimerEffect

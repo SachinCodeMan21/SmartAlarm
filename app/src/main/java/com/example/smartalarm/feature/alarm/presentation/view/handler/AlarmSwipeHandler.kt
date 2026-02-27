@@ -162,7 +162,7 @@ class AlarmSwipeHandler(
 
         // Update right hint icon based on mission availability
         val actionIcon = if (isMissionAvailable) {
-            R.drawable.ic_check_thumb
+            R.drawable.ic_mission
         } else {
             R.drawable.ic_stop_thumb
         }

@@ -2,10 +2,13 @@ package com.example.smartalarm.core.utility.systemClock.impl
 
 import android.os.SystemClock
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 
@@ -56,4 +59,14 @@ class SystemClockHelperImpl @Inject constructor() : SystemClockHelper {
     override fun createZonedDateTime(date: LocalDate, alarmTime: LocalTime, zone: ZoneId): ZonedDateTime {
         return ZonedDateTime.of(date, alarmTime, zone)
     }
+
+    override fun formatLocalTime(utcMillis: Long, offsetSeconds: Int): String {
+        return runCatching {
+            val zoneOffset = ZoneOffset.ofTotalSeconds(offsetSeconds)
+            val localTime = Instant.ofEpochMilli(utcMillis).atOffset(zoneOffset)
+            val formatter = DateTimeFormatter.ofPattern("hh:mm a")
+            localTime.format(formatter)
+        }.getOrElse { "--:--" }
+    }
+
 }

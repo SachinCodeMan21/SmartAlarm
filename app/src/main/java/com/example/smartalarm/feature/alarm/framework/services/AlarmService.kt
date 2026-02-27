@@ -3,7 +3,6 @@ package com.example.smartalarm.feature.alarm.framework.services
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmByIdUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SnoozeAlarmUseCase
@@ -15,7 +14,8 @@ import com.example.smartalarm.feature.alarm.framework.broadcasts.constants.Alarm
 import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
 import com.example.smartalarm.feature.alarm.framework.manager.contract.AlarmRingtoneManager
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel.RingingAlarmModel
-import com.example.smartalarm.core.permission.PermissionManager
+import com.example.smartalarm.core.framework.permission.PermissionManager
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
 import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
 import com.example.smartalarm.feature.alarm.framework.manager.contract.VibrationManager
@@ -209,7 +209,7 @@ class AlarmService : Service() {
 
     private suspend fun getAlarm(alarmId: Int): AlarmModel? {
         return when (val result = getAlarmByIdUseCase(alarmId)) {
-            is Result.Success -> result.data
+            is MyResult.Success -> result.data
             else -> null
         }
     }

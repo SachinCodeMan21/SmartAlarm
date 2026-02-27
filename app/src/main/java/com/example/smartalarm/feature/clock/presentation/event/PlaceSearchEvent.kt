@@ -26,7 +26,7 @@ sealed class PlaceSearchEvent {
     /**
      * Event triggered when the user selects a place from the search results.
      *
-     * @property place The [PlaceModel] that was selected.
+     * @property selectedPlaceId The selected place id that was selected.
      */
-    data class PlaceSelected(val place: PlaceModel) : PlaceSearchEvent()
+    data class PlaceSelected(val selectedPlaceId : Long) : PlaceSearchEvent()
 }

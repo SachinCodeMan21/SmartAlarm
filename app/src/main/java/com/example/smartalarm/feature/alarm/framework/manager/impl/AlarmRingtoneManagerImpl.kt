@@ -7,7 +7,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.media.MediaPlayer
 import androidx.core.net.toUri
-import com.example.smartalarm.core.ringtone.BaseRingtonePlayer
+import com.example.smartalarm.core.framework.ringtone.BaseRingtonePlayer
 import com.example.smartalarm.feature.alarm.framework.manager.contract.AlarmRingtoneManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

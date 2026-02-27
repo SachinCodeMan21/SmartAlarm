@@ -16,18 +16,6 @@
     // # Permission Dialog Related Strings
     // ---------------------------------------------------------------------
 
-    <!-- Permission Dialog Titles -->
-    <string name="permission_required_title">Permissão Requerida</string>
-    <string name="full_screen_permission_title">Permissão de Notificação em Tela Cheia Requerida</string>
-    <string name="schedule_exact_alarm_permission_title">Permissão para Agendar Alarmes Exatos Requerida</string>
-    <string name="notification_permission_required_title">Permissão de Notificação Requerida</string>
-
-    <!-- Permission Dialog Messages -->
-    <string name="full_screen_permission_message">Para permitir que o aplicativo mostre notificações quando o alarme for disparado, por favor, conceda a permissão de notificação em tela cheia nas configurações.</string>
-    <string name="schedule_exact_alarm_permission_message">Para permitir que o aplicativo agende alarmes e temporizadores, por favor, conceda permissão para agendar alarmes exatos nas configurações.</string>
-    <string name="post_notification_permission_rationale_message">Este aplicativo requer permissão de notificação para entregar alertas de alarmes, temporizadores e cronômetros, garantindo notificações pontuais e precisas.</string>
-    <string name="app_permission_setting_dialog_message">A permissão %1$s é necessária para o bom funcionamento deste aplicativo. Por favor, ative-a nas configurações do sistema.</string>
-
     <!-- Dialog Button Action Messages -->
     <string name="grant_permission">Conceder Permissão</string>
     <string name="deny">Negar</string>
@@ -193,7 +181,7 @@
     <!--  D] Alarm Activity Fragments Strings -->
 
     <!-- 1] Show Alarm Mission Strings -->
-    <string-array name="alarm_weekday_full">
+    <string-array name="full_weekdays">
         <item>Domingo</item>
         <item>Segunda-feira</item>
         <item>Terça-feira</item>
@@ -310,7 +298,6 @@
     <string name="_1_00">+1:00</string>
     <string name="play_pause_timer">Reproduzir/Pausar Timer</string>
     <string name="timer_title">%1$s Timer</string>
-    <string name="active_timer">Timers Ativos</string>
     <string name="completed_timer">Timers Completos</string>
     <string name="add_one_minute">Adicionar 1 Minuto</string>
     <string name="hour_formatted_stopwatch_time">%1$sh : %2$sm : %3$ss</string>
@@ -318,6 +305,21 @@
     <string name="sec_formatted_stopwatch_time">%1$ss</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
     <string name="timer_dashboard">Painel de temporizador</string>
+
+    <!-- Active Timer Notification String -->
+    <string name="active_timer">Temporizador Ativo</string>
+    <string name="time_remaining">⏳ Tempo restante: %1$s</string>
+    <string name="timer_running_count"> • %1$d em execução</string>
+    <string name="timer_paused_count"> • %1$d em pausa</string>
+    <string name="timer_label">Temporizador #%1$d</string>
+
+    <!-- Completed Timer Notification String -->
+    <string name="time_after_completion">✅ Tempo após a conclusão: %1$s</string>
+    <string name="completed_timer_completed_count">%1$d concluído(s)</string>
+
+    <!-- Missed Timer -->
+    <string name="missed_timer">Temporizador perdido</string>
+    <string name="missed_timer_target_time">Hora de destino do temporizador: %1$s</string>
 
     // ---------------------------------------------------------------------
     // # Stopwatch Screen Related Strings

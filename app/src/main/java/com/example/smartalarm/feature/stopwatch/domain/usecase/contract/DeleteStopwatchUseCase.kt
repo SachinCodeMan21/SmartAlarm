@@ -1,7 +1,7 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase.contract
 
-import com.example.smartalarm.core.exception.DataError
-import com.example.smartalarm.core.exception.MyResult
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 
 fun interface DeleteStopwatchUseCase {
 

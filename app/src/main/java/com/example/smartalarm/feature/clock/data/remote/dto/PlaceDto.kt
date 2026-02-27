@@ -18,6 +18,6 @@ data class PlaceDto(
     val fullName: String,
     val primaryName: String,
     val timeZoneId: String,
-    val offsetSeconds: Long,
+    val offsetSeconds: Int,
     val currentTime: String
 )

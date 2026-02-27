@@ -45,4 +45,16 @@ interface SystemClockHelper {
      * @return A [ZonedDateTime] for the specified date, time, and zone.
      */
     fun createZonedDateTime(date: LocalDate, alarmTime: LocalTime, zone: ZoneId): ZonedDateTime
+
+    /**
+     * Converts a UTC timestamp and offset (seconds) into a formatted local time string.
+     *
+     * @param utcMillis UTC time in milliseconds
+     * @param offsetSeconds Offset from UTC in seconds
+     * @return Formatted local time (e.g., "08:30 PM"), or "--:--" if calculation fails
+     */
+    fun formatLocalTime(utcMillis: Long, offsetSeconds: Int): String
+
+
+
 }

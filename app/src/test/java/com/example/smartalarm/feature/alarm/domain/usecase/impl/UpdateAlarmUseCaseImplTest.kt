@@ -1,27 +1,10 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
-import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
-import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
-import io.mockk.MockKAnnotations
-import io.mockk.clearAllMocks
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import kotlin.test.Test
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.R
-import io.mockk.verify
-import java.time.LocalTime
 
 /**
  * Unit tests for the [UpdateAlarmUseCaseImpl] class.

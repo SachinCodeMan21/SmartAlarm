@@ -24,7 +24,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.model.NotificationIntentData
+import com.example.smartalarm.core.framework.notification.model.NotificationIntentData
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.Constants.PACKAGE
 import com.example.smartalarm.databinding.ActivityHomeBinding

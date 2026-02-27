@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartalarm.R
-import com.example.smartalarm.core.helper.SwipeToDeleteCallback
+import com.example.smartalarm.core.presentation.helper.SwipeToDeleteCallback
 import com.example.smartalarm.core.utility.extension.toLocalizedString
 import com.google.android.material.snackbar.Snackbar
 import com.shawnlin.numberpicker.NumberPicker
@@ -280,7 +280,7 @@ fun getLocalizedDay(context: Context): String {
     val adjustedDay = if (currentDay == 7) 0 else currentDay
 
     // Fetch the localized day name from the appropriate string array (full weekday names)
-    val localizedDay = context.resources.getStringArray(R.array.alarm_weekday_full)[adjustedDay]
+    val localizedDay = context.resources.getStringArray(R.array.full_weekdays)[adjustedDay]
 
     return localizedDay
 }

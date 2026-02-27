@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.timer.presentation.effect
 
-import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.feature.timer.presentation.view.activity.ShowTimerActivity
 import com.example.smartalarm.feature.timer.presentation.viewmodel.ShowTimerViewModel
 

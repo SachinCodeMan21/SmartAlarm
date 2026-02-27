@@ -6,54 +6,60 @@ import androidx.room.Upsert
 import com.example.smartalarm.feature.clock.data.local.entity.PlaceEntity
 import kotlinx.coroutines.flow.Flow
 
-
 /**
- * Data Access Object (DAO) for accessing and modifying place-related data in the local Room database.
+ * Data Access Object (DAO) responsible for managing access to
+ * place-related data stored in the local Room database.
+ *
+ * Provides methods for querying, inserting, updating, and searching
+ * cached place entities.
  */
 @Dao
 interface PlaceDao {
 
     /**
-     * Retrieves all saved places from the local database as a reactive stream.
+     * Returns a reactive stream of all stored places.
      *
-     * @return A [Flow] that emits the current list of [PlaceEntity] objects.
+     * The returned [Flow] automatically emits updates whenever the
+     * underlying table data changes.
+     *
+     * @return A [Flow] emitting the current list of [PlaceEntity].
      */
     @Query("SELECT * FROM searched_places_table")
     fun getAllPlaces(): Flow<List<PlaceEntity>>
 
-
-
     /**
-     * Inserts a new place or updates it if it already exists (based on primary key).
+     * Inserts the given [PlaceEntity] into the database.
      *
-     * @param place The [PlaceEntity] to insert or update.
+     * If a record with the same primary key already exists,
+     * it will be updated.
+     *
+     * @param place The entity to insert or update.
      */
     @Upsert
     suspend fun insertPlace(place: PlaceEntity)
 
-
     /**
-     * Inserts or updates a list of places in the local database.
+     * Inserts or updates a collection of [PlaceEntity] objects.
      *
-     * Each place in the list will be inserted as a separate row.
-     * If a place with the same primary key already exists, it will be updated (replaced) instead of inserted again.
+     * Each entity is processed individually. Existing records
+     * (based on primary key) will be updated.
      *
-     * This operation helps keep the local cache in sync with the latest data from the remote source.
-     *
-     * @param places List of [PlaceEntity] objects to be inserted or updated.
+     * @param places List of entities to insert or update.
      */
     @Upsert
     suspend fun insertAllPlaces(places: List<PlaceEntity>)
 
-
     /**
-     * Searches the local database for places where either the full name or primary name matches the given query.
+     * Searches for places whose `full_name` or `primary_name`
+     * matches the provided query pattern.
      *
-     * @param query The search string to match against `full_name` or `primary_name`. Should include SQL wildcards (e.g., `%text%`).
-     * @return A list of [PlaceEntity] objects that match the query.
+     * The query string should include SQL wildcard characters
+     * (e.g., `%keyword%`) if partial matching is desired.
+     *
+     * @param query SQL LIKE pattern used for matching.
+     * @return List of matching [PlaceEntity] results.
      */
     @Query("SELECT * FROM searched_places_table WHERE full_name LIKE :query OR primary_name LIKE :query")
     suspend fun searchPlace(query: String): List<PlaceEntity>
-
 }
 

@@ -20,11 +20,11 @@ import com.example.smartalarm.core.utility.extension.enableSwipeToDelete
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.core.utility.extension.showUndoTimeZoneSnackBar
 import com.example.smartalarm.databinding.FragmentClockBinding
-import com.example.smartalarm.feature.clock.domain.model.ClockModel
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
-import com.example.smartalarm.feature.clock.presentation.adapter.TimeZoneAdapter
+import com.example.smartalarm.feature.clock.presentation.adapter.WorldTimeZoneAdapter
 import com.example.smartalarm.feature.clock.presentation.effect.ClockEffect
 import com.example.smartalarm.feature.clock.presentation.event.ClockEvent
+import com.example.smartalarm.feature.clock.presentation.model.ClockUiModel
 import com.example.smartalarm.feature.clock.presentation.view.activity.SearchTimeZoneActivity
 import com.example.smartalarm.feature.clock.presentation.viewmodel.ClockViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +43,8 @@ class ClockFragment : Fragment() {
     private var _binding: FragmentClockBinding? = null
     private val binding get() = _binding ?: error(BINDING_NULL_ERROR)
     private val viewModel: ClockViewModel by viewModels()
-    private lateinit var clockAdapter: TimeZoneAdapter
+
+    private lateinit var clockAdapter: WorldTimeZoneAdapter
     private lateinit var searchTimeZoneLauncher: ActivityResultLauncher<Intent>
 
 
@@ -139,8 +140,10 @@ class ClockFragment : Fragment() {
      */
     private fun setupRecyclerView() {
 
-        clockAdapter = TimeZoneAdapter()
+        clockAdapter = WorldTimeZoneAdapter()
+
         binding.globalTimeZoneRv.apply {
+
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = clockAdapter
@@ -149,7 +152,7 @@ class ClockFragment : Fragment() {
                 context = requireContext(),
                 onSwipe = { position ->
                     val deletedItem = clockAdapter.currentList[position]
-                    viewModel.onEvent(ClockEvent.DeleteTimeZone(deletedItem))
+                    viewModel.onEvent(ClockEvent.DeleteTimeZone(deletedItem.id))
                 },
                 getItem = { clockAdapter.currentList[it] },
                 deleteIcon = R.drawable.ic_delete,
@@ -179,7 +182,7 @@ class ClockFragment : Fragment() {
      */
     private fun setUpUIStateObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiModel.collectLatest { model ->
                     updateUI(model)
                 }
@@ -192,13 +195,10 @@ class ClockFragment : Fragment() {
      */
     private fun setUpUIEffectObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEffect.collect { effect ->
                     when (effect) {
-                        is ClockEffect.NavigateToAddTimeZoneActivity -> {
-                            val intent = Intent(requireContext(), SearchTimeZoneActivity::class.java)
-                            searchTimeZoneLauncher.launch(intent)
-                        }
+                        is ClockEffect.NavigateToAddTimeZoneScreen -> navigateToAddTimeZoneScreen()
                         is ClockEffect.DeleteTimeZone -> showUndoTimeZoneSnackBar(effect.deletedTimeZone)
                         is ClockEffect.ShowToast -> requireContext().showToast(effect.message)
                     }
@@ -220,7 +220,7 @@ class ClockFragment : Fragment() {
      * 2. Updates RecyclerView with saved places.
      * 3. Hides RecyclerView if the list is empty.
      */
-    private fun updateUI(data: ClockModel) {
+    private fun updateUI(data: ClockUiModel) {
         binding.apply {
             clockTimeTv.text = data.formattedTime
             clockDayTv.text = data.formattedDate
@@ -238,10 +238,15 @@ class ClockFragment : Fragment() {
      */
     private fun showUndoTimeZoneSnackBar(deletedTimeZone : PlaceModel){
         binding.root.showUndoTimeZoneSnackBar(
-            message = "${deletedTimeZone.primaryName} Timezone Deleted",
+            message = getString(R.string.timezone_deleted, deletedTimeZone.primaryName),
             undoTextRes = R.string.undo,
             onUndo = { viewModel.onEvent(ClockEvent.UndoDeletedTimeZone(deletedTimeZone)) }
         )
+    }
+
+    private fun navigateToAddTimeZoneScreen(){
+        val intent = Intent(requireContext(), SearchTimeZoneActivity::class.java)
+        searchTimeZoneLauncher.launch(intent)
     }
 
 }

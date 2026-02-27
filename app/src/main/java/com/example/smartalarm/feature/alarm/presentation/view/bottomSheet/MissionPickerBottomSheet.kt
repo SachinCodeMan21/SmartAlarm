@@ -263,7 +263,9 @@ class MissionPickerBottomSheet() : BottomSheetDialogFragment() {
         } else {
             currentMission
         }
+
         viewModel.handleUserEvent(AlarmEditorUserEvent.MissionEvent.Selected(missionHolderPosition, selectedMission))
+
     }
 
 

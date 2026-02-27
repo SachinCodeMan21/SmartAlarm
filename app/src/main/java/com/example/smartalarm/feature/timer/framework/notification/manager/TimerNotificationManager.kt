@@ -8,8 +8,8 @@ import android.service.notification.StatusBarNotification
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.smartalarm.core.notification.manager.AppNotificationManager
-import com.example.smartalarm.core.notification.model.GroupableNotification
+import com.example.smartalarm.core.framework.notification.manager.AppNotificationManager
+import com.example.smartalarm.core.framework.notification.model.GroupableNotification
 import com.example.smartalarm.feature.timer.framework.notification.factory.TimerNotificationBuilderFactory
 import com.example.smartalarm.feature.timer.framework.notification.factory.TimerNotificationDataMapperFactory
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotificationGroup

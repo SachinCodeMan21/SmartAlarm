@@ -16,18 +16,6 @@
     // # Permission Dialog Related Strings
     // ---------------------------------------------------------------------
 
-    <!-- Permission Dialog Titles -->
-    <string name="permission_required_title">权限要求</string>
-    <string name="full_screen_permission_title">全屏通知权限要求</string>
-    <string name="schedule_exact_alarm_permission_title">设置精确闹钟权限要求</string>
-    <string name="notification_permission_required_title">通知权限要求</string>
-
-    <!-- Permission Dialog Messages -->
-    <string name="full_screen_permission_message">为了允许应用在闹钟触发时显示通知，请在设置中授予全屏通知权限。</string>
-    <string name="schedule_exact_alarm_permission_message">为了允许应用安排闹钟和计时器，请在设置中授予设置精确闹钟权限。</string>
-    <string name="post_notification_permission_rationale_message">本应用需要通知权限来可靠地传递闹钟、计时器和秒表的提醒，确保及时和准确的通知。</string>
-    <string name="app_permission_setting_dialog_message">%1$s权限是该应用正常运行所必需的，请在系统设置中启用它。</string>
-
     <!-- Dialog Button Action Messages -->
     <string name="grant_permission">授予权限</string>
     <string name="deny">拒绝</string>
@@ -189,7 +177,7 @@
     <!-- D] Alarm Activity Fragments Strings -->
 
     <!-- 1] Show Alarm Mission Strings -->
-    <string-array name="alarm_weekday_full">
+    <string-array name="full_weekdays">
         <item>星期天</item>
         <item>星期一</item>
         <item>星期二</item>
@@ -292,7 +280,6 @@
     <string name="_1_00">+1:00</string>
     <string name="play_pause_timer">播放/暂停计时器</string>
     <string name="timer_title">%1$s 计时器</string>
-    <string name="active_timer">活动计时器</string>
     <string name="completed_timer">已完成计时器</string>
     <string name="add_one_minute">添加1分钟</string>
     <string name="hour_formatted_stopwatch_time">%1$sh : %2$sm : %3$ss</string>
@@ -300,6 +287,21 @@
     <string name="sec_formatted_stopwatch_time">%1$ss</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
     <string name="timer_dashboard">计时器仪表板</string>
+
+    <!-- Active Timer Notification String -->
+    <string name="active_timer">活动定时器</string>
+    <string name="time_remaining">⏳ 剩余时间: %1$s</string>
+    <string name="timer_running_count"> • %1$d 正在运行</string>
+    <string name="timer_paused_count"> • %1$d 已暂停</string>
+    <string name="timer_label">定时器 #%1$d</string>
+
+    <!-- Completed Timer Notification String -->
+    <string name="time_after_completion">✅ 完成后的时间: %1$s</string>
+    <string name="completed_timer_completed_count">%1$d 已完成</string>
+
+    <!-- Missed Timer -->
+    <string name="missed_timer">错过的定时器</string>
+    <string name="missed_timer_target_time">定时器目标时间: %1$s</string>
 
     // ---------------------------------------------------------------------
     // # Stopwatch Screen Related Strings

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
     <!-- Padding (increased for larger screens) -->
     <dimen name="padding_s">12dp</dimen>      <!-- from 8dp -->
     <dimen name="padding_m">24dp</dimen>      <!-- from 16dp -->
@@ -82,6 +81,12 @@
     <item name="guideline_stopwatch_anim_end" format="float" type="dimen">0.0</item>
     <item name="guideline_stopwatch_bottom" format="float" type="dimen">0.85</item>
     <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">0.75</item>
+
+
+    <!-- About Screen Dimens   -->
+    <item name="guideline_about_start" format="float" type="dimen">0.25</item>
+    <item name="guideline_about_end" format="float" type="dimen">0.75</item>
+    <item name="guideline_about_bottom" format="float" type="dimen">0.9</item>
 
 
 </resources>

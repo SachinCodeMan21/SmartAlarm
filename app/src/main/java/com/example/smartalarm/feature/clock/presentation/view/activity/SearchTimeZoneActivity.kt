@@ -13,7 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smartalarm.core.exception.asUiText
+import com.example.smartalarm.core.utility.exception.asUiText
 import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.ActivitySearchTimeZoneBinding
 import com.example.smartalarm.feature.clock.presentation.adapter.PlaceSearchAdapter
@@ -45,44 +45,17 @@ class SearchTimeZoneActivity : AppCompatActivity() {
     //  #  Lifecycle Methods
     // ---------------------------------------------------------------------
 
-    /**
-     * Called when the activity is starting. This is where you should initialize your UI components,
-     * observers, and perform any setup required for the screen.
-     *
-     * Responsibilities:
-     * - Inflates the view binding.
-     * - Sets the content view.
-     * - Applies edge-to-edge system window insets.
-     * - Initializes UI components via [setupUI].
-     * - Begins observing UI state via [observeUIState].
-     * - Begins observing one-time UI effects via [observeUIEffects].
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down
-     * then this Bundle contains the data it most recently supplied. Otherwise, it is null.
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivitySearchTimeZoneBinding.inflate(layoutInflater)
         setContentView(binding.root)
         enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
+        setUpInsets()
         setupUI()
         observeUIState()
         observeUIEffects()
     }
 
-    /**
-     * Called when the activity is about to be destroyed.
-     *
-     * Responsibilities:
-     * - Cleans up the view binding reference to prevent memory leaks.
-     *
-     */
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -94,21 +67,23 @@ class SearchTimeZoneActivity : AppCompatActivity() {
     //  # Setup UI
     // ---------------------------------------------------------------------
 
-    /**
-     * Initializes the UI components and sets up user interaction listeners.
-     *
-     * Responsibilities:
-     * - Configures the navigation click listener for the toolbar to close the activity.
-     * - Initializes the [PlaceSearchAdapter] and sets it on the RecyclerView.
-     * - Sets up a [LinearLayoutManager] for the RecyclerView.
-     * - Adds a TextWatcher to the search input field to listen for query changes
-     *   and dispatch them to the [PlaceSearchViewModel].
-     */
+    private fun setUpInsets(){
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+    }
+
     private fun setupUI() = with(binding){
 
-        searchToolbar.setNavigationOnClickListener { viewModel.handleEvent(PlaceSearchEvent.NavigateBack)}
+        searchToolbar.setNavigationOnClickListener {
+            viewModel.handleEvent(PlaceSearchEvent.NavigateBack)
+        }
 
-        placeSearchAdapter = PlaceSearchAdapter { viewModel.handleEvent(PlaceSearchEvent.PlaceSelected(it)) }
+        placeSearchAdapter = PlaceSearchAdapter {
+            viewModel.handleEvent(PlaceSearchEvent.PlaceSelected(it))
+        }
 
         searchedPlacesRv.apply {
             layoutManager = LinearLayoutManager(this@SearchTimeZoneActivity)
@@ -128,16 +103,20 @@ class SearchTimeZoneActivity : AppCompatActivity() {
     // ---------------------------------------------------------------------
     @SuppressLint("SetTextI18n")
     private fun observeUIState() {
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { state ->
+
                     with(binding) {
+
                         // 1. Hide everything by default
                         progressBar.isVisible = false
                         searchedPlacesRv.isVisible = false
                         emptyStateTv.isVisible = false
 
                         when (state) {
+
                             is PlaceSearchUiState.Initial -> {
                                 emptyStateTv.isVisible = true
                                 emptyStateTv.text = "Start typing to search for a place"
@@ -162,6 +141,7 @@ class SearchTimeZoneActivity : AppCompatActivity() {
                                 emptyStateTv.isVisible = true
                                 emptyStateTv.text = "Something went wrong"
                             }
+
                         }
                     }
                 }
@@ -173,24 +153,12 @@ class SearchTimeZoneActivity : AppCompatActivity() {
     // ---------------------------------------------------------------------
     //  # Setup Observe UI Effect
     // ---------------------------------------------------------------------
-    /**
-     * Collects one-time UI effects emitted by [PlaceSearchViewModel].
-     *
-     * These effects represent actions that should happen only once, such as:
-     * - Navigating back to the previous screen
-     * - Displaying a snackBar message
-     *
-     * The collection runs only while the activity is in the STARTED state,
-     * ensuring proper lifecycle awareness.
-     */
     private fun observeUIEffects() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEffect.collect { effect ->
                     when (effect) {
-
                         is PlaceSearchEffect.Finish -> finish()
-
                         is PlaceSearchEffect.NavigateToHome -> {
                             setResult(RESULT_OK)
                             finish()

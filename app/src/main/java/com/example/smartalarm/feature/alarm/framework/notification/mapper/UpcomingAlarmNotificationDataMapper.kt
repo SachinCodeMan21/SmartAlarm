@@ -2,8 +2,8 @@ package com.example.smartalarm.feature.alarm.framework.notification.mapper
 
 import android.content.Context
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
-import com.example.smartalarm.core.notification.model.NotificationAction
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.model.NotificationAction
 import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel.UpcomingAlarmModel
 import com.example.smartalarm.feature.alarm.framework.notification.mapper.AlarmNotificationDataMapperHelper.createContentIntent

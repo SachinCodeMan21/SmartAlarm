@@ -25,6 +25,6 @@ data class ClockEntity(
     val fullName: String,
     val primaryName: String,
     val timeZoneId: String,
-    val offsetSeconds: Long,
+    val offsetSeconds: Int,
     val currentTime: String
 )

@@ -6,35 +6,41 @@ import androidx.room.Upsert
 import com.example.smartalarm.feature.clock.data.local.entity.ClockEntity
 
 /**
- * Data Access Object (DAO) for managing clock-related database operations.
+ * Data Access Object (DAO) responsible for managing
+ * clock and time zone data stored in the local Room database.
+ *
+ * Provides methods for retrieving, inserting, updating,
+ * and deleting saved time zone entries.
  */
 @Dao
 interface ClockDao {
 
     /**
-     * Retrieves all saved clock places from the database.
+     * Retrieves all saved time zones from the database.
      *
-     * @return A list of [ClockEntity] representing all saved places.
+     * @return A list of [ClockEntity] representing
+     * all persisted clock entries.
      */
-    @Query("Select * from clock_table")
+    @Query("SELECT * FROM clock_table")
     suspend fun getAllSavedTimeZones(): List<ClockEntity>
 
     /**
-     * Inserts or updates a place in the database.
+     * Inserts the given [ClockEntity] into the database.
      *
-     * If the entity already exists, it will be updated; otherwise, inserted.
+     * If a record with the same primary key already exists,
+     * it will be updated.
      *
-     * @param clockEntity The [ClockEntity] to be inserted or updated.
+     * @param clockEntity The entity to insert or update.
      */
     @Upsert
     suspend fun insertTimeZone(clockEntity: ClockEntity)
 
     /**
-     * Deletes a place from the database by its ID.
+     * Deletes a saved time zone entry by its unique identifier.
      *
-     * @param placeId The ID of the place to delete.
+     * @param placeId The primary key of the record to remove.
      */
-    @Query("Delete From clock_table Where id = :placeId")
+    @Query("DELETE FROM clock_table WHERE id = :placeId")
     suspend fun deleteTimeZoneById(placeId: Long)
 
 }

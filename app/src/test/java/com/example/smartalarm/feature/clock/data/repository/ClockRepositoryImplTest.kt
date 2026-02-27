@@ -1,19 +1,6 @@
 package com.example.smartalarm.feature.clock.data.repository
 
-import com.example.smartalarm.feature.clock.data.datasource.contract.ClockLocalDataSource
-import io.mockk.MockKAnnotations
-import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import com.example.smartalarm.core.model.Result
-import com.example.smartalarm.feature.clock.data.local.entity.ClockEntity
-import com.example.smartalarm.feature.clock.domain.model.PlaceModel
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.just
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
-import org.junit.Before
-import kotlin.test.Test
 
 @ExperimentalCoroutinesApi
 class ClockRepositoryImplTest {

@@ -1,6 +1,5 @@
 package com.example.smartalarm.feature.stopwatch.domain.usecase.contract
 
-import com.example.smartalarm.core.model.Result
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import kotlinx.coroutines.flow.StateFlow
 

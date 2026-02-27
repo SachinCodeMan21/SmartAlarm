@@ -1,10 +1,10 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
-import com.example.smartalarm.R
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SaveAlarmUseCase
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import javax.inject.Inject
 
@@ -31,28 +31,10 @@ class SaveAlarmUseCaseImpl @Inject constructor(
      * (with the alarm's ID) or failure (with a localized error message).
      *
      * @param alarm The [AlarmModel] to be saved.
-     * @return A [Result] containing the saved alarm's ID if successful, or an error if the operation fails.
+     * @return A [MyResult] containing the saved alarm's ID if successful, or an error if the operation fails.
      */
-    override suspend fun invoke(alarm: AlarmModel): Result<Int> {
-
-        // Attempt to save the alarm to the repository
-        val result = alarmRepository.saveAlarm(alarm)
-
-        return when (result) {
-
-            // If the save operation is successful, return a success result with the saved alarm's ID
-            is Result.Success -> {
-                Result.Success(result.data)
-            }
-
-            // If the save operation fails, return an error result with a localized error message
-            is Result.Error -> {
-                Result.Error(
-                   //Exception(resourceProvider.getString(R.string.failed_to_save_the_alarm_details))
-                    result.error
-                )
-            }
-        }
+    override suspend fun invoke(alarm: AlarmModel): MyResult<Int, DataError> {
+        return alarmRepository.saveAlarm(alarm)
     }
 }
 

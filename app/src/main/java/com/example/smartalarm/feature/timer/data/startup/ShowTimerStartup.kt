@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.timer.data.startup
 
-import com.example.smartalarm.core.startup.AppStartupTask
+import com.example.smartalarm.core.application.startup.AppStartupTask
 import com.example.smartalarm.feature.timer.data.sync.ShowTimerDbSyncManager
 import javax.inject.Inject
 import javax.inject.Singleton

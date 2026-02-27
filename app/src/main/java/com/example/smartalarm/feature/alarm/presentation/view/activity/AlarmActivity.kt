@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.smartalarm.R
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.Constants.PACKAGE
+import com.example.smartalarm.core.utility.exception.asUiText
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.databinding.ActivityAlarmBinding
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
@@ -232,6 +233,10 @@ class AlarmActivity : AppCompatActivity() {
                         is AlarmMissionEffect.MissionCompleted -> handleMissionCompletion()
                         is AlarmMissionEffect.FinishActivity -> finish()
                         is AlarmMissionEffect.ShowToastMessage -> showToast(newEffect.toastMessage)
+                        is AlarmMissionEffect.ShowErrorMessage -> {
+                            val errorMessage = newEffect.error.asUiText().asString(this@AlarmActivity)
+                            showToast(errorMessage)
+                        }
                     }
                 }
             }

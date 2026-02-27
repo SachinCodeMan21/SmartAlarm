@@ -26,14 +26,36 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/language_guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guideline_language_start" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/language_guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guideline_language_end" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/language_guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/guideline_language_bottom" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/languageRecyclerView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/language_guideline_bottom"
+        app:layout_constraintEnd_toStartOf="@+id/language_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/language_guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/languageAppBarLayout"
-        tools:listitem="@layout/item_language_layout"/>
+        tools:listitem="@layout/item_language_layout" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

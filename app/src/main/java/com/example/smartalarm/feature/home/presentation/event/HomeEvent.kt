@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.home.presentation.event
 
-import com.example.smartalarm.core.notification.model.NotificationIntentData
+import com.example.smartalarm.core.framework.notification.model.NotificationIntentData
 
 /**
  * Represents various events triggered by user actions or system interactions in HomeActivity.

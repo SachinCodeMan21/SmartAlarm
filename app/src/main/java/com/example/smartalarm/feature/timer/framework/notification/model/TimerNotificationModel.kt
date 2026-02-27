@@ -1,7 +1,8 @@
 package com.example.smartalarm.feature.timer.framework.notification.model
 
-import com.example.smartalarm.core.notification.model.AppNotificationModel
-import com.example.smartalarm.core.notification.model.GroupableNotification
+
+import com.example.smartalarm.core.framework.notification.model.AppNotificationModel
+import com.example.smartalarm.core.framework.notification.model.GroupableNotification
 import com.example.smartalarm.feature.alarm.framework.notification.model.NotificationGroupKeys
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.framework.notification.enums.TimerNotificationDataMapperKey

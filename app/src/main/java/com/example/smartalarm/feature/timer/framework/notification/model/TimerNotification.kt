@@ -1,7 +1,6 @@
 package com.example.smartalarm.feature.timer.framework.notification.model
 
-import com.example.smartalarm.core.notification.model.AppNotification
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.model.AppNotification
 import com.example.smartalarm.feature.timer.framework.notification.enums.TimerNotificationBuilderTypeKey
 
 /**

@@ -13,7 +13,7 @@ sealed class ClockEffect {
     /**
      * Triggers navigation to the screen where a new time zone can be added.
      */
-    data object NavigateToAddTimeZoneActivity : ClockEffect()
+    data object NavigateToAddTimeZoneScreen : ClockEffect()
 
     /**
      * Signals that a time zone was deleted and the UI may need to respond

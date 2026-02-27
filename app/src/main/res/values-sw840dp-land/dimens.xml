@@ -85,4 +85,9 @@
     <item name="guideline_stopwatch_bottom" format="float" type="dimen">0.8</item>
     <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">0.7</item>
 
+    <!-- About Screen Dimens   -->
+    <item name="guideline_about_start" format="float" type="dimen">0.3</item>
+    <item name="guideline_about_end" format="float" type="dimen">0.7</item>
+    <item name="guideline_about_bottom" format="float" type="dimen">0.8</item>
+
 </resources>

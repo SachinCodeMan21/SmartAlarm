@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.stopwatch.presentation.effect
 
-import com.example.smartalarm.core.exception.DataError
+import com.example.smartalarm.core.utility.exception.DataError
 
 /**
  * Represents one-time side effects emitted by the stopwatch feature.

@@ -5,21 +5,28 @@
 
     <!-- App Required Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Permissions for Foreground Services -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Permissions for Foreground Services -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" /> <!-- Permissions related to Alarm and Notifications -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
+
+    <!-- Permissions related to Alarm and Notifications -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" /> <!-- Permissions for Device Interaction -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
+    <!-- Permissions for Device Interaction -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
         android:maxSdkVersion="32"/>
     <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- Declare the attribution tag globally -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
+    <!-- Declare the attribution tag globally -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
 
     <attribution
@@ -118,7 +125,7 @@
             android:name=".feature.timer.framework.broadcast.receiver.TimerReceiver"
             android:exported="false" />
         <receiver
-            android:name=".core.broadcast.AppBootReceiver"
+            android:name=".core.framework.broadcast.AppBootReceiver"
             android:enabled="true"
             android:exported="false"
             android:directBootAware="true">

@@ -5,8 +5,8 @@ import android.content.Context
 import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import com.example.smartalarm.R
-import com.example.smartalarm.core.notification.builder.AppNotificationBuilder
-import com.example.smartalarm.core.notification.channel.AppNotificationChannel
+import com.example.smartalarm.core.framework.notification.builder.AppNotificationBuilder
+import com.example.smartalarm.core.framework.notification.channel.AppNotificationChannel
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotification
 import javax.inject.Inject
 

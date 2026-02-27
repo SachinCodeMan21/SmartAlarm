@@ -1,6 +1,6 @@
 package com.example.smartalarm.feature.stopwatch.framework.notification.enums
 
-import com.example.smartalarm.core.notification.marker.AppNotificationBuilderTypeKey
+import com.example.smartalarm.core.framework.notification.marker.AppNotificationBuilderTypeKey
 
 /**
  * Enum representing the different types of stopwatch notifications.

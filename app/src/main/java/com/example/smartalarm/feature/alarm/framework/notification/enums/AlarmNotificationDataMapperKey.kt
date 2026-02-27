@@ -1,10 +1,10 @@
 package com.example.smartalarm.feature.alarm.framework.notification.enums
 
-import com.example.smartalarm.core.notification.marker.AppNotificationDataMapperKey
-import com.example.smartalarm.core.notification.mapper.AppNotificationDataMapper
+import com.example.smartalarm.core.framework.notification.marker.AppNotificationDataMapperKey
+import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationData
-import com.example.smartalarm.core.notification.factory.NotificationDataMapperFactory
+import com.example.smartalarm.core.framework.notification.factory.NotificationDataMapperFactory
 
 /**
  * Enum representing keys for selecting specific [AppNotificationDataMapper] implementations

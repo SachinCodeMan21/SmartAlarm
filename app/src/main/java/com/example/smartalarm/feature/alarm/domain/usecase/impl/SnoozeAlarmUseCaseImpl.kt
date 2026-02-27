@@ -1,14 +1,14 @@
 package com.example.smartalarm.feature.alarm.domain.usecase.impl
 
-import com.example.smartalarm.core.exception.ExceptionMapper
-import com.example.smartalarm.core.utility.sharedPreference.contract.SharedPrefsHelper
+import com.example.smartalarm.core.framework.sharedPreference.contract.SharedPrefsHelper
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SnoozeAlarmUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.UpdateAlarmUseCase
 import com.example.smartalarm.feature.alarm.framework.notification.manager.AlarmNotificationManager
 import com.example.smartalarm.feature.alarm.framework.scheduler.contract.AlarmScheduler
 import com.example.smartalarm.feature.alarm.framework.manager.contract.AlarmRingtoneManager
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
-import com.example.smartalarm.core.model.Result
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel
 import com.example.smartalarm.feature.alarm.framework.manager.contract.VibrationManager
@@ -47,58 +47,52 @@ class SnoozeAlarmUseCaseImpl @Inject constructor(
      * scheduling the next snooze, and posting a snooze notification.
      *
      * @param alarm The [AlarmModel] object containing the alarm details.
-     * @return [Result] A [Result.Success] if the alarm is successfully snoozed, or [Result.Error] if an error occurs.
+     * @return [MyResult] A [MyResult.Success] if the alarm is successfully snoozed, or [MyResult.Error] if an error occurs.
      */
-    override suspend fun invoke(alarm: AlarmModel): Result<Unit> {
-        return try {
+    override suspend fun invoke(alarm: AlarmModel): MyResult<Unit, DataError> {
+        // Create an updated snoozed alarm with the new state and snooze settings
+        val updatedSnoozedAlarm = alarm.copy(
+            snoozeSettings = alarm.snoozeSettings.copy(
+                isAlarmSnoozed = true,
+                snoozedCount = alarm.snoozeSettings.snoozedCount - 1
+            ),
+            alarmState = AlarmState.SNOOZED
+        )
 
-            // Create an updated snoozed alarm with the new state and snooze settings
-            val updatedSnoozedAlarm = alarm.copy(
-                snoozeSettings = alarm.snoozeSettings.copy(
-                    isAlarmSnoozed = true,
-                    snoozedCount = alarm.snoozeSettings.snoozedCount - 1
-                ),
-                alarmState = AlarmState.SNOOZED
-            )
+        return when (val updateResult = updateAlarmUseCase(updatedSnoozedAlarm)) {
 
-            when (val updateResult = updateAlarmUseCase(updatedSnoozedAlarm)) {
+            is MyResult.Success -> {
 
-                is Result.Success -> {
-
-                    // Stop any ongoing alarm sound and cancel any existing timeouts
+                // Stop any ongoing alarm sound and cancel any existing timeouts
 //                    alarmRingtoneHelper.stopAlarmRingtone()
 //                    vibrationManager.stopVibration()
-                    alarmScheduler.cancelSmartAlarmTimeout(alarm.id)
+                alarmScheduler.cancelSmartAlarmTimeout(alarm.id)
 
-                    // Schedule the next snooze based on the snooze interval
-                    val snoozeTimeInMillis = alarmTimeHelper.getNextSnoozeMillis(alarm.snoozeSettings.snoozeIntervalMinutes)
-                    alarmScheduler.scheduleSnoozeAlarm(updatedSnoozedAlarm.id, snoozeTimeInMillis)
+                // Schedule the next snooze based on the snooze interval
+                val snoozeTimeInMillis =
+                    alarmTimeHelper.getNextSnoozeMillis(alarm.snoozeSettings.snoozeIntervalMinutes)
+                alarmScheduler.scheduleSnoozeAlarm(updatedSnoozedAlarm.id, snoozeTimeInMillis)
 
-                    // Post the snooze notification for the user
-                    alarmNotificationManager.postAlarmNotification(
-                        updatedSnoozedAlarm.id,
-                        AlarmNotificationModel.SnoozedAlarmModel(
-                            updatedSnoozedAlarm,
-                            snoozeTimeInMillis
-                        )
+                // Post the snooze notification for the user
+                alarmNotificationManager.postAlarmNotification(
+                    updatedSnoozedAlarm.id,
+                    AlarmNotificationModel.SnoozedAlarmModel(
+                        updatedSnoozedAlarm,
+                        snoozeTimeInMillis
                     )
+                )
 
-                    // Reset the last active alarm notification preference
-                    //sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
+                // Reset the last active alarm notification preference
+                //sharedPrefsHelper.lastActiveAlarmNotificationPref = 0
 
-                    // Return success result
-                    Result.Success(Unit)
-                }
-
-                is Result.Error -> {
-                    // Return error if alarm update fails
-                    Result.Error(updateResult.error)
-                }
+                // Return success result
+                MyResult.Success(Unit)
             }
 
-        } catch (exception: Exception) {
-            // Catch any unexpected exception and return it as Result.Error
-            Result.Error(ExceptionMapper.map(exception))
+            is MyResult.Error -> {
+                // Return error if alarm update fails
+                MyResult.Error(updateResult.error)
+            }
         }
     }
 }

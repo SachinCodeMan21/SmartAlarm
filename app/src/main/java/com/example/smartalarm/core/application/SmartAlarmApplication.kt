@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
-import com.example.smartalarm.core.notification.channel.AppNotificationChannelManager
-import com.example.smartalarm.core.startup.AppStartupRunner
+import com.example.smartalarm.core.framework.notification.channel.AppNotificationChannelManager
+import com.example.smartalarm.core.application.startup.AppStartupRunner
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
