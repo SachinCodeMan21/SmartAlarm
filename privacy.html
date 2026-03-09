@@ -15,7 +15,8 @@
         }
         h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
         h2 { margin-top: 30px; color: #444; }
-        p { margin-bottom: 15px; }
+        p, li { margin-bottom: 15px; }
+        ul { padding-left: 20px; }
     </style>
 </head>
 <body>
@@ -25,23 +26,38 @@
 
     <p>This Privacy Policy describes how your information is handled when you use the Smart Alarm application.</p>
 
-    <h2>1. Data Collection and Storage</h2>
-    <p>The Smart Alarm app is designed with privacy in mind. We do not upload your alarm settings, mission data, or personal information to any external servers. All data created within the app is stored locally on your device.</p>
+    <h2>1. Data Collection and Local Storage</h2>
+    <p>The Smart Alarm app is built on an offline-first architecture designed with your privacy in mind. Your custom alarms, cognitive/physical mission data, timer settings, stopwatch laps, saved time zones, and language preferences are stored locally on your device. We do not upload your personal data to any external servers.</p>
 
-    <h2>2. Permissions</h2>
+    <h2>2. Analytics and Crash Reporting</h2>
+    <p>To ensure app stability and continuously improve performance, we utilize third-party analytics and crash reporting services. These services automatically collect anonymous diagnostic data when you use the app or if the app crashes. This data may include:</p>
+    <ul>
+        <li>Crash reports and stack traces to identify bugs.</li>
+        <li>Device information (e.g., device model, operating system version).</li>
+        <li>Anonymous usage statistics (e.g., interaction with the clock, timer, or stopwatch screens).</li>
+    </ul>
+    <p>This information is aggregated, not linked to your personal identity, and used strictly for troubleshooting and improving the app.</p>
+
+    <h2>3. Permissions</h2>
     <p>To function correctly, the app requires specific permissions, including:</p>
     <ul>
-        <li><strong>Notifications:</strong> To alert you when an alarm triggers.</li>
-        <li><strong>Activity Recognition:</strong> Used for mission-related features.</li>
-        <li><strong>Exact Alarm:</strong> To ensure your alarms trigger at the precise time requested.</li>
+        <li><strong>Notifications:</strong> To alert you when an alarm or timer triggers.</li>
+        <li><strong>Activity Recognition:</strong> Used for physical mission-related features.</li>
+        <li><strong>Exact Alarm:</strong> To ensure your alarms and timers trigger at the precise time requested.</li>
+        <li><strong>Internet:</strong> Used to fetch time zone data and transmit anonymous analytics/crash logs.</li>
     </ul>
-    <p>These permissions are used ephemerally and processed only on your device.</p>
+    <p>These permissions are processed entirely on your device, with the exception of the Internet permission used for diagnostic reporting.</p>
 
-    <h2>3. Third-Party Services</h2>
-    <p>The app does not share your data with third-party services or advertisers.</p>
+    <h2>4. Third-Party Services</h2>
+    <p>The app utilizes third-party services that may collect information used to identify you. Links to the privacy policies of third-party service providers used by the app include:</p>
+    <ul>
+        <li><a href="https://policies.google.com/privacy" target="_blank">Google Play Services</a></li>
+        <li><a href="https://firebase.google.com/policies/analytics" target="_blank">Google Analytics for Firebase</a></li>
+        <li><a href="https://firebase.google.com/support/privacy" target="_blank">Firebase Crashlytics</a></li>
+    </ul>
 
-    <h2>4. Contact Us</h2>
-    <p>If you have any questions about this Privacy Policy, you can contact us at: [Your Email Address]</p>
+    <h2>5. Contact Us</h2>
+    <p>If you have any questions about this Privacy Policy, you can contact us at: sachinyadav211002@gmail.com</p>
 
 </body>
 </html>
