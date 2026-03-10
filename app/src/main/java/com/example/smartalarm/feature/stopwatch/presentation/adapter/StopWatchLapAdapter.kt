@@ -5,44 +5,47 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.smartalarm.R
+import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.databinding.StopWatchItemBinding
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchLapUiModel
+import com.example.smartalarm.feature.stopwatch.utility.StopwatchTimeFormatter
 
 
 /**
- * A [ListAdapter] implementation for displaying a list of stopwatch laps in the [RecyclerView].
+ * RecyclerView adapter for displaying a list of stopwatch laps.
  *
- * This adapter uses [StopwatchLapUiModel] as the data model and leverages [DiffUtil] to efficiently
- * detect changes. It supports **partial updates** of the latest lap using payloads, so only the
- * elapsed time and end time of the most recent lap are updated without rebinding the entire item.
+ * This adapter efficiently handles lap updates by leveraging [DiffUtil.ItemCallback] to detect
+ * changes between [StopwatchLapUiModel] items. It supports both full and partial updates to
+ * optimize UI performance, especially for the latest lap entry.
+ *
+ * @param numberFormatter Utility to format lap numbers in a localized style.
+ * @param stopwatchTimeFormatter Utility to format durations for display in a stopwatch-friendly format.
+ *
+ * ### Key Features:
+ * - Uses [ListAdapter] to automatically handle updates to the lap list.
+ * - Supports **partial updates**: only the elapsed time and end time of the latest lap are refreshed
+ *   when they change, reducing unnecessary UI redraws.
+ * - Each lap is represented by a [StopwatchLapUiModel] and bound to a [StopWatchItemBinding] view holder.
+ *
+ * ### DiffUtil Details:
+ * - `areItemsTheSame`: Determines if two laps are the same based on `lapIndex`.
+ * - `areContentsTheSame`: Determines if all fields of two laps are identical.
+ * - `getChangePayload`: Returns a [StopwatchLapUiModel] payload if either `lapElapsedMillis` or
+ *   `lapEndTimeMillis` changed, enabling partial UI updates.
  */
-class StopWatchLapAdapter : ListAdapter<StopwatchLapUiModel, StopWatchLapAdapter.StopWatchVH>(diffUtil) {
-
-    /**
-     * ViewHolder for displaying a single stopwatch lap item.
-     *
-     * @param binding The view binding for the lap item layout.
-     */
-    class StopWatchVH(val binding: StopWatchItemBinding) : RecyclerView.ViewHolder(binding.root)
-
+class StopWatchLapAdapter(
+    private val numberFormatter: NumberFormatter,
+    private val stopwatchTimeFormatter: StopwatchTimeFormatter
+) : ListAdapter<StopwatchLapUiModel, StopWatchLapAdapter.StopWatchVH>(diffUtil) {
 
     companion object {
-
-        /**
-         * A [DiffUtil.ItemCallback] implementation to efficiently determine changes in the
-         * [StopwatchLapUiModel] list.
-         *
-         * - [DiffUtil.ItemCallback.areItemsTheSame]: checks if two items represent the same lap based on `formattedLapIndex`.
-         * - [DiffUtil.ItemCallback.areContentsTheSame]: checks if the entire content of two items is identical.
-         * - [DiffUtil.ItemCallback.getChangePayload]: returns the new [StopwatchLapUiModel] object if either the
-         *   `formattedLapElapsedTime` or `formattedLapEndTime` changed, enabling **partial updates**.
-         */
         private val diffUtil = object : DiffUtil.ItemCallback<StopwatchLapUiModel>() {
 
             override fun areItemsTheSame(
                 oldItem: StopwatchLapUiModel,
                 newItem: StopwatchLapUiModel
-            ): Boolean = oldItem.formattedLapIndex == newItem.formattedLapIndex
+            ): Boolean = oldItem.lapIndex == newItem.lapIndex
 
             override fun areContentsTheSame(
                 oldItem: StopwatchLapUiModel,
@@ -53,17 +56,15 @@ class StopWatchLapAdapter : ListAdapter<StopwatchLapUiModel, StopWatchLapAdapter
                 oldItem: StopwatchLapUiModel,
                 newItem: StopwatchLapUiModel
             ): Any? {
-                // Return the new object if elapsedTime or endTime changed
-                return if (oldItem.formattedLapElapsedTime != newItem.formattedLapElapsedTime ||
-                    oldItem.formattedLapEndTime != newItem.formattedLapEndTime
+                return if (oldItem.lapElapsedMillis != newItem.lapElapsedMillis ||
+                    oldItem.lapEndTimeMillis != newItem.lapElapsedMillis
                 ) newItem else null
             }
         }
     }
 
-    /**
-     * Inflates the lap item layout and returns a new [StopWatchVH].
-     */
+    class StopWatchVH(val binding: StopWatchItemBinding) : RecyclerView.ViewHolder(binding.root)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StopWatchVH {
         return StopWatchVH(
             StopWatchItemBinding.inflate(
@@ -73,38 +74,29 @@ class StopWatchLapAdapter : ListAdapter<StopwatchLapUiModel, StopWatchLapAdapter
             )
         )
     }
-
-    /**
-     * Binds the data from [StopwatchLapUiModel] to all UI views in the ViewHolder.
-     * This is called for full item binds.
-     */
     override fun onBindViewHolder(holder: StopWatchVH, position: Int) {
         val lap = getItem(position)
         holder.binding.apply {
-            lapIndexTv.text = lap.formattedLapIndex
-            lapElapsedTimeTv.text = lap.formattedLapElapsedTime
-            lapEndTimeTv.text = lap.formattedLapEndTime
+            lapIndexTv.text = holder.itemView.context.getString(
+                R.string.lap_index,
+                numberFormatter.formatLocalizedNumber(lap.lapIndex.toLong(), false)
+            )
+            lapElapsedTimeTv.text = stopwatchTimeFormatter.formatMainDisplay(lap.lapElapsedMillis, true)
+            lapEndTimeTv.text = stopwatchTimeFormatter.formatMainDisplay(lap.lapEndTimeMillis, true)
         }
     }
 
-    /**
-     * Handles partial updates using payloads.
-     * Only updates the elapsed time and end time for the **latest lap** (last item).
-     *
-     * @param payloads Contains the new [StopwatchLapUiModel] if either elapsed time or end time changed.
-     */
     override fun onBindViewHolder(holder: StopWatchVH, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
-            // Full bind
-            onBindViewHolder(holder, position)
+            onBindViewHolder(holder, position) // Full bind
         } else {
             // Partial update for the latest lap
             if (position == itemCount - 1) {
                 payloads.forEach { payload ->
                     if (payload is StopwatchLapUiModel) {
                         holder.binding.apply {
-                            lapElapsedTimeTv.text = payload.formattedLapElapsedTime
-                            lapEndTimeTv.text = payload.formattedLapEndTime
+                            lapElapsedTimeTv.text = stopwatchTimeFormatter.formatMainDisplay(payload.lapElapsedMillis, true)
+                            lapEndTimeTv.text = stopwatchTimeFormatter.formatMainDisplay(payload.lapEndTimeMillis, true)
                         }
                     }
                 }

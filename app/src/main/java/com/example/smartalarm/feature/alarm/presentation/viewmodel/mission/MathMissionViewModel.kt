@@ -3,6 +3,7 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.mission
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.enums.Difficulty
@@ -10,6 +11,7 @@ import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.presentation.effect.mission.MissionEffect
 import com.example.smartalarm.feature.alarm.presentation.event.mission.MathMissionEvent
 import com.example.smartalarm.feature.alarm.presentation.model.mission.MathMissionUiModel
+import com.example.smartalarm.feature.alarm.presentation.model.mission.analyticEnum.MissionEventType
 import com.example.smartalarm.feature.alarm.utility.ArithmeticQuestionGenerator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -44,6 +46,7 @@ import javax.inject.Inject
 class MathMissionViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val numberFormatter: NumberFormatter,
+    private val  analyticsHelper: AnalyticsHelper,
     private val arithmeticQuestionGenerator: ArithmeticQuestionGenerator
 ) : ViewModel()
 {
@@ -99,13 +102,23 @@ class MathMissionViewModel @Inject constructor(
      * @param event The event to handle, which can be one of [MathMissionEvent.StartMission],
      *              [MathMissionEvent.SubmitAnswer], or [MathMissionEvent.MissionCompleted].
      */
-    fun handleEvent(event: MathMissionEvent){
-        when(event){
-            is MathMissionEvent.StartMission -> startMission(event.mission)
-            is MathMissionEvent.SubmitAnswer -> submitAnswer(event.ans)
-            is MathMissionEvent.MissionCompleted -> postEffect(MissionEffect.MissionCompleted)
+    fun handleEvent(event: MathMissionEvent) {
+        when (event) {
+            is MathMissionEvent.StartMission -> {
+                startMission(event.mission)
+                analyticsHelper.logEvent(MissionEventType.START_MATH_MISSION.eventName)
+            }
+            is MathMissionEvent.SubmitAnswer -> {
+                submitAnswer(event.ans)
+                analyticsHelper.logEvent(MissionEventType.SUBMIT_ANSWER_MATH.eventName)
+            }
+            is MathMissionEvent.MissionCompleted -> {
+                postEffect(MissionEffect.MissionCompleted)
+                analyticsHelper.logEvent(MissionEventType.MISSION_COMPLETED_MATH.eventName)
+            }
         }
     }
+
 
 
     /**
@@ -185,7 +198,7 @@ class MathMissionViewModel @Inject constructor(
 
             userInput.isBlank() -> {
                 showFeedback(
-                    "Please enter an answer!",
+                    resourceProvider.getString(R.string.please_enter_an_answer),
                     android.R.color.holo_red_light,
                     R.drawable.error_img
                 )
@@ -195,7 +208,7 @@ class MathMissionViewModel @Inject constructor(
 
             userAnswer == null -> {
                 showFeedback(
-                    "Invalid number format!",
+                    resourceProvider.getString(R.string.invalid_number_format),
                     android.R.color.holo_red_light,
                     R.drawable.error_img
                 )
@@ -205,7 +218,7 @@ class MathMissionViewModel @Inject constructor(
 
             userAnswer == currentAnswer.toInt() -> {
                 showFeedback(
-                    "Correct!",
+                    resourceProvider.getString(R.string.correct),
                     R.color.green,
                     R.drawable.correct_img,
                     isEnabled = false,
@@ -218,7 +231,7 @@ class MathMissionViewModel @Inject constructor(
 
             else -> {
                 showFeedback(
-                    "Wrong answer!",
+                    resourceProvider.getString(R.string.wrong_answer),
                     android.R.color.holo_red_light,
                     R.drawable.error_img,
                     isEnabled = false,

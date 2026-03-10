@@ -2,7 +2,6 @@ package com.example.smartalarm.feature.alarm.presentation.view.fragment.home
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartalarm.R
 import com.example.smartalarm.core.framework.permission.MyPermissionChecker
@@ -35,6 +33,7 @@ import com.example.smartalarm.feature.alarm.presentation.uiState.AlarmUiState
 import com.example.smartalarm.feature.alarm.presentation.view.activity.AlarmEditorActivity
 import com.example.smartalarm.feature.alarm.presentation.viewmodel.home.AlarmViewModel
 import com.example.smartalarm.feature.alarm.utility.enableSwipeToDelete
+import com.example.smartalarm.feature.alarm.utility.formatter.AlarmTimeFormatter
 import com.example.smartalarm.feature.alarm.utility.showSnackBarWithUndo
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,6 +72,10 @@ class AlarmFragment : Fragment() {
 
 
     private lateinit var alarmsAdapter: AlarmAdapter
+
+    @Inject
+    lateinit var timeFormatter: AlarmTimeFormatter
+
     @Inject
     lateinit var permissionChecker: MyPermissionChecker
     private lateinit var permissionFlowDelegate: PermissionFlowDelegate
@@ -135,6 +138,7 @@ class AlarmFragment : Fragment() {
     private fun setupRecyclerView() {
 
         alarmsAdapter = AlarmAdapter(
+            timeFormatter = timeFormatter,
             onAlarmItemClick = { alarmId ->
                 alarmViewModel.handleEvent(AlarmEvent.AlarmItemClicked(alarmId))
             },

@@ -3,58 +3,49 @@ package com.example.smartalarm.feature.home.presentation.event
 import com.example.smartalarm.core.framework.notification.model.NotificationIntentData
 
 /**
- * Represents various events triggered by user actions or system interactions in HomeActivity.
- * These events manage navigation, system back presses, and handling data passed through notifications.
+ * Defines all user and system events that can occur on the Home screen.
  *
- * The purpose of this sealed class is to centralize all navigation and system interaction events for HomeActivity,
- * providing a clean separation of concerns and enabling the ViewModel to respond appropriately to UI changes.
+ * HomeEvent acts as the single source of truth for interactions originating
+ * from HomeActivity. These events are processed by HomeViewModel to drive
+ * navigation and other UI behavior.
  *
- * Key Responsibilities:
- * - **RestoreLastOpenedDestination**: Ensures the app restores the last opened screen when resumed.
- * - **NavigateFromNotification**: Directs the user to the relevant screen based on notification data.
- * - **NavigateToChildFragment**: Initiates navigation to a specific fragment within the app.
- * - **NavMenuItemSelected**: Triggers navigation when a menu item is selected.
- * - **SystemBackPressed**: Intercepts the back press event to properly manage activity termination.
+ * This pattern helps:
+ * - Centralize event handling
+ * - Keep UI logic out of the Activity
+ * - Maintain a predictable event-driven flow
  */
 sealed class HomeEvent {
 
-    /**
-     * Restores the last opened destination when the app is resumed.
-     * Used to ensure the user returns to their previous screen.
-     */
+    /** Restores the last opened destination when the app starts or resumes. */
     object RestoreLastOpenedDestination : HomeEvent()
 
+    /**
+     * Triggered when the app is opened via a notification.
+     *
+     * @param notificationIntentData Data extracted from the notification intent.
+     */
+    data class NavigateFromNotification(
+        val notificationIntentData: NotificationIntentData
+    ) : HomeEvent()
 
     /**
-     * Navigates based on notification data, such as a timer or alarm.
-     * Ensures the user is directed to the appropriate screen when interacting with a notification.
+     * Requests navigation to a specific child fragment in the Home graph.
      *
-     * @param notificationIntentData Data from the notification used for navigation.
+     * @param destinationId Navigation destination resource ID.
      */
-    data class NavigateFromNotification(val notificationIntentData: NotificationIntentData) : HomeEvent()
-
+    data class NavigateToChildFragment(
+        val destinationId: Int
+    ) : HomeEvent()
 
     /**
-     * Represents a request to navigate to a specific child fragment.
+     * Triggered when a navigation menu item is selected.
      *
-     * This event is used to trigger navigation to the appropriate fragment, ensuring a decoupled navigation flow
-     * that is independent of the UI state. It allows navigation logic to remain clean and maintainable.
-     *
-     * @param destinationId The ID of the fragment to navigate to.
+     * @param selectedDestinationId Destination associated with the selected menu item.
      */
-    data class NavigateToChildFragment(val destinationId: Int) : HomeEvent()
+    data class NavMenuItemSelected(
+        val selectedDestinationId: Int
+    ) : HomeEvent()
 
-
-    /**
-     * Handles the selection of a navigation menu item and triggers the corresponding navigation action.
-     *
-     * @param selectedDestinationId ID of the selected menu item’s destination.
-     */
-    data class NavMenuItemSelected(val selectedDestinationId: Int) : HomeEvent()
-
-
-    /**
-     * Manages the system back press event to intercept the normal top level fragment navigate up to close the activity instead.
-     */
+    /** Triggered when the system back button is pressed. */
     object SystemBackPressed : HomeEvent()
 }

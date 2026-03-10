@@ -6,8 +6,6 @@ import android.content.Intent
 import com.example.smartalarm.R
 import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.core.framework.notification.model.NotificationAction
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
-import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerBroadCastAction
@@ -15,11 +13,12 @@ import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerKe
 import com.example.smartalarm.feature.timer.framework.broadcast.receiver.TimerReceiver
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotificationData
 import com.example.smartalarm.feature.timer.framework.notification.model.TimerNotificationModel
+import com.example.smartalarm.feature.timer.utility.formatter.TimerTimeFormatter
 import javax.inject.Inject
 
 
 class ActiveTimerNotificationDataMapper @Inject constructor(
-    private val timeFormatter: TimeFormatter,
+    private val timeFormatter: TimerTimeFormatter,
 ) : AppNotificationDataMapper<
         TimerNotificationModel.ActiveTimerModel,
         TimerNotificationData

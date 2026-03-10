@@ -46,8 +46,6 @@
     <string name="empty">空</string>
     <string name="alarm_playback_attribution">闹钟音频播放</string>
     <string name="empty_attribution_label">空的归属标签</string>
-    <string name="navigation_drawer_open">打开导航抽屉</string>
-    <string name="navigation_drawer_close">关闭导航抽屉</string>
 
     // ---------------------------------------------------------------------
     // # Alarm Screen Related Strings
@@ -135,6 +133,12 @@
         <item>上午</item>
         <item>下午</item>
     </string-array>
+    <string name="failed_this_alarm_no_longer_exists">该闹钟已不存在。</string>
+    <string name="failed_alarm_not_found">未找到该闹钟。</string>
+    <string name="failed_to_load_the_alarm">加载闹钟失败，请重试。</string>
+    <string name="failed_to_save_the_alarm">无法保存闹钟，请重试。</string>
+    <string name="failed_to_update_the_alarm">无法更新闹钟，请重试。</string>
+    <string name="failed_to_schedule_the_alarm">闹钟已保存，但无法安排。</string>
 
     <!-- 3] Mission Picker Bottom Sheet Layout -->
     <string name="choose_mission">选择任务</string>
@@ -186,6 +190,14 @@
         <item>星期五</item>
         <item>星期六</item>
     </string-array>
+    <string name="drag_left_to_snooze">向左滑动以延迟</string>
+    <string name="drag_right_to_stop">向右滑动以停止</string>
+    <string name="drag_to_snooze_or_stop">拖动以延迟或停止</string>
+    <string name="no_snooze_left">没有剩余的延迟</string>
+    <string name="snooze_left"> %1$s 剩余 </string>
+    <string name="exit_preview">退出预览</string>
+    <string name="error_snooze_alarm">无法延迟闹钟，请再试一次。</string>
+    <string name="error_stop_alarm">无法停止闹钟，请再试一次。</string>
 
     <!-- Mission Fragment Common Strings -->
     <string name="round_text">第 %1$s 轮，共 %2$s 轮</string>
@@ -210,6 +222,9 @@
     <!-- 3]  Math Mission Strings -->
     <string name="solve_the_math_problem">解决数学问题</string>
     <string name="enter_your_answer">输入你的答案</string>
+    <string name="please_enter_an_answer">请输入答案！</string>
+    <string name="invalid_number_format">无效的数字格式！</string>
+    <string name="wrong_answer">错误的答案！</string>
 
     <!-- 4]  Shake Mission Strings -->
     <string name="shake_your_phone">摇晃你的手机！</string>
@@ -221,6 +236,12 @@
     <string name="accelerometer_sensor_not_available">加速度传感器不可用</string>
     <string name="step_detector_sensor_not_available">步态检测传感器不可用</string>
     <string name="permission_required_for_step_detection">需要步态检测权限</string>
+    <string name="start_walking_slowly_to_detect_your_first_step">请慢慢走，以便我们检测您的第一步并校准传感器。</string>
+    <string name="activity_recognition_permission_rationale_title">需要活动识别权限</string>
+    <string name="activity_recognition_permission_rationale_message">为了跟踪您的身体活动和步数，我们需要访问您的活动数据的权限。这将帮助我们提供更准确的步数监控功能。</string>
+    <string name="activity_recognition_permission_permanently_denied_title">权限已永久拒绝</string>
+    <string name="activity_recognition_permission_permanently_denied_message">您已永久拒绝活动识别权限。要启用此功能，请前往应用设置并手动允许该权限。</string>
+    <string name="activity_recognition_permission_denied_toast">权限被拒绝，您将无法跟踪您的步数和活动。</string>
 
     <!-- Alarm View Model -->
     <string name="alarm_already_passed">闹钟时间已过去。</string>
@@ -250,6 +271,19 @@
     <string name="selected_timezones_list">时区列表</string>
     <string name="no_result_found">未找到结果！</string>
     <string name="search">搜索</string>
+    <string name="timezone_deleted">%1$s 时区已删除</string>
+    <string name="undo_timezone_successful">撤销成功</string>
+    <string name="failed_to_load_time_zones">加载时区失败</string>
+    <string name="failed_to_undo_time_zone">撤销时区失败</string>
+    <string name="failed_to_delete_timezone">删除时区失败</string>
+    <string name="start_typing_to_search_for_a_place">开始输入以搜索地点</string>
+    <string name="no_such_place_found">未找到该地点</string>
+    <string name="time_same">相同时间</string>
+    <string name="time_ahead">%1$s 领先</string>
+    <string name="time_behind">%1$s 落后</string>
+    <string name="time_tomorrow">明天</string>
+    <string name="time_yesterday">昨天</string>
+    <string name="time_today">今天</string>
 
     // ---------------------------------------------------------------------
     // # Timer Screen Related Strings
@@ -287,6 +321,7 @@
     <string name="sec_formatted_stopwatch_time">%1$ss</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
     <string name="timer_dashboard">计时器仪表板</string>
+    <string name="timer_generic_error">出现错误。请再试一次。</string>
 
     <!-- Active Timer Notification String -->
     <string name="active_timer">活动定时器</string>
@@ -303,6 +338,14 @@
     <string name="missed_timer">错过的定时器</string>
     <string name="missed_timer_target_time">定时器目标时间: %1$s</string>
 
+    <!-- Show Timer Error Messages -->
+    <string name="timer_start_failed">无法启动计时器。请重试。</string>
+    <string name="timer_pause_failed">无法暂停计时器。请重试。</string>
+    <string name="timer_restart_failed">无法重新启动计时器。请重试。</string>
+    <string name="timer_snooze_failed">无法延迟计时器。请重试。</string>
+    <string name="timer_stop_failed">无法停止计时器。请重试。</string>
+
+
     // ---------------------------------------------------------------------
     // # Stopwatch Screen Related Strings
     // ---------------------------------------------------------------------
@@ -310,13 +353,21 @@
     <!-- 1] Stopwatch layout Strings -->
     <string name="stopwatch_progress_indicator">秒表进度指示器</string>
     <string name="stopwatch_rv_desc">记录的秒表圈次列表</string>
-    <string name="toggle_stopwatch">切换启动/暂停秒表</string>
+    <string name="start_stopwatch">开始秒表</string>
+    <string name="pause_stopwatch">暂停秒表</string>
+    <string name="resume_stopwatch">继续秒表</string>
     <string name="reset_stopwatch">重置秒表</string>
     <string name="record_lap_time">记录圈次时间</string>
-    <string name="lap_index">#圈</string>
+    <string name="lap_index">#圈 %1$s</string>
+
+    <!-- Stopwatch Feature Permission Strings -->
+    <string name="stopwatch_notification_permission_rationale_title">需要通知权限</string>
+    <string name="stopwatch_notification_permission_rationale_message">为了让秒表在后台可靠运行并支持锁屏控制，需要通知权限。</string>
+    <string name="stopwatch_notification_permission_permanently_denied_title">通知已被阻止</string>
+    <string name="stopwatch_notification_permission_permanently_denied_message">通知已被阻止。请在应用设置中启用。</string>
+    <string name="stopwatch_notification_permission_denied_toast">权限被拒绝</string>
 
     <!-- Stopwatch Viewmodel Specific Error Strings -->
-    <string name="failed_to_restore_stopwatch_state">恢复秒表状态失败，请重试。</string>
     <string name="failed_to_start_stopwatch">启动秒表失败，请重试。</string>
     <string name="failed_to_pause_stopwatch_state">暂停秒表状态失败，请重试。</string>
     <string name="failed_to_reset_stopwatch_state">重置秒表状态失败，请重试。</string>
@@ -339,6 +390,55 @@
     <string name="chinese">中文</string>
     <string name="japanese">日语</string>
     <string name="hindi">印地语</string>
+
+
+    // ---------------------------------------------------------------------
+    // About Screen Strings
+    // ---------------------------------------------------------------------
+    <string name="smart_alarm">智能闹钟</string>
+    <string name="version_1_0">版本 1.0</string>
+    <string name="about_app_desc">通过基于任务的自律帮助您清醒醒来，准备好迎接新的一天。</string>
+    <string name="rate_on_play_store">在 Play 商店评分</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="terms_of_service">服务条款</string>
+    <string name="_2026_smart_alarm_inc">© 2026 Smart Alarm Inc.</string>
+    <string name="smart_alarm_app_icon">智能闹钟应用图标</string>
+    <string name="undo_successful">撤销成功</string>
+    <string name="version">版本 %1$s</string>
+    <string name="no_browser_found_to_open_link">未找到可打开链接的浏览器</string>
+
+
+    // ---------------------------------------------------------------------
+    // Help Screen Strings
+    // ---------------------------------------------------------------------
+    <string name="help_support_title">帮助与支持</string>
+    <string name="section_system_reliability">系统可靠性</string>
+    <string name="section_faq">常见问题</string>
+    <string name="section_missions_snoozing">任务与贪睡</string>
+    <string name="section_world_clock">世界时钟</string>
+    <string name="section_timer">计时器</string>
+    <string name="section_stopwatch">秒表</string>
+    <string name="btn_email_support">邮件支持</string>
+    <string name="send_email">发送邮件</string>
+    <string name="no_email_app_found">未找到邮件应用</string>
+
+    <string name="title_required_permissions">所需权限</string>
+    <string name="desc_required_permissions">• 精确闹钟：确保任务按时触发。\n• 全屏通知：允许任务显示在锁屏之上。\n• 活动识别：步行/摇动任务需要。\n• 电池优化：设置为 \'Unrestricted\' 以防止应用被系统休眠。</string>
+
+    <string name="title_scheduling_dismissing">计划与关闭</string>
+    <string name="desc_scheduling_dismissing">点击 创建闹钟。最多可添加5个任务。</string>
+
+    <string name="title_why_snooze_disappeared">为什么贪睡按钮消失了？</string>
+    <string name="desc_why_snooze_disappeared">如果设置了贪睡限制，达到限制后按钮将被禁用。</string>
+
+    <string name="title_global_time">全球时间追踪</string>
+    <string name="desc_global_time">点击 添加城市。</string>
+
+    <string name="title_managing_countdowns">管理倒计时</string>
+    <string name="desc_managing_countdowns">设置时间并点击开始。</string>
+
+    <string name="title_laps_splits">圈数与分段时间</string>
+    <string name="desc_laps_splits">在秒表运行时使用 圈 按钮记录间隔。</string>
 
     // ---------------------------------------------------------------------
     // # Notification Related Strings
@@ -388,8 +488,8 @@
     <string name="lap_time_format">#圈次 %1$s : %2$s</string>
     <string name="stop_all_completed">停止所有已完成的计时器</string>
     <string name="stop_all_active">停止所有活动计时器</string>
-    <string name="start_timer">启动计时器</string>
-    <string name="delete_timer">删除计时器</string>
+    <string name="start_timer_btn_desc">启动计时器</string>
+    <string name="delete_timer_btn_desc">删除计时器</string>
     <string name="rounds">回合</string>
     <string name="exact_alarm">精确闹钟</string>
 </resources>

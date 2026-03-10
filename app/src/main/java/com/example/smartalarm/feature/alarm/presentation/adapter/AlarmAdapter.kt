@@ -3,7 +3,6 @@ package com.example.smartalarm.feature.alarm.presentation.adapter
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -17,6 +16,7 @@ import com.example.smartalarm.feature.alarm.domain.enums.DayOfWeek
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.domain.model.MissionType
 import com.example.smartalarm.feature.alarm.presentation.model.home.AlarmUiModel
+import com.example.smartalarm.feature.alarm.utility.formatter.AlarmTimeFormatter
 import com.example.smartalarm.feature.alarm.utility.getDrawableOrFallback
 
 /**
@@ -30,10 +30,10 @@ import com.example.smartalarm.feature.alarm.utility.getDrawableOrFallback
  * @param onAlarmSwitchToggle A lambda function to handle the switch toggle state change for alarms.
  */
 class AlarmAdapter(
+    private val timeFormatter : AlarmTimeFormatter,
     private val onAlarmItemClick: (alarmId: Int) -> Unit,
     private val onAlarmSwitchToggle: (alarmId: Int, isEnabled: Boolean) -> Unit
-) : ListAdapter<AlarmUiModel, AlarmAdapter.AlarmViewHolder>(AlarmDiffCallback())
-{
+) : ListAdapter<AlarmUiModel, AlarmAdapter.AlarmViewHolder>(AlarmDiffCallback()) {
 
     companion object {
 
@@ -71,11 +71,10 @@ class AlarmAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
         val binding = AlarmItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AlarmViewHolder(binding, onAlarmItemClick, onAlarmSwitchToggle)
+        return AlarmViewHolder(binding, timeFormatter,onAlarmItemClick, onAlarmSwitchToggle)
     }
 
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
-        Log.d("TAG","onBindViewHolder item : $position")
         holder.bind(getItem(position))
     }
 
@@ -86,6 +85,7 @@ class AlarmAdapter(
 
     class AlarmViewHolder(
         private val binding: AlarmItemLayoutBinding,
+        private val timeFormatter: AlarmTimeFormatter,
         private val onAlarmItemClick: (alarmId: Int) -> Unit,
         private val onAlarmSwitchToggle: (alarmId: Int, isEnabled: Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -118,7 +118,7 @@ class AlarmAdapter(
             // Full bind for other views only if payloads is empty
             if (payloads.isEmpty()) {
                 setWeekdaysStyled(alarm.selectedDays)
-                alarmTimeTv.text = alarm.formattedAlarmTime
+                alarmTimeTv.text = timeFormatter.formatToAlarmTime(alarm.alarmTime.hour, alarm.alarmTime.minute)
                 setUpMissionIcon(alarm.missionIconResId)
                 missionText.text = getFormattedMissionNames(alarm.alarmMissions, isLandscape())
                 root.setOnClickListener { onAlarmItemClick(alarm.id) }

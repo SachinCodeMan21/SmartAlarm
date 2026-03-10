@@ -2,7 +2,10 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.mission
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
 import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,6 +23,7 @@ import com.example.smartalarm.feature.alarm.presentation.effect.mission.AlarmMis
 import com.example.smartalarm.feature.alarm.presentation.effect.mission.AlarmMissionEffect.*
 import com.example.smartalarm.feature.alarm.presentation.event.mission.AlarmMissionEvent
 import com.example.smartalarm.feature.alarm.presentation.job.MissionCountDownJobManager
+import com.example.smartalarm.feature.alarm.presentation.model.mission.analyticEnum.MyAlarmViewModelUserActionEvent
 import com.example.smartalarm.feature.alarm.utility.helper.contract.AlarmTimeHelper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
@@ -40,6 +44,8 @@ class MyAlarmViewModel @Inject constructor(
     private val alarmRingtonePlayer: AlarmRingtoneManager,
     private val vibrationManager: VibrationManager,
     private val numberFormatter: NumberFormatter,
+    private val errorLogger: ErrorLogger,
+    private val analyticsHelper: AnalyticsHelper,
     @param:DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel()
 {
@@ -114,12 +120,32 @@ class MyAlarmViewModel @Inject constructor(
     // -------------------------------------------------------------------
     // Handling Alarm Mission Activity Events
     // -------------------------------------------------------------------
-    fun handleSharedEvent(event: AlarmMissionEvent){
-        when(event){
-            is AlarmMissionEvent.StartMissionFlow -> startMissionFlow(event.alarmModel)
-            is AlarmMissionEvent.MissionCompleted -> handleMissionCompleted()
-            is AlarmMissionEvent.MissionFailedTimeout -> handleMissionTimeout()
-            is AlarmMissionEvent.FinishMissionActivity -> postEffect(FinishActivity)
+
+    fun handleSharedEvent(event: AlarmMissionEvent) {
+        when (event) {
+            is AlarmMissionEvent.StartMissionFlow -> {
+                startMissionFlow(event.alarmModel)
+                // Log the event when the user starts the mission flow
+                analyticsHelper.logEvent(MyAlarmViewModelUserActionEvent.START_MISSION_FLOW.eventName)
+            }
+
+            is AlarmMissionEvent.MissionCompleted -> {
+                handleMissionCompleted()
+                // Log the event when the user completes the mission
+                analyticsHelper.logEvent(MyAlarmViewModelUserActionEvent.MISSION_COMPLETED.eventName)
+            }
+
+            is AlarmMissionEvent.MissionFailedTimeout -> {
+                handleMissionTimeout()
+                // Log the event when the mission fails due to timeout
+                analyticsHelper.logEvent(MyAlarmViewModelUserActionEvent.MISSION_FAILED_TIMEOUT.eventName)
+            }
+
+            is AlarmMissionEvent.FinishMissionActivity -> {
+                postEffect(FinishActivity)
+                // Log the event when the mission activity is finished
+                analyticsHelper.logEvent(MyAlarmViewModelUserActionEvent.FINISH_MISSION_ACTIVITY.eventName)
+            }
         }
     }
 
@@ -244,6 +270,7 @@ class MyAlarmViewModel @Inject constructor(
                 onSuccess()
             }
             is MyResult.Error -> {
+                logAlarmError(result, "UpdateAlarm_ID_${alarm.id}")
                 postEffect(ShowErrorMessage(result.error))
             }
         }
@@ -255,6 +282,19 @@ class MyAlarmViewModel @Inject constructor(
 
     fun getLocalizedNumber(number: Int, leadingZero: Boolean = true): String {
         return numberFormatter.formatLocalizedNumber(number.toLong(), leadingZero)
+    }
+
+    private fun <T> logAlarmError(result: MyResult<T, DataError>, actionTag: String) {
+        if (result is MyResult.Error) {
+            val error = result.error
+            val throwable = if (error is DataError.Unexpected) {
+                error.throwable
+            } else {
+                // Grouping by "AlarmError" helps distinguish from Timer/Clock issues
+                Exception("MyAlarmViewmodelError [$actionTag]: $error")
+            }
+            errorLogger.recordException(throwable)
+        }
     }
 
 }

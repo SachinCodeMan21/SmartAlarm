@@ -8,22 +8,22 @@ import com.example.smartalarm.feature.alarm.data.mapper.MissionMapper.toEntity
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 
+
 /**
- * Utility object for mapping between database entities and domain models related to alarms.
+ * Provides mapping functions to convert between database entities ([AlarmEntity], [MissionEntity])
+ * and the domain model ([AlarmModel]) used in the app.
  *
- * Provides extension functions to convert between:
- * - [AlarmWithMissions] (database representation combining alarm and missions)
- * - [AlarmModel] (domain model used in the application logic)
- * - [AlarmEntity] and [MissionEntity] (individual database entities)
+ * This object helps isolate the database layer from the domain layer,
+ * allowing the app to work with clean, platform-independent models.
  */
 object AlarmMapper {
 
     /**
-     * Converts an [AlarmWithMissions] database object to the domain-level [AlarmModel].
+     * Converts an [AlarmWithMissions] (Room entity + relation) to a domain model [AlarmModel].
      *
-     * Maps all fields including alarm details and associated missions.
+     * Maps the alarm entity and its associated mission entities to their corresponding domain representations.
      *
-     * @receiver The [AlarmWithMissions] object containing alarm and its missions.
+     * @receiver The [AlarmWithMissions] to convert.
      * @return The corresponding [AlarmModel] domain object.
      */
     fun AlarmWithMissions.toDomainModel(): AlarmModel = AlarmModel(
@@ -41,15 +41,14 @@ object AlarmMapper {
         alarmState = AlarmState.valueOf(alarm.alarmState)
     )
 
-
     /**
-     * Converts an [AlarmModel] domain object to a pair of database entities:
-     * an [AlarmEntity] and a list of associated [MissionEntity]s.
+     * Converts a domain model [AlarmModel] into a database entity ([AlarmEntity])
+     * along with its associated mission entities ([MissionEntity]).
      *
-     * This is used when persisting or updating alarm data in the database.
+     * Useful for persisting an alarm and its missions in the local database.
      *
-     * @receiver The [AlarmModel] domain object.
-     * @return A [Pair] containing the [AlarmEntity] and a list of [MissionEntity]s.
+     * @receiver The [AlarmModel] to convert.
+     * @return A [Pair] containing the [AlarmEntity] and a list of corresponding [MissionEntity]s.
      */
     fun AlarmModel.toEntityWithMissions(): Pair<AlarmEntity, List<MissionEntity>> {
         val alarmEntity = AlarmEntity(
@@ -69,5 +68,4 @@ object AlarmMapper {
         val missionEntities = missions.map { it.toEntity(alarmId = id) }
         return Pair(alarmEntity, missionEntities)
     }
-
 }

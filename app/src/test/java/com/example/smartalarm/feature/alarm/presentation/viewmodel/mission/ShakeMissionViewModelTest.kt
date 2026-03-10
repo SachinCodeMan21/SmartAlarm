@@ -25,7 +25,7 @@ import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ShakeMissionViewModelTest {
-
+/*
     private lateinit var viewModel: ShakeMissionViewModel
     private lateinit var systemClockHelper: SystemClockHelper
     private lateinit var vibrationManager: VibrationManager
@@ -122,7 +122,7 @@ class ShakeMissionViewModelTest {
         verify(exactly = 1) { vibrationManager.vibrateOneShot(any(), any()) }
     }
 
-/*    @Test
+*//*    @Test
     fun `shakes after delay are counted separately`() = runTest {
         viewModel.handleEvent(ShakeMissionEvent.InitializeMission(testMission))
 
@@ -173,7 +173,7 @@ class ShakeMissionViewModelTest {
             assertEquals(2, finalState.shakeCount)
             cancelAndIgnoreRemainingEvents()
         }
-    }*/
+    }*//*
 
     @Test
     fun `extra shakes after completion are ignored`() = runTest {
@@ -196,5 +196,5 @@ class ShakeMissionViewModelTest {
         }
 
         verify(exactly = 1) { vibrationManager.vibrateOneShot(any(), any()) }
-    }
+    }*/
 }

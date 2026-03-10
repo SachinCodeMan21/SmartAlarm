@@ -17,7 +17,6 @@ import androidx.room.PrimaryKey
  * @property primaryName A concise label used in the UI (e.g., "New York").
  * @property timeZoneId The canonical ID of the time zone (e.g., "America/New_York").
  * @property offsetSeconds Total offset from UTC in seconds (raw + DST).
- * @property currentTime The current local time for the place, formatted (e.g., "03:25 PM").
  */
 @Entity(tableName = "clock_table")
 data class ClockEntity(
@@ -26,5 +25,4 @@ data class ClockEntity(
     val primaryName: String,
     val timeZoneId: String,
     val offsetSeconds: Int,
-    val currentTime: String
 )

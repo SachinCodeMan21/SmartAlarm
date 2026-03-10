@@ -15,7 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.example.smartalarm.R
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
-import com.example.smartalarm.core.utility.exception.asUiText
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.databinding.FragmentShowAlarmBinding
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
@@ -177,10 +176,7 @@ class ShowAlarmFragment : Fragment() {
                         is ShowAlarmEffect.StartMissionFlow -> startMissionFlow(newEffect.alarmModel)
                         is ShowAlarmEffect.FinishActivity -> requireActivity().finish()
                         is ShowAlarmEffect.ShowToastMessage -> requireContext().showToast(newEffect.toastMessage)
-                        is ShowAlarmEffect.ShowError -> {
-                            val errorMessage  = newEffect.error.asUiText().asString(requireContext())
-                            requireContext().showToast(errorMessage)
-                        }
+                        is ShowAlarmEffect.ShowError -> { requireContext().showToast(newEffect.errorMessage) }
                     }
                 }
             }

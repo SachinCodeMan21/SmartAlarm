@@ -3,6 +3,8 @@ package com.example.smartalarm.feature.alarm.framework.services
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmByIdUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SnoozeAlarmUseCase
@@ -15,6 +17,7 @@ import com.example.smartalarm.feature.alarm.framework.notification.manager.Alarm
 import com.example.smartalarm.feature.alarm.framework.manager.contract.AlarmRingtoneManager
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel.RingingAlarmModel
 import com.example.smartalarm.core.framework.permission.PermissionManager
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
 import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
@@ -51,6 +54,8 @@ class AlarmService : Service() {
     @Inject lateinit var alarmRingtoneManager: AlarmRingtoneManager
     @Inject lateinit var vibrationManager: VibrationManager
     @Inject lateinit var permissionManager: PermissionManager
+    @Inject lateinit var errorLogger: ErrorLogger
+    @Inject lateinit var analyticsHelper: AnalyticsHelper
 
 
     // ---------------------------------------------------------------------
@@ -112,7 +117,7 @@ class AlarmService : Service() {
 
         serviceScope?.launch {
 
-            alarmRepository.getAlarms().collect { allAlarms ->
+            alarmRepository.observeAlarms().collect { allAlarms ->
 
                 val ringingAlarms = allAlarms.filter { it.alarmState == AlarmState.RINGING }
 
@@ -139,7 +144,8 @@ class AlarmService : Service() {
                 updateServicePresence(primaryAlarm)
 
                 ringingAlarms.filter { it.id != primaryAlarm.id }.forEach { olderAlarm ->
-                    missedAlarmUseCase(olderAlarm)
+                    val result = missedAlarmUseCase(olderAlarm)
+                    logAlarmError(result, "AlarmService_MissedAlarm")
                 }
 
 
@@ -149,7 +155,9 @@ class AlarmService : Service() {
     private suspend fun updateServicePresence(alarm: AlarmModel) {
         // Manage Hardware
         alarmRingtoneManager.playAlarmRingtone(alarm.alarmSound, alarm.volume)
+
         if (alarm.isVibrateEnabled) vibrationManager.startVibration()
+        else{vibrationManager.stopVibration()}
 
         // Manage Notification
         val notification = alarmNotificationManager.getAlarmNotification(RingingAlarmModel(alarm))
@@ -165,32 +173,54 @@ class AlarmService : Service() {
     // ---------------------------------------------------------------------
 
     private fun handleNewAlarmTrigger(alarmId: Int) {
+
+        analyticsHelper.logEvent(AlarmServiceEvent.ALARM_SERVICE_EVENT_TRIGGERED.message)
+
         serviceScope?.launch {
             if (permissionManager.isPostNotificationPermissionGranted()) {
                 val alarm = getAlarm(alarmId)
                 // UseCase handles setting DB state to RINGING
-                alarm?.let { ringAlarmUseCase(it) }
+                alarm?.let {
+                   val result = ringAlarmUseCase(it)
+                    logAlarmError(result, "AlarmService_RingAlarm")
+                }
             }
         }
     }
     private fun handleSnooze(alarmId: Int) {
+
+        analyticsHelper.logEvent(AlarmServiceEvent.ALARM_SERVICE_EVENT_SNOOZED.message)
+
         serviceScope?.launch {
             val alarm = getAlarm(alarmId)
             // UseCase updates DB -> Observer sees it -> Service stops if list is empty
-            alarm?.let { if (it.snoozeSettings.snoozedCount > 0) snoozeAlarmUseCase(it) }
+            alarm?.let {
+                if (it.snoozeSettings.snoozedCount > 0) {
+                    val result = snoozeAlarmUseCase(it)
+                    logAlarmError(result, "AlarmService_SnoozeAlarm")
+                }
+            }
         }
     }
     private fun handleStop(alarmId: Int) {
+
+        analyticsHelper.logEvent(AlarmServiceEvent.ALARM_SERVICE_EVENT_STOPPED.message)
+
         serviceScope?.launch {
             val alarm = getAlarm(alarmId)
-            alarm?.let { stopAlarmUseCase(it) }
+            alarm?.let {
+                val result = stopAlarmUseCase(it)
+                logAlarmError(result, "AlarmService_StopAlarm")
+            }
         }
     }
     private fun pauseHardware() {
+        analyticsHelper.logEvent(AlarmServiceEvent.ALARM_SERVICE_EVENT_PAUSED.message)
         alarmRingtoneManager.stopAlarmRingtone()
         vibrationManager.stopVibration()
     }
     private fun resumeHardware(alarmId: Int) {
+        analyticsHelper.logEvent(AlarmServiceEvent.ALARM_SERVICE_EVENT_RESUMED.message)
         serviceScope?.launch {
             getAlarm(alarmId)?.let { alarm ->
                 alarmRingtoneManager.playAlarmRingtone(alarm.alarmSound, alarm.volume)
@@ -223,6 +253,19 @@ class AlarmService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         serviceScope?.cancel()
+    }
+
+    private fun <T> logAlarmError(result: MyResult<T, DataError>, actionTag: String) {
+        if (result is MyResult.Error) {
+            val error = result.error
+            val throwable = if (error is DataError.Unexpected) {
+                error.throwable
+            } else {
+                // Grouping by "AlarmError" helps distinguish from Timer/Clock issues
+                Exception("AlarmError [$actionTag]: $error")
+            }
+            errorLogger.recordException(throwable)
+        }
     }
 
 

@@ -18,6 +18,6 @@ interface UpdateClockUseCase {
      * @param savedPlaces List of [PlaceModel]s to update.
      * @return List of [PlaceModel]s with updated local time.
      */
-    operator fun invoke(savedPlaces: List<PlaceModel>): List<PlaceModel>
+    //operator fun invoke(savedPlaces: List<PlaceModel>): List<PlaceModel>
 
 }

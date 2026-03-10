@@ -6,24 +6,27 @@ import java.time.LocalTime
 
 
 /**
- * Type converters for the Room database to handle non-primitive types used in alarms.
+ * Provides [TypeConverter] functions for storing complex types in Room.
  *
- * Room does not natively support types like [LocalTime] or [Set]<[DayOfWeek]>, so these
- * converters define how to store them as [String] in the database and retrieve them back.
+ * Room only supports a limited set of column types natively. This class
+ * converts non-primitive types used in `AlarmEntity` into formats that
+ * can be stored in the database and back.
+ *
+ * Conversions included:
+ * - [LocalTime] ↔ [String]
+ * - [Set]<[DayOfWeek]> ↔ [String]
+ *
+ * Usage:
+ * Add this class to your Room database `@TypeConverters` annotation
+ * to allow Room to automatically convert these types when reading/writing.
  */
 class AlarmConverters {
 
     /**
-     * Converts a [LocalTime] instance to its [String] representation for database storage.
+     * Converts a [LocalTime] to its string representation for Room storage.
      *
-     * Example:
-     * ```kotlin
-     * val time = LocalTime.of(9, 30)
-     * val dbValue = fromLocalTime(time)  // "09:30"
-     * ```
-     *
-     * @param time The [LocalTime] to convert.
-     * @return A [String] representing the time.
+     * @param time The [LocalTime] instance to convert.
+     * @return String representation of the time in ISO-8601 format (e.g., "08:30").
      */
     @TypeConverter
     fun fromLocalTime(time: LocalTime): String {
@@ -31,17 +34,10 @@ class AlarmConverters {
     }
 
     /**
-     * Converts a [String] from the database back to a [LocalTime] instance.
+     * Converts a stored string back to a [LocalTime].
      *
-     * Example:
-     * ```kotlin
-     * val dbValue = "09:30"
-     * val time = toLocalTime(dbValue)  // LocalTime.of(9, 30)
-     * ```
-     *
-     * @param time The [String] representation of a time.
-     * @return The corresponding [LocalTime] object.
-     * @throws java.time.format.DateTimeParseException if the string is not a valid time format.
+     * @param time String representation of time stored in the database.
+     * @return Parsed [LocalTime] instance.
      */
     @TypeConverter
     fun toLocalTime(time: String): LocalTime {
@@ -49,18 +45,10 @@ class AlarmConverters {
     }
 
     /**
-     * Converts a [Set] of [DayOfWeek] values to a comma-separated [String] for database storage.
+     * Converts a set of [DayOfWeek] to a comma-separated string for storage.
      *
-     * The set is unordered, so the order in the resulting string may vary.
-     *
-     * Example:
-     * ```kotlin
-     * val days = setOf(DayOfWeek.MON, DayOfWeek.WED)
-     * val dbValue = fromDaySet(days)  // "MON,WED"
-     * ```
-     *
-     * @param days The set of [DayOfWeek] values.
-     * @return A comma-separated [String] representing the days.
+     * @param days Set of [DayOfWeek] representing selected days.
+     * @return Comma-separated string of day names (e.g., "MONDAY,WEDNESDAY,FRIDAY").
      */
     @TypeConverter
     fun fromDaySet(days: Set<DayOfWeek>): String {
@@ -68,32 +56,14 @@ class AlarmConverters {
     }
 
     /**
-     * Converts a comma-separated [String] from the database back into a [Set] of [DayOfWeek] values.
+     * Converts a stored comma-separated string back to a set of [DayOfWeek].
      *
-     * The input string should contain valid day names matching the [DayOfWeek] enum constants,
-     * separated by commas (e.g., "MON,WED,FRI"). The function parses each day name and returns
-     * a set of corresponding [DayOfWeek] values.
-     *
-     * **Important:** This implementation assumes that all day names in the input string are valid.
-     * If the string contains an invalid day name (not matching any [DayOfWeek] constant),
-     * [IllegalArgumentException] will be thrown.
-     *
-     * Example usage:
-     * ```kotlin
-     * val dbValue = "MON,WED,FRI"
-     * val days: Set<DayOfWeek> = toDaySet(dbValue)
-     * // Result: setOf(DayOfWeek.MON, DayOfWeek.WED, DayOfWeek.FRI)
-     * ```
-     *
-     * @param data The comma-separated [String] of day names from the database.
-     * @return A [Set] of [DayOfWeek] values corresponding to the input string.
-     * @throws IllegalArgumentException if any day name is invalid.
+     * @param data Comma-separated string of day names from the database.
+     * @return Set of [DayOfWeek]. Returns empty set if the string is blank.
      */
     @TypeConverter
     fun toDaySet(data: String): Set<DayOfWeek> {
-        return if (data.isBlank()) { emptySet() } else {
-            data.split(",").map { DayOfWeek.valueOf(it) }.toSet()
-        }
+        return if (data.isBlank()) emptySet() else data.split(",").map { DayOfWeek.valueOf(it) }.toSet()
     }
 
 }

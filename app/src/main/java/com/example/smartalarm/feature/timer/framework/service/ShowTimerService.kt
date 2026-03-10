@@ -4,6 +4,10 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
+import com.example.smartalarm.core.utility.exception.DataError
+import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerBroadCastAction
 import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerKeys
@@ -16,6 +20,7 @@ import com.example.smartalarm.feature.timer.utility.TimerRingtonePlayer
 import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.domain.repository.TimerRepository
 import com.example.smartalarm.feature.timer.domain.usecase.TimerUseCase
+import com.example.smartalarm.feature.timer.presentation.model.ShowTimerAnalyticsEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -23,6 +28,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class ShowTimerService : Service() {
@@ -36,21 +42,23 @@ class ShowTimerService : Service() {
     lateinit var timerUseCase: TimerUseCase
 
     @Inject
-    lateinit var repository: TimerRepository // We observe this now
+    lateinit var repository: TimerRepository
+
     @Inject
     lateinit var notificationHandler: TimerNotificationHandler
+
     @Inject
     lateinit var timerRingtoneHelper: TimerRingtonePlayer
 
-    // Scope for the service lifecycle
-    private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    @Inject
+    lateinit var errorLogger: ErrorLogger
 
-    // A specific job for the 1-second ticking loop
+    @Inject
+    lateinit var analyticsHelper: AnalyticsHelper
+
+    private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private var tickerJob: Job? = null
 
-    // ────────────────────────────────────────────────────────────────
-    //  Lifecycle
-    // ────────────────────────────────────────────────────────────────
 
     override fun onCreate() {
         super.onCreate()
@@ -58,21 +66,88 @@ class ShowTimerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let {
-            when (it.action) {
-                TimerBroadCastAction.ACTION_START -> { /* No-op, just starting service */ }
-                TimerBroadCastAction.ACTION_PAUSE -> handleAction(it) { timer -> timerUseCase.pauseTimer(timer) }
-                TimerBroadCastAction.ACTION_RESUME -> handleAction(it) { timer -> timerUseCase.startTimer(timer) }
-                TimerBroadCastAction.ACTION_SNOOZE -> handleAction(it) { timer -> timerUseCase.snoozeTimer(timer) }
-                TimerBroadCastAction.ACTION_STOP -> handleAction(it) { timer -> timerUseCase.restartTimer(timer) } // Assuming stop resets/restarts
-                TimerBroadCastAction.ACTION_TIMER_TIMEOUT -> handleTimeoutAction(it)
-                TimerBroadCastAction.ACTION_STOP_ALL_ACTIVE_TIMERS -> stopAllActiveTimers()
-                TimerBroadCastAction.ACTION_STOP_ALL_COMPLETED_TIMERS -> stopAllCompletedTimers()
-                TimerBroadCastAction.ACTION_STOP_FOREGROUND_TIMER -> stopService()
+        intent?.let { i ->
+            when (i.action) {
+
+                TimerBroadCastAction.ACTION_START -> handleAction(
+                    i,
+                    action = { timerUseCase.startTimer(it) },
+                    successAnalytics = { timer ->
+                        analyticsHelper.logEvent(
+                            ShowTimerAnalyticsEvent.SHOW_START_TIMER.eventName,
+                            ShowTimerAnalyticsEvent.Params.TIMER_ID to timer.timerId,
+                            ShowTimerAnalyticsEvent.Params.TOTAL_ACTIVE_TIMERS to 1
+                        )
+                    },
+                    errorTag = "StartTimer_ID_${i.getIntExtra(TimerKeys.TIMER_ID, -1)}"
+                )
+
+                TimerBroadCastAction.ACTION_PAUSE -> handleAction(
+                    i,
+                    action = { timerUseCase.pauseTimer(it) },
+                    successAnalytics = { timer ->
+                        analyticsHelper.logEvent(
+                            ShowTimerAnalyticsEvent.SHOW_PAUSE_TIMER.eventName,
+                            ShowTimerAnalyticsEvent.Params.TIMER_ID to timer.timerId
+                        )
+                    },
+                    errorTag = "PauseTimer_ID_${i.getIntExtra(TimerKeys.TIMER_ID, -1)}"
+                )
+
+                TimerBroadCastAction.ACTION_RESUME -> handleAction(
+                    i,
+                    action = { timerUseCase.startTimer(it) },
+                    successAnalytics = { timer ->
+                        analyticsHelper.logEvent(
+                            ShowTimerAnalyticsEvent.SHOW_RESUME_TIMER.eventName,
+                            ShowTimerAnalyticsEvent.Params.TIMER_ID to timer.timerId
+                        )
+                    },
+                    errorTag = "ResumeTimer_ID_${i.getIntExtra(TimerKeys.TIMER_ID, -1)}"
+                )
+
+                TimerBroadCastAction.ACTION_SNOOZE -> handleAction(
+                    i,
+                    action = { timerUseCase.snoozeTimer(it) },
+                    successAnalytics = { timer ->
+                        analyticsHelper.logEvent(
+                            ShowTimerAnalyticsEvent.SHOW_SNOOZE_TIMER.eventName,
+                            ShowTimerAnalyticsEvent.Params.TIMER_ID to timer.timerId,
+                            ShowTimerAnalyticsEvent.Params.REMAINING_TIME to timer.remainingTime
+                        )
+                    },
+                    errorTag = "SnoozeTimer_ID_${i.getIntExtra(TimerKeys.TIMER_ID, -1)}"
+                )
+
+                TimerBroadCastAction.ACTION_STOP -> handleAction(
+                    i,
+                    action = { timerUseCase.restartTimer(it) },
+                    successAnalytics = { timer ->
+                        analyticsHelper.logEvent(
+                            ShowTimerAnalyticsEvent.SHOW_RESTART_TIMER.eventName,
+                            ShowTimerAnalyticsEvent.Params.TIMER_ID to timer.timerId
+                        )
+                    },
+                    errorTag = "RestartTimer_ID_${i.getIntExtra(TimerKeys.TIMER_ID, -1)}"
+                )
+
+                TimerBroadCastAction.ACTION_TIMER_TIMEOUT ->
+                    handleTimeoutAction(i)
+
+                TimerBroadCastAction.ACTION_STOP_ALL_ACTIVE_TIMERS ->
+                    stopAllActiveTimers()
+
+                TimerBroadCastAction.ACTION_STOP_ALL_COMPLETED_TIMERS ->
+                    stopAllCompletedTimers()
+
+                TimerBroadCastAction.ACTION_STOP_FOREGROUND_TIMER ->
+                    stopService()
             }
         }
+
         return START_NOT_STICKY
     }
+
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -99,8 +174,10 @@ class ShowTimerService : Service() {
 
                 // 2. Categorize Timers
                 val runningTimers = timers.filter { it.isTimerRunning }
-                val completedTimers = timers.filter { it.remainingTime <= 0 && it.status != TimerStatus.STOPPED }
-                val activeTimers = timers.filter { it.remainingTime > 0 && it.status != TimerStatus.STOPPED }
+                val completedTimers =
+                    timers.filter { it.remainingTime <= 0 && it.status != TimerStatus.STOPPED }
+                val activeTimers =
+                    timers.filter { it.remainingTime > 0 && it.status != TimerStatus.STOPPED }
 
                 // 3. Manage the "Heartbeat" (Ticker)
                 manageTicker(runningTimers.isNotEmpty())
@@ -147,8 +224,7 @@ class ShowTimerService : Service() {
         val shouldRing = completedTimers.any { it.isTimerRunning }
         if (shouldRing) {
             timerRingtoneHelper.playDefaultTimer()
-        }
-        else {
+        } else {
             timerRingtoneHelper.stop()
         }
 
@@ -192,7 +268,6 @@ class ShowTimerService : Service() {
     }
 
 
-
     // ────────────────────────────────────────────────────────────────
     //  4. Action Handlers (Delegates to UseCase)
     // ────────────────────────────────────────────────────────────────
@@ -202,13 +277,19 @@ class ShowTimerService : Service() {
         val timerId = intent.getIntExtra(TimerKeys.TIMER_ID, -1)
         if (timerId == -1) return // Invalid timer ID
 
+        Log.d("TAG", "handleTimeoutAction executed")
+
+
         serviceScope.launch {
 
             val timer = getCurrentTimerList().find { it.timerId == timerId }
             timer?.let {
-                Log.d("TAG","handleTimeoutAction executed timerID = $timerId")
-                timerUseCase.restartTimer(timer)
-                notificationHandler.showMissedTimerNotification(timer)
+                val result = timerUseCase.restartTimer(timer)
+                if (result is MyResult.Success) {
+                    notificationHandler.showMissedTimerNotification(timer)
+                } else {
+                    logTimerError(result, "Timeout_Restart_ID_$timerId")
+                }
             }
         }
 
@@ -217,14 +298,25 @@ class ShowTimerService : Service() {
     private fun stopAllActiveTimers() {
         serviceScope.launch {
             val active = getCurrentTimerList().filter { it.remainingTime > 0 }
-            active.forEach { timerUseCase.restartTimer(it) }
+            active.forEach {
+                val result = timerUseCase.restartTimer(it)
+                if (result is MyResult.Error) {
+                    logTimerError(result, "StopAllActive_ID_${it.timerId}")
+                }
+
+            }
         }
     }
 
     private fun stopAllCompletedTimers() {
         serviceScope.launch {
             val completed = getCurrentTimerList().filter { it.remainingTime <= 0 }
-            completed.forEach { timerUseCase.restartTimer(it) }
+            completed.forEach {
+                val result = timerUseCase.restartTimer(it)
+                if (result is MyResult.Error) {
+                    logTimerError(result, "StopAllCompleted_ID_${it.timerId}")
+                }
+            }
         }
     }
 
@@ -241,22 +333,67 @@ class ShowTimerService : Service() {
     //  5. Helper Method
     // ────────────────────────────────────────────────────────────────
 
-    private suspend fun getCurrentTimerList() : List<TimerModel>{
+    private suspend fun getCurrentTimerList(): List<TimerModel> {
         return timerUseCase.getAllTimers().first()
     }
 
-    private fun handleAction(intent: Intent, action: suspend (TimerModel) -> Unit) {
+    private fun handleAction(
+        intent: Intent,
+        action: suspend (TimerModel) -> MyResult<Unit, DataError>,
+        successAnalytics: ((TimerModel) -> Unit)? = null,
+        errorTag: String? = null
+    ) {
         val id = intent.getIntExtra(TimerKeys.TIMER_ID, -1)
         if (id == -1) return
 
         serviceScope.launch {
-            // We get the current model from the repo snapshot
             val timer = getCurrentTimerList().find { it.timerId == id }
             timer?.let {
-                action(it)
+                try {
+                    val result = action(it)
+                    handleResult(result, it, successAnalytics, errorTag)
+                } catch (e: Exception) {
+                    errorLogger.recordException(e)
+                }
             }
         }
     }
 
+    private fun handleResult(
+        result: MyResult<Unit, DataError>,
+        timer: TimerModel,
+        successAnalytics: ((TimerModel) -> Unit)? = null,
+        errorTag: String? = null
+    ) {
+        when (result) {
+            is MyResult.Success -> successAnalytics?.invoke(timer)
+            is MyResult.Error -> {
+                val throwable = if (result.error is DataError.Unexpected) {
+                    result.error.throwable
+                } else {
+                    Exception("TimerService_Action_Error [${errorTag ?: "unknown"}]: ${result.error}")
+                }
+                errorLogger.recordException(throwable)
+            }
+        }
+    }
+
+    /**
+     * Private helper to process UseCase results and report errors to Crashlytics.
+     */
+    private fun <T> logTimerError(result: MyResult<T, DataError>, actionTag: String) {
+        if (result is MyResult.Error) {
+            val error = result.error
+
+            val throwable = if (error is DataError.Unexpected) {
+                error.throwable
+            } else {
+                // Groups these as "TimerError" in the Firebase dashboard
+                Exception("TimerError [$actionTag]: $error")
+            }
+
+            errorLogger.recordException(throwable)
+        }
+    }
 
 }

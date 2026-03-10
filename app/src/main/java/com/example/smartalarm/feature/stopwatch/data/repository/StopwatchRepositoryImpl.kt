@@ -8,50 +8,41 @@ import com.example.smartalarm.feature.stopwatch.data.datasource.contract.Stopwat
 import com.example.smartalarm.feature.stopwatch.data.mapper.StopwatchMapper.toEntity
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import com.example.smartalarm.feature.stopwatch.domain.repository.StopwatchRepository
+import com.example.smartalarm.feature.stopwatch.data.mapper.StopwatchMapper
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 
 /**
- * Implementation of [StopwatchRepository] that coordinates data flow between
- * the persistent [StopwatchLocalDataSource] and the live [StopwatchInMemoryStateManager].
+ * Production-ready implementation of [StopwatchRepository].
  *
- * ### Why this exists:
- * The repository acts as the "Traffic Controller." It decides when to update the
- * high-frequency in-memory state (via the ticker) and when to perform the
- * heavy-lifting of disk persistence (via Room).
+ * Coordinates data flow between [StopwatchLocalDataSource] (Persistence)
+ * and [StopwatchInMemoryStateManager] (Hot State). It implements an
+ * 'In-Memory-First' strategy for high-frequency updates while maintaining
+ * database consistency for critical session milestones.
  */
 class StopwatchRepositoryImpl @Inject constructor(
     private val localDataSource: StopwatchLocalDataSource,
     private val inMemoryStateManager: StopwatchInMemoryStateManager,
 ) : StopwatchRepository {
 
-    /**
-     * Reactive stream of the current stopwatch session.
-     * ViewModels should observe this as their primary source of truth.
-     */
     override val stopwatchState: StateFlow<StopwatchModel> = inMemoryStateManager.state
 
-    /**
-     * Synchronous access to the current in-memory snapshot.
-     */
     override fun getCurrentStopwatchState(): StopwatchModel =
         inMemoryStateManager.getCurrentState()
 
     /**
-     * Routes high-frequency ticker updates to memory for UI smoothness.
-     * Note: This does NOT save to the database to avoid excessive disk I/O.
+     * Dispatches transient updates to the hot state manager.
+     * Persistence is intentionally bypassed here to protect the device
+     * from excessive SQLite write cycles during millisecond-level ticking.
      */
     override fun updateTickerState(updatedStopwatch: StopwatchModel) =
         inMemoryStateManager.updateFromTicker(updatedStopwatch)
 
-
     /**
-     * Persists the entire stopwatch session to the local database.
-     * * ### Process:
-     * 1. Converts the pure domain model into database-ready entities.
-     * 2. Uses the Mapper to re-attach the singleton ID (1).
-     * 3. Performs an atomic transaction to save both state and laps.
+     * Executes atomic persistence of the session.
+     * Transforms the Domain [StopwatchModel] into Data Entities via [StopwatchMapper]
+     * before delegating to the local data source.
      */
     override suspend fun persistStopwatch(stopwatchModel: StopwatchModel): MyResult<Unit, DataError> =
         myRunCatchingResult {
@@ -60,13 +51,8 @@ class StopwatchRepositoryImpl @Inject constructor(
             localDataSource.saveStopwatchWithLaps(stateEntity, lapEntities)
         }
 
-
-    /**
-     * Purges the stopwatch session from the database.
-     * Returns a [MyResult.Error] with [DataError.Local] details if the operation fails.
-     */
-    override suspend fun deleteStopwatch(): MyResult<Unit, DataError> = myRunCatchingResult {
-        localDataSource.deleteStopwatchSession()
-    }
-
+    override suspend fun deleteStopwatch(): MyResult<Unit, DataError> =
+        myRunCatchingResult {
+            localDataSource.deleteStopwatchSession()
+        }
 }

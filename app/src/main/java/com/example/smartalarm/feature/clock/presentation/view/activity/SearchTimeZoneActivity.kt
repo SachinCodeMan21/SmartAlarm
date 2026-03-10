@@ -13,7 +13,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smartalarm.core.utility.exception.asUiText
+import com.example.smartalarm.R
+import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.ActivitySearchTimeZoneBinding
 import com.example.smartalarm.feature.clock.presentation.adapter.PlaceSearchAdapter
@@ -32,7 +33,7 @@ class SearchTimeZoneActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "SearchTimeZoneActivity"
-        private const val BINDING_NULL_ERROR = "$TAG binding is null"
+        private const val BINDING_NULL_ERROR = "$TAG $BINDING_NULL"
     }
 
     private var _binding: ActivitySearchTimeZoneBinding? = null
@@ -119,7 +120,8 @@ class SearchTimeZoneActivity : AppCompatActivity() {
 
                             is PlaceSearchUiState.Initial -> {
                                 emptyStateTv.isVisible = true
-                                emptyStateTv.text = "Start typing to search for a place"
+                                emptyStateTv.text =
+                                    getString(R.string.start_typing_to_search_for_a_place)
                             }
 
                             is PlaceSearchUiState.Loading -> {
@@ -128,9 +130,8 @@ class SearchTimeZoneActivity : AppCompatActivity() {
 
                             is PlaceSearchUiState.Success -> {
                                 if (state.places.isEmpty()) {
-                                    // This is the "No Result Found" state
                                     emptyStateTv.isVisible = true
-                                    emptyStateTv.text = "No such place found"
+                                    emptyStateTv.text = getString(R.string.no_such_place_found)
                                 } else {
                                     searchedPlacesRv.isVisible = true
                                     placeSearchAdapter.submitList(state.places)
@@ -139,7 +140,7 @@ class SearchTimeZoneActivity : AppCompatActivity() {
 
                             is PlaceSearchUiState.Error -> {
                                 emptyStateTv.isVisible = true
-                                emptyStateTv.text = "Something went wrong"
+                                emptyStateTv.text = getString(R.string.error_generic)
                             }
 
                         }
@@ -164,8 +165,7 @@ class SearchTimeZoneActivity : AppCompatActivity() {
                             finish()
                         }
                         is PlaceSearchEffect.ShowError -> {
-                            val message = effect.error.asUiText().asString(this@SearchTimeZoneActivity)
-                            binding.root.showSnackBar(message, Snackbar.LENGTH_SHORT)
+                            binding.root.showSnackBar(effect.errorMessage, Snackbar.LENGTH_SHORT)
                         }
                     }
                 }

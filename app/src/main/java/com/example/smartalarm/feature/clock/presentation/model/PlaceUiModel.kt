@@ -13,6 +13,7 @@ package com.example.smartalarm.feature.clock.presentation.model
 data class PlaceUiModel(
     val id: Long,
     val name: String,
+    val fullName : String,
     val currentTime: String,
     val timeDifference: String
 )

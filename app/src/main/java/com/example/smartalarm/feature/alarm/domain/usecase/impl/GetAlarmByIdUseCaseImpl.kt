@@ -28,7 +28,7 @@ class GetAlarmByIdUseCaseImpl @Inject constructor(
     /**
      * Retrieves the alarm details by its ID from the repository.
      *
-     * This method calls the [AlarmRepository.getAlarmById] function to fetch the alarm.
+     * This method calls the [AlarmRepository.getAlarmWithMissions] function to fetch the alarm.
      * If successful, it returns a [MyResult.Success] containing the alarm details.
      * If an error occurs (e.g., network failure or missing alarm), it returns a [MyResult.Error]
      * with a localized error message.
@@ -36,7 +36,7 @@ class GetAlarmByIdUseCaseImpl @Inject constructor(
      * @param alarmId The ID of the alarm to retrieve.
      * @return A [Result] containing either the [AlarmModel] on success or an error on failure.
      */
-    override suspend fun invoke(alarmId: Int): MyResult<AlarmModel, DataError> {
-        return alarmRepository.getAlarmById(alarmId)
+    override suspend fun invoke(alarmId: Int): MyResult<AlarmModel?, DataError> {
+        return alarmRepository.getAlarmWithMissions(alarmId)
     }
 }

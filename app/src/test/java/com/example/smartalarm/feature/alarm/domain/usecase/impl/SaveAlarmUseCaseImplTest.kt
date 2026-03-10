@@ -55,7 +55,7 @@ class SaveAlarmUseCaseImplTest {
     *//**
      * Tests that the alarm is saved successfully.
      * Verifies that a success result is returned with the saved alarm's ID.
-     * Ensures that the [AlarmRepository.saveAlarm] function is called.
+     * Ensures that the [AlarmRepository.createAlarmWithMissions] function is called.
      *//*
     @Test
     fun `invoke should return Success when alarm is saved`() = runTest {

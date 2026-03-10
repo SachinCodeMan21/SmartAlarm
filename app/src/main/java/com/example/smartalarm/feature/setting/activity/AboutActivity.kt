@@ -1,8 +1,6 @@
 package com.example.smartalarm.feature.setting.activity
 
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -12,11 +10,19 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.smartalarm.R
 import com.example.smartalarm.databinding.ActivityAboutBinding
 import androidx.core.net.toUri
+import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 
 class AboutActivity : AppCompatActivity() {
 
-    private lateinit var _binding: ActivityAboutBinding
-    private val binding get() = _binding
+    companion object {
+        private const val TAG = "AboutActivity"
+        private const val BINDING_NULL_ERROR = "$TAG $BINDING_NULL"
+    }
+
+    private var _binding: ActivityAboutBinding? = null
+    private val binding get() = _binding ?: error(BINDING_NULL_ERROR)
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,19 +44,19 @@ class AboutActivity : AppCompatActivity() {
         // 2. Set Dynamic Version Name
         try {
             val versionName = packageManager.getPackageInfo(packageName, 0).versionName
-            binding.tvVersion.text = "Version $versionName"
-        } catch (e: Exception) {
-            binding.tvVersion.text = "Version 1.0.4"
+            binding.tvVersion.text = getString(R.string.version,versionName)
+        } catch (_: Exception) {
+            binding.tvVersion.text = getString(R.string.version,"1.0")
         }
 
          // 3. Privacy Policy Click
         binding.btnPrivacy.setOnClickListener {
-            openUrl("https://gist.githubusercontent.com/SachinCodeMan21/c5cf776c0587a46aef9db09d4248b134/raw/ad451674f43439f1af6611234d066aa942a6ff46/privacy_policy.md")
+            openUrl("https://sachincodeman21.github.io/SmartAlarm/privacy.html")
         }
 
          // 4. Terms of Service Click
         binding.btnTerms.setOnClickListener {
-            openUrl("https://gist.githubusercontent.com/SachinCodeMan21/a1787191e29973b545821eb312580c6c/raw/c097ef3a003cfc6476315d2b638da4b78937abaf/terms_and_conditions.md")
+            openUrl("https://sachincodeman21.github.io/SmartAlarm/terms.html")
         }
 
         // 5. Rate on Play Store Click
@@ -66,8 +72,9 @@ class AboutActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         try {
             startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(this, "No browser found to open link", Toast.LENGTH_SHORT).show()
+        } catch (_: Exception) {
+            Toast.makeText(this,
+                getString(R.string.no_browser_found_to_open_link), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -75,31 +82,13 @@ class AboutActivity : AppCompatActivity() {
         val appPackageName = packageName
         try {
             startActivity(Intent(Intent.ACTION_VIEW, "market://details?id=$appPackageName".toUri()))
-        } catch (e: android.content.ActivityNotFoundException) {
+        } catch (_: android.content.ActivityNotFoundException) {
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
                     "https://play.google.com/store/apps/details?id=$appPackageName".toUri()
                 )
             )
-        }
-    }
-
-    private fun sendEmailSupport() {
-        val version = binding.tvVersion.text.toString()
-        val mailto =
-            "mailto:sachinyadav211002@email.com" + "?subject=${Uri.encode("Support Request: Smart Alarm")}" + "&body=${
-                Uri.encode("\n\n--- Device Info ---\nModel: ${Build.MODEL}\nSDK: ${Build.VERSION.SDK_INT}\nApp: $version\n\n")
-            }"
-
-        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = mailto.toUri()
-        }
-
-        try {
-            startActivity(Intent.createChooser(emailIntent, "Send Email"))
-        } catch (e: Exception) {
-            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show()
         }
     }
 }

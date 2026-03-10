@@ -6,7 +6,7 @@ import java.time.LocalTime
 
 data class AlarmUiModel(
     val id: Int,
-    val formattedAlarmTime: String,
+    val alarmTime: LocalTime,
     val selectedDays: Set<DayOfWeek>,
     val missionIconResId: Int?,
     val alarmMissions: List<Mission?>,

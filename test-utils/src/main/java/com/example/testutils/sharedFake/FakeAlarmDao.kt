@@ -28,7 +28,7 @@ class FakeAlarmDao : AlarmDao {
      * @param alarm The alarm entity to insert.
      * @return The generated ID of the inserted alarm.
      */
-    override suspend fun insertAlarm(alarm: AlarmEntity): Long {
+    override suspend fun saveAlarm(alarm: AlarmEntity): Long {
         val newId = alarms.size + 1L // Auto-incrementing ID
         alarms.add(alarm.copy(id = newId.toInt()))  // Adding the alarm with the new ID
         return newId
@@ -42,7 +42,7 @@ class FakeAlarmDao : AlarmDao {
      * @param alarmId The ID of the alarm to retrieve.
      * @return An [AlarmWithMissions] object if the alarm is found, or null if not.
      */
-    override suspend fun getAlarmById(alarmId: Int): AlarmWithMissions? {
+    override suspend fun getAlarmWithMissions(alarmId: Int): AlarmWithMissions? {
         val alarm = alarms.find { it.id == alarmId } // Find alarm by ID
         val associatedMissions = missions.filter { it.alarmId == alarmId } // Get associated missions
         return if (alarm != null) AlarmWithMissions(alarm, associatedMissions) else null
@@ -55,7 +55,7 @@ class FakeAlarmDao : AlarmDao {
      *
      * @param missions A list of [MissionEntity] to insert.
      */
-    override suspend fun insertMissions(missions: List<MissionEntity>) {
+    override suspend fun saveMissions(missions: List<MissionEntity>) {
         this.missions.addAll(missions) // Add missions to the list
     }
 
@@ -66,7 +66,7 @@ class FakeAlarmDao : AlarmDao {
      *
      * @param alarmId The ID of the alarm whose associated missions should be deleted.
      */
-    override suspend fun deleteMissionsByAlarmId(alarmId: Int) {
+    override suspend fun deleteMissionsForAlarm(alarmId: Int) {
         missions.removeIf { it.alarmId == alarmId }  // Remove missions related to the given alarm ID
     }
 
@@ -77,7 +77,7 @@ class FakeAlarmDao : AlarmDao {
      *
      * @param alarmId The ID of the alarm to delete.
      */
-    override suspend fun deleteAlarmById(alarmId: Int) {
+    override suspend fun deleteAlarm(alarmId: Int) {
         alarms.removeIf { it.id == alarmId }  // Remove the alarm from the list
         missions.removeIf { it.alarmId == alarmId }  // Remove associated missions
     }
@@ -90,7 +90,7 @@ class FakeAlarmDao : AlarmDao {
      *
      * @return A [Flow] of [AlarmWithMissions] containing all alarms and their associated missions.
      */
-    override fun getAlarms(): Flow<List<AlarmWithMissions>> {
+    override fun observeAllAlarms(): Flow<List<AlarmWithMissions>> {
         return flow {
             val alarmWithMissionsList = alarms.map { alarm ->
                 val associatedMissions = missions.filter { it.alarmId == alarm.id }  // Fetch associated missions
@@ -109,16 +109,16 @@ class FakeAlarmDao : AlarmDao {
      * @param missions The list of [MissionEntity] to associate with the alarm.
      * @return The ID of the newly inserted alarm.
      */
-    override suspend fun saveAlarmWithMissions(
+    override suspend fun createAlarmWithMissions(
         alarm: AlarmEntity,
         missions: List<MissionEntity>
     ): Int {
         require(alarm.id == 0) { "Alarm ID must be 0 for new alarms" }
 
-        val alarmId = insertAlarm(alarm).toInt() // Insert the alarm and get its ID
+        val alarmId = saveAlarm(alarm).toInt() // Insert the alarm and get its ID
         if (missions.isNotEmpty()) {
             val updatedMissions = missions.map { it.copy(alarmId = alarmId) } // Associate missions with the alarm ID
-            insertMissions(updatedMissions)
+            saveMissions(updatedMissions)
         }
         return alarmId
     }
@@ -143,14 +143,14 @@ class FakeAlarmDao : AlarmDao {
         if (index >= 0) {
             alarms[index] = alarm  // Update the existing alarm
         } else {
-            insertAlarm(alarm)  // Insert a new alarm if not found
+            saveAlarm(alarm)  // Insert a new alarm if not found
         }
 
         // Delete old missions and insert the updated ones
-        deleteMissionsByAlarmId(alarm.id)
+        deleteMissionsForAlarm(alarm.id)
         if (missions.isNotEmpty()) {
             val updatedMissions = missions.map { it.copy(alarmId = alarm.id) }  // Associate missions with the alarm ID
-            insertMissions(updatedMissions)
+            saveMissions(updatedMissions)
         }
     }
 }

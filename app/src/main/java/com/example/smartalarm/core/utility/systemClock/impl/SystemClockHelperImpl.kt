@@ -1,6 +1,7 @@
 package com.example.smartalarm.core.utility.systemClock.impl
 
 import android.os.SystemClock
+import android.util.Log
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
 import java.time.Instant
 import java.time.LocalDate
@@ -60,10 +61,22 @@ class SystemClockHelperImpl @Inject constructor() : SystemClockHelper {
         return ZonedDateTime.of(date, alarmTime, zone)
     }
 
-    override fun formatLocalTime(utcMillis: Long, offsetSeconds: Int): String {
+    override fun getPlaceCurrentLocalTime(offsetSeconds: Int): Long {
         return runCatching {
             val zoneOffset = ZoneOffset.ofTotalSeconds(offsetSeconds)
-            val localTime = Instant.ofEpochMilli(utcMillis).atOffset(zoneOffset)
+            val localTime = Instant.ofEpochMilli(getCurrentTime()).atOffset(zoneOffset)
+            return localTime.toLocalDateTime().toInstant(ZoneOffset.UTC).toEpochMilli()
+        }.getOrElse { 0L }
+    }
+
+    override fun formatLocalTime(offsetSeconds: Int): String {
+        return runCatching {
+            val zoneOffset = ZoneOffset.ofTotalSeconds(offsetSeconds)
+            val localTime = Instant.ofEpochMilli(getCurrentTime()).atOffset(zoneOffset)
+            val shiftedMillis = localTime.toLocalDateTime().toInstant(ZoneOffset.UTC).toEpochMilli()
+            Log.d("TAG,", "formatLocalTime  hour =  ${localTime.hour}, min = ${localTime.minute}")
+            Log.d("TAG,", "formatLocalTime  shiftedMillis =  $shiftedMillis")
+
             val formatter = DateTimeFormatter.ofPattern("hh:mm a")
             localTime.format(formatter)
         }.getOrElse { "--:--" }

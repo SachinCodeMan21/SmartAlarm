@@ -1,6 +1,5 @@
 package com.example.smartalarm.feature.clock.presentation.effect
 
-import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.feature.clock.presentation.viewmodel.PlaceSearchViewModel
 
 /**
@@ -21,9 +20,9 @@ sealed class PlaceSearchEffect {
     data object NavigateToHome : PlaceSearchEffect()
 
     /**
-     * Triggers a SnackBar with the given [error] to provide feedback to the user.
+     * Triggers a SnackBar with the given [errorMessage] to provide feedback to the user.
      *
-     * @property error The message to be displayed in the SnackBar.
+     * @property errorMessage The message to be displayed in the SnackBar.
      */
-    data class ShowError(val error: DataError) : PlaceSearchEffect()
+    data class ShowError(val errorMessage: String) : PlaceSearchEffect()
 }

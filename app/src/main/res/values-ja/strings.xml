@@ -35,8 +35,6 @@
     <string name="empty">空</string>
     <string name="alarm_playback_attribution">アラーム音の再生</string>
     <string name="empty_attribution_label">空の属性タグ</string>
-    <string name="navigation_drawer_open">ナビゲーションドロワーを開く</string>
-    <string name="navigation_drawer_close">ナビゲーションドロワーを閉じる</string>
 
     <!-- Alarm Screen -->
     <string name="create_new_alarm">新しいアラームを作成</string>
@@ -157,6 +155,21 @@
         <item>金曜日</item>
         <item>土曜日</item>
     </string-array>
+    <string name="drag_left_to_snooze">スヌーズするには左にスワイプ</string>
+    <string name="drag_right_to_stop">停止するには右にスワイプ</string>
+    <string name="drag_to_snooze_or_stop">スヌーズまたは停止するにはスワイプ</string>
+    <string name="no_snooze_left">スヌーズが残っていません</string>
+    <string name="snooze_left"> %1$s 残り </string>
+    <string name="exit_preview">プレビューを終了</string>
+    <string name="error_snooze_alarm">アラームをスヌーズできませんでした。再試行してください。</string>
+    <string name="error_stop_alarm">アラームを停止できませんでした。再試行してください。</string>
+
+    <string name="failed_this_alarm_no_longer_exists">このアラームはもう存在しません。</string>
+    <string name="failed_alarm_not_found">このアラームは見つかりませんでした。</string>
+    <string name="failed_to_load_the_alarm">アラームの読み込みに失敗しました。もう一度試してください。</string>
+    <string name="failed_to_save_the_alarm">アラームを保存できませんでした。もう一度試してください。</string>
+    <string name="failed_to_update_the_alarm">アラームの更新に失敗しました。もう一度試してください。</string>
+    <string name="failed_to_schedule_the_alarm">アラームは保存されましたが、スケジュールできませんでした。</string>
 
     <string name="round_text">%2$s ラウンド中 %1$s</string>
     <string name="mission_completed">ミッションクリア！</string>
@@ -194,6 +207,9 @@
     <!-- Math Mission -->
     <string name="solve_the_math_problem">計算問題を解いてください</string>
     <string name="enter_your_answer">答えを入力</string>
+    <string name="please_enter_an_answer">回答を入力してください！</string>
+    <string name="invalid_number_format">無効な数字形式！</string>
+    <string name="wrong_answer">間違った答え！</string>
 
     <!-- Shake Mission -->
     <string name="shake_your_phone">スマホを振ってください！</string>
@@ -205,6 +221,12 @@
     <string name="accelerometer_sensor_not_available">加速度センサーが利用できません</string>
     <string name="step_detector_sensor_not_available">歩数センサーが利用できません</string>
     <string name="permission_required_for_step_detection">歩数検出に権限が必要です</string>
+    <string name="start_walking_slowly_to_detect_your_first_step">最初の一歩を検出してセンサーをキャリブレーションできるように、ゆっくり歩き始めてください。</string>
+    <string name="activity_recognition_permission_rationale_title">アクティビティ認識の許可が必要です</string>
+    <string name="activity_recognition_permission_rationale_message">あなたの身体的な活動と歩数を追跡するために、アクティビティデータへのアクセス許可が必要です。これにより、より正確な歩数監視機能を提供することができます。</string>
+    <string name="activity_recognition_permission_permanently_denied_title">許可が永久に拒否されました</string>
+    <string name="activity_recognition_permission_permanently_denied_message">アクティビティ認識の許可が永久に拒否されました。この機能を有効にするには、アプリの設定に移動して手動で許可を与えてください。</string>
+    <string name="activity_recognition_permission_denied_toast">許可が拒否されました。歩数や活動を追跡できません。</string>
 
     <!-- その他アラーム関連 -->
     <string name="alarm_already_passed">アラーム時刻を過ぎました</string>
@@ -232,6 +254,19 @@
     <string name="selected_timezones_list">タイムゾーン一覧</string>
     <string name="no_result_found">結果が見つかりません</string>
     <string name="search">検索</string>
+    <string name="timezone_deleted">%1$s のタイムゾーンが削除されました</string>
+    <string name="undo_timezone_successful">元に戻すに成功しました</string>
+    <string name="failed_to_load_time_zones">タイムゾーンの読み込みに失敗しました</string>
+    <string name="failed_to_undo_time_zone">タイムゾーンの元に戻すに失敗しました</string>
+    <string name="failed_to_delete_timezone">タイムゾーンの削除に失敗しました</string>
+    <string name="start_typing_to_search_for_a_place">場所を検索するには入力を開始してください</string>
+    <string name="no_such_place_found">そのような場所は見つかりません</string>
+    <string name="time_same">同じ時間</string>
+    <string name="time_ahead">%1$s 先</string>
+    <string name="time_behind">%1$s 遅れ</string>
+    <string name="time_tomorrow">明日</string>
+    <string name="time_yesterday">昨日</string>
+    <string name="time_today">今日</string>
 
     <!-- Timer -->
     <string name="_0">0</string>
@@ -264,6 +299,8 @@
     <string name="sec_formatted_stopwatch_time">%1$s秒</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$s秒 : %2$sミリ秒</string>
     <string name="timer_dashboard">タイマーダッシュボード</string>
+    <string name="timer_generic_error">問題が発生しました。もう一度お試しください。</string>
+
 
     <!-- Active Timer Notification String -->
     <string name="active_timer">アクティブタイマー</string>
@@ -280,18 +317,36 @@
     <string name="missed_timer">ミスしたタイマー</string>
     <string name="missed_timer_target_time">タイマー目標時間: %1$s</string>
 
+    <!-- Show Timer Error Messages -->
+    <string name="timer_start_failed">タイマーを開始できません。もう一度お試しください。</string>
+    <string name="timer_pause_failed">タイマーを一時停止できません。もう一度お試しください。</string>
+    <string name="timer_restart_failed">タイマーを再開できません。もう一度お試しください。</string>
+    <string name="timer_snooze_failed">タイマーをスヌーズできません。もう一度お試しください。</string>
+    <string name="timer_stop_failed">タイマーを停止できません。もう一度お試しください。</string>
 
-    <!-- Stopwatch -->
+
+    // ---------------------------------------------------------------------
+    // # Stopwatch Screen Related Strings
+    // ---------------------------------------------------------------------
 
     <!--  1] Stopwatch layout Strings   -->
     <string name="stopwatch_progress_indicator">ストップウォッチ進行インジケーター</string>
     <string name="stopwatch_rv_desc">記録されたラップタイム一覧</string>
-    <string name="toggle_stopwatch">スタート/ポーズ切り替え</string>
+    <string name="start_stopwatch">ストップウォッチを開始</string>
+    <string name="pause_stopwatch">ストップウォッチを一時停止</string>
+    <string name="resume_stopwatch">ストップウォッチを再開</string>
     <string name="reset_stopwatch">リセット</string>
     <string name="record_lap_time">ラップを記録</string>
-    <string name="lap_index">#ラップ</string>
+    <string name="lap_index">#ラップ %1$s</string>
 
-    <string name="failed_to_restore_stopwatch_state">ストップウォッチの状態復元に失敗しました</string>
+    <!-- Stopwatch Feature Permission Strings -->
+    <string name="stopwatch_notification_permission_rationale_title">通知の許可が必要です</string>
+    <string name="stopwatch_notification_permission_rationale_message">ストップウォッチをバックグラウンドで安定して動作させ、ロック画面での操作を可能にするために通知の許可が必要です。</string>
+    <string name="stopwatch_notification_permission_permanently_denied_title">通知がブロックされています</string>
+    <string name="stopwatch_notification_permission_permanently_denied_message">通知がブロックされています。アプリの設定で有効にしてください。</string>
+    <string name="stopwatch_notification_permission_denied_toast">許可が拒否されました</string>
+
+    <!-- Stopwatch Viewmodel Specific Error Strings -->
     <string name="failed_to_start_stopwatch">ストップウォッチの開始に失敗しました</string>
     <string name="failed_to_pause_stopwatch_state">ストップウォッチの一時停止に失敗しました</string>
     <string name="failed_to_reset_stopwatch_state">ストップウォッチのリセットに失敗しました</string>
@@ -312,6 +367,57 @@
     <string name="chinese">中国語</string>
     <string name="japanese">日本語</string>
     <string name="hindi">ヒンディー語</string>
+
+
+    // ---------------------------------------------------------------------
+    // About Screen Strings
+    // ---------------------------------------------------------------------
+    <string name="smart_alarm">スマートアラーム</string>
+    <string name="version_1_0">バージョン 1.0</string>
+    <string name="about_app_desc">ミッションベースの規律で、リフレッシュして目覚め、一日を始める準備を整えるお手伝いをします。</string>
+    <string name="rate_on_play_store">Play ストアで評価</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="terms_of_service">利用規約</string>
+    <string name="_2026_smart_alarm_inc">© 2026 Smart Alarm Inc.</string>
+    <string name="smart_alarm_app_icon">スマートアラームアプリアイコン</string>
+    <string name="undo_successful">元に戻しました</string>
+    <string name="version">バージョン %1$s</string>
+    <string name="no_browser_found_to_open_link">リンクを開くブラウザが見つかりません</string>
+
+
+    // ---------------------------------------------------------------------
+    // Help Screen Strings
+    // ---------------------------------------------------------------------
+    <string name="help_support_title">ヘルプとサポート</string>
+    <string name="section_system_reliability">システムの信頼性</string>
+    <string name="section_faq">よくある質問</string>
+    <string name="section_missions_snoozing">ミッションとスヌーズ</string>
+    <string name="section_world_clock">世界時計</string>
+    <string name="section_timer">タイマー</string>
+    <string name="section_stopwatch">ストップウォッチ</string>
+    <string name="btn_email_support">メールサポート</string>
+    <string name="send_email">メールを送信</string>
+    <string name="no_email_app_found">メールアプリが見つかりません</string>
+
+    <string name="title_required_permissions">必要な権限</string>
+    <string name="desc_required_permissions">• 正確なアラーム: ミッションが時間通りに実行されます。\n• フルスクリーン通知: ロック画面の上にミッションを表示します。\n• アクティビティ認識: 歩行/シェイクミッションに必要です。\n• バッテリー最適化: アプリが停止しないよう \'Unrestricted\' に設定してください。</string>
+
+    <string name="title_scheduling_dismissing">スケジュールと解除</string>
+    <string name="desc_scheduling_dismissing">をタップしてアラームを作成します。</string>
+
+    <string name="title_why_snooze_disappeared">スヌーズボタンが消えた理由</string>
+    <string name="desc_why_snooze_disappeared">スヌーズ制限を設定すると制限到達後ボタンが無効になります。</string>
+
+    <string name="title_global_time">世界時間の追跡</string>
+    <string name="desc_global_time">をタップして都市を追加します。</string>
+
+    <string name="title_managing_countdowns">カウントダウン管理</string>
+    <string name="desc_managing_countdowns">時間を設定して開始を押します。</string>
+
+    <string name="title_laps_splits">ラップとスプリットタイム</string>
+    <string name="desc_laps_splits">ストップウォッチ実行中に ラップ ボタンを使用します。</string>
+
+
 
     <!-- Notification -->
     <string name="notification">通知</string>
@@ -353,8 +459,8 @@
     <string name="lap_time_format">#ラップ %1$s : %2$s</string>
     <string name="stop_all_completed">すべての完了タイマーを停止</string>
     <string name="stop_all_active">すべての実行中タイマーを停止</string>
-    <string name="start_timer">タイマー開始</string>
-    <string name="delete_timer">タイマー削除</string>
+    <string name="start_timer_btn_desc">タイマー開始</string>
+    <string name="delete_timer_btn_desc">タイマー削除</string>
     <string name="rounds">ラウンド</string>
     <string name="exact_alarm">正確なアラーム</string>
 

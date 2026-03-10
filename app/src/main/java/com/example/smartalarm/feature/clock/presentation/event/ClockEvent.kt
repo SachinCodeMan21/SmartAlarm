@@ -44,10 +44,4 @@ sealed class ClockEvent {
      */
     data class UndoDeletedTimeZone(val deletedTimeZone: PlaceModel) : ClockEvent()
 
-    /**
-     * Event to show a one-time toast message to the user.
-     *
-     * @property message The message content to be displayed.
-     */
-    data class ShowToastMessage(val message: String) : ClockEvent()
 }

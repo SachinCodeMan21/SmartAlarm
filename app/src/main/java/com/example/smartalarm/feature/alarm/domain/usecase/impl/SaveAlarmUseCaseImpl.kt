@@ -34,7 +34,7 @@ class SaveAlarmUseCaseImpl @Inject constructor(
      * @return A [MyResult] containing the saved alarm's ID if successful, or an error if the operation fails.
      */
     override suspend fun invoke(alarm: AlarmModel): MyResult<Int, DataError> {
-        return alarmRepository.saveAlarm(alarm)
+        return alarmRepository.createAlarmWithMissions(alarm)
     }
 }
 

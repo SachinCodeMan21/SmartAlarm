@@ -1,18 +1,16 @@
 package com.example.smartalarm.feature.stopwatch.presentation.model
 
 /**
- * UI model representing the full state of the stopwatch screen.
+ * Encapsulates the visual state of the stopwatch as a raw data snapshot.
  *
- * @property secondsText Formatted text for the stopwatch's seconds portion (e.g., "00s").
- * @property milliSecondsText Formatted text for the milliseconds portion (e.g., "25").
- * @property isRunning Whether the stopwatch is currently running.
- * @property progress Progress bar value indicating stopwatch progress (0-100 or as defined).
- * @property laps List of recorded laps shown in the UI.
+ * Implements the **Passive UI State** pattern. This model carries pre-calculated
+ * metrics (like progress percentage) to keep the UI layer logic-light, but avoids
+ * data transformation like String formatting. This ensures the model remains
+ * flexible across different Locales and UI components.
  */
 data class StopwatchUiModel(
-    val secondsText: String = "",
-    val milliSecondsText: String = "",
+    val elapsedMillis: Long = 0L,
     val isRunning: Boolean = false,
     val progress: Int = 0,
-    val laps: List<StopwatchLapUiModel> = emptyList(),
+    val laps: List<StopwatchLapUiModel> = emptyList()
 )

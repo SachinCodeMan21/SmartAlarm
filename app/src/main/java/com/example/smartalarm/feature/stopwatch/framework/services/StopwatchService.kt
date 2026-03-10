@@ -3,7 +3,8 @@ package com.example.smartalarm.feature.stopwatch.framework.services
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
 import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
@@ -42,7 +43,8 @@ class StopwatchService : Service() {
 
     @Inject lateinit var systemClockHelper: SystemClockHelper
     @Inject lateinit var stopWatchNotificationManager: StopwatchNotificationManager
-
+    @Inject lateinit var errorLogger: ErrorLogger
+    @Inject lateinit var analyticsHelper: AnalyticsHelper
 
     private var lastLapCount = 0
     private var isStopwatchReset = false
@@ -129,6 +131,8 @@ class StopwatchService : Service() {
     // Promotes the service to foreground and starts notification updates if the stopwatch is currently running
     private fun showStopWatchForegroundNotification() = serviceScope?.launch {
 
+        analyticsHelper.logEvent(StopwatchServiceAnalyticsEvent.START_FOREGROUND_SERVICE.eventName)
+
         val currentStopwatch = stopWatchUseCase.getCurrentStopwatch()
         showForegroundNotification()
 
@@ -139,12 +143,14 @@ class StopwatchService : Service() {
     // Pauses the stopwatch, stops update jobs, and refreshes the notification state
     private fun pauseStopWatchNotification() = serviceScope?.launch {
         val result = stopWatchUseCase.pauseStopwatch()
+        analyticsHelper.logEvent(StopwatchServiceAnalyticsEvent.PAUSE_STOPWATCH.eventName)
         handleUseCaseError(result, "Pause Failed")
     }
 
     // Resumes the stopwatch, updates the notification, and restarts update jobs
     private fun resumeStopWatchNotification() = serviceScope?.launch {
         val result = stopWatchUseCase.startStopwatch()
+        analyticsHelper.logEvent(StopwatchServiceAnalyticsEvent.RESUME_STOPWATCH.eventName)
         handleUseCaseError(result, "Resume Failed")
     }
 
@@ -152,6 +158,7 @@ class StopwatchService : Service() {
     private fun resetStopWatchNotification() = serviceScope?.launch {
         val result = stopWatchUseCase.deleteStopwatch()
         isStopwatchReset = true
+        analyticsHelper.logEvent(StopwatchServiceAnalyticsEvent.RESET_STOPWATCH.eventName)
         handleUseCaseError(result, "Reset Database Failed")
         stopStopWatchNotification()
     }
@@ -159,6 +166,7 @@ class StopwatchService : Service() {
     // Records a lap for the active stopwatch and updates state Stops the service if the operation fails
     private fun recordLapStopWatchNotification() = serviceScope?.launch {
         val result = stopWatchUseCase.lapStopwatch()
+        analyticsHelper.logEvent(StopwatchServiceAnalyticsEvent.LAP_STOPWATCH.eventName)
         handleUseCaseError(result, "Lap Failed")
     }
 
@@ -166,6 +174,7 @@ class StopwatchService : Service() {
     private fun stopStopWatchNotification() {
         stopTicker()
         stopForeground(STOP_FOREGROUND_REMOVE)
+        analyticsHelper.logEvent(StopwatchServiceAnalyticsEvent.STOP_FOREGROUND_SERVICE.eventName)
         stopSelf()
     }
 
@@ -213,33 +222,35 @@ class StopwatchService : Service() {
     // ---------------------------------------------------------------------
 
     private fun handleUseCaseError(result: MyResult<Unit, DataError>, logTag: String) {
+
         if (result is MyResult.Error) {
 
             val error = result.error
 
-            // Option 1: Detailed Logging
-            // Since Unexpected carries a throwable, we can log the actual stack trace
-            when (error) {
-                is DataError.Unexpected -> {
-                    Log.e(logTag, "Unexpected system error", error.throwable)
-                    // FirebaseCrashlytics.getInstance().recordException(error.throwable)
-                }
-                else -> Log.e(logTag, "$logTag Error: $error")
-            }
+            analyticsHelper.logEvent(StopwatchServiceAnalyticsEvent.ERROR_STOPWATCH_SERVICE.eventName, "error" to error.toString())
 
-            // Option 2: Safety Shutdown Logic
-            // Check for specific database-critical states that require stopping the service
-            val isCriticalLocalError = error is DataError.Local && (
-                    error == DataError.Local.DISK_FULL || error == DataError.Local.CORRUPTED)
+            // 1. Prepare the shutdown message if needed
+            val isCritical = error is DataError.Local &&
+                    (error == DataError.Local.DISK_FULL || error == DataError.Local.CORRUPTED)
 
-            if (isCriticalLocalError) {
+            val shutdownNote = if (isCritical) " | CRITICAL: Shutting down service." else ""
+
+            // 2. Log everything in ONE clean line
+            errorLogger.log("Service Error [$logTag]: $error$shutdownNote")
+
+            // 3. Map and record the Exception
+            val throwable = if (error is DataError.Unexpected) error.throwable
+            else Exception("Stopwatch_Service_Error [$logTag]: $error")
+
+            errorLogger.recordException(throwable)
+
+            // 4. Execute shutdown if critical
+            if (isCritical) {
                 stopStopWatchNotification()
-                // Optional: You might also want to toggle a "Service Error" state
-                // in your repository so the UI knows the timer stopped due to a crash.
             }
         }
     }
 
 
-
 }
+

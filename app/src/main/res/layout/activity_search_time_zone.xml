@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/search"
+                android:textColorHint="?attr/colorOutline"
                 android:imeOptions="actionSearch"
                 android:inputType="textCapWords"
                 android:padding="@dimen/spacing_m"

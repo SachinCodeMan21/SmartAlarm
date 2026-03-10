@@ -22,8 +22,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
 import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
 import com.example.smartalarm.core.utility.extension.toLocalizedString
+import com.example.smartalarm.feature.alarm.presentation.model.mission.analyticEnum.MissionEventType
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
@@ -66,6 +68,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 @HiltViewModel
 class TypingMissionViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
+    private val  analyticsHelper: AnalyticsHelper,
     @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -91,10 +94,22 @@ class TypingMissionViewModel @Inject constructor(
      */
     fun handleEvent(event: TypingMissionEvent) {
         when (event) {
-            is TypingMissionEvent.InitializeMission -> initializeMission(event.mission)
-            is TypingMissionEvent.StartMission -> startRound()
-            is TypingMissionEvent.InputTextChanged -> onInputChanged(event.input)
-            is TypingMissionEvent.CheckIsInputCorrect -> checkInput(event.input)
+            is TypingMissionEvent.InitializeMission -> {
+                initializeMission(event.mission)
+                analyticsHelper.logEvent(MissionEventType.INITIALIZE_TYPING_MISSION.eventName)
+            }
+            is TypingMissionEvent.StartMission -> {
+                startRound()
+                analyticsHelper.logEvent(MissionEventType.START_TYPING_MISSION.eventName)
+            }
+            is TypingMissionEvent.InputTextChanged -> {
+                onInputChanged(event.input)
+                analyticsHelper.logEvent(MissionEventType.INPUT_TEXT_CHANGED_TYPING.eventName)
+            }
+            is TypingMissionEvent.CheckIsInputCorrect -> {
+                checkInput(event.input)
+                analyticsHelper.logEvent(MissionEventType.CHECK_IS_INPUT_CORRECT_TYPING.eventName)
+            }
         }
     }
 
@@ -205,14 +220,6 @@ class TypingMissionViewModel @Inject constructor(
      * End the mission and notify UI with a completion effect.
      */
     private fun endMission() {
-/*        _uiState.value = _uiState.value.copy(
-            roundText = resourceProvider.getString(R.string.mission_completed),
-            currentParagraph = resourceProvider.getString(R.string.great_job_you_completed_all_rounds),
-            isInputEnabled = false,
-            isSubmitEnabled = false,
-            feedback = "",
-            overlaySpannable = SpannableStringBuilder("")
-        )*/
         viewModelScope.launch {
             _uiEffect.send(MissionEffect.MissionCompleted)
         }

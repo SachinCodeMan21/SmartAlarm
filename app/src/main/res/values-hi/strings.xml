@@ -53,8 +53,6 @@
     <string name="empty">खाली</string>
     <string name="alarm_playback_attribution">अलार्म के लिए ऑडियो प्लेबैक</string>
     <string name="empty_attribution_label">खाली टैग</string>
-    <string name="navigation_drawer_open">नेविगेशन ड्रॉअर खोलें</string>
-    <string name="navigation_drawer_close">नेविगेशन ड्रॉअर बंद करें</string>
 
 
 
@@ -168,7 +166,12 @@
         <item>ए.एम</item>
         <item>पी.एम</item>
     </string-array>
-
+    <string name="failed_this_alarm_no_longer_exists">यह अलार्म अब अस्तित्व में नहीं है।</string>
+    <string name="failed_alarm_not_found">यह अलार्म नहीं मिल सका।</string>
+    <string name="failed_to_load_the_alarm">अलार्म लोड करने में विफल। कृपया फिर से प्रयास करें।</string>
+    <string name="failed_to_save_the_alarm">अलार्म को सहेजने में विफल। कृपया फिर से प्रयास करें।</string>
+    <string name="failed_to_update_the_alarm">अलार्म को अपडेट करने में विफल। कृपया फिर से प्रयास करें।</string>
+    <string name="failed_to_schedule_the_alarm">अलार्म सहेजा गया, लेकिन उसे अनुसूचित नहीं किया जा सका।</string>
 
     <!-- 3] Mission Picker Bottom Sheet Layout  -->
     <string name="choose_mission">मिशन चुनें</string>
@@ -222,6 +225,14 @@
         <item>शुक्रवार</item> <!-- Friday -->
         <item>शनिवार</item>  <!-- Saturday -->
     </string-array>
+    <string name="drag_left_to_snooze">स्नूज़ के लिए बाएं खींचें</string>
+    <string name="drag_right_to_stop">रोकने के लिए दाएं खींचें</string>
+    <string name="drag_to_snooze_or_stop">स्नूज़ या रोकने के लिए खींचें</string>
+    <string name="no_snooze_left">कोई स्नूज़ नहीं बचा</string>
+    <string name="snooze_left"> %1$s बचा </string>
+    <string name="exit_preview">पूर्वावलोकन छोड़ें</string>
+    <string name="error_snooze_alarm">अलार्म को स्नूज़ नहीं कर सके। कृपया पुनः प्रयास करें।</string>
+    <string name="error_stop_alarm">अलार्म को रोकने में असमर्थ। कृपया पुनः प्रयास करें।</string>
 
     <!-- Mission Fragment Common Strings -->
     <string name="round_text">राउंड %1$s का %2$s</string>
@@ -260,6 +271,9 @@
     <!-- 3]  Math Mission Strings -->
     <string name="solve_the_math_problem">गणित का प्रश्न हल करें</string>
     <string name="enter_your_answer">अपना उत्तर दर्ज करें</string>
+    <string name="please_enter_an_answer">कृपया एक उत्तर दर्ज करें!</string>
+    <string name="invalid_number_format">अमान्य संख्या प्रारूप!</string>
+    <string name="wrong_answer">गलत उत्तर!</string>
 
     <!-- 4]  Shake Mission Strings -->
     <string name="shake_your_phone">अपना फ़ोन हिलाएँ!</string>
@@ -271,7 +285,12 @@
     <string name="accelerometer_sensor_not_available">एक्सेलेरोमीटर सेंसर उपलब्ध नहीं है</string>
     <string name="step_detector_sensor_not_available">स्टेप डिटेक्टर सेंसर उपलब्ध नहीं है</string>
     <string name="permission_required_for_step_detection">स्टेप डिटेक्शन के लिए अनुमति आवश्यक है</string>
-
+    <string name="start_walking_slowly_to_detect_your_first_step">कृपया धीरे-धीरे चलें ताकि हम आपका पहला कदम पहचान सकें और सेंसर को कैलिब्रेट कर सकें।</string>
+    <string name="activity_recognition_permission_rationale_title">गतिविधि पहचान अनुमति आवश्यक</string>
+    <string name="activity_recognition_permission_rationale_message">आपकी शारीरिक गतिविधियों और कदमों का ट्रैक रखने के लिए हमें आपकी गतिविधि डेटा तक पहुंच की अनुमति चाहिए। इससे हम आपके कदमों की निगरानी के लिए अधिक सटीक सुविधाएं प्रदान कर सकेंगे।</string>
+    <string name="activity_recognition_permission_permanently_denied_title">अनुमति स्थायी रूप से अस्वीकृत</string>
+    <string name="activity_recognition_permission_permanently_denied_message">आपने गतिविधि पहचान अनुमति को स्थायी रूप से अस्वीकृत कर दिया है। इस सुविधा को सक्षम करने के लिए, कृपया ऐप सेटिंग्स में जाएं और अनुमति मैन्युअली सक्षम करें।</string>
+    <string name="activity_recognition_permission_denied_toast">अनुमति अस्वीकृत। आप अपने कदमों और गतिविधियों का ट्रैक नहीं कर सकेंगे।</string>
 
 
     // ---------------------------------------------------------------------
@@ -281,6 +300,34 @@
     <string name="selected_timezones_list">चयनित टाइमज़ोन की सूची</string>
     <string name="no_result_found">कोई परिणाम नहीं मिला!</string>
     <string name="search">खोजें</string>
+    <string name="timezone_deleted">%1$s टाइमज़ोन हटाया गया</string>
+    <string name="undo_timezone_successful">पूर्ववत सफल</string>
+    <string name="failed_to_load_time_zones">टाइमज़ोन लोड करने में विफल</string>
+    <string name="failed_to_undo_time_zone">टाइमज़ोन पूर्ववत करने में विफल</string>
+    <string name="failed_to_delete_timezone">टाइमज़ोन हटाने में विफल</string>
+    <string name="start_typing_to_search_for_a_place">खोजने के लिए एक स्थान टाइप करना शुरू करें</string>
+    <string name="no_such_place_found">कोई ऐसा स्थान नहीं मिला</string>
+    <string name="time_same">एक ही समय</string>
+    <string name="time_ahead">%1$s आगे</string>
+    <string name="time_behind">%1$s पीछे</string>
+    <string name="time_tomorrow">कल</string>
+    <string name="time_yesterday">कल</string>
+    <string name="time_today">आज</string>
+
+    <string-array name="month_names">
+        <item>जनवरी</item>
+        <item>फरवरी</item>
+        <item>मार्च</item>
+        <item>अप्रैल</item>
+        <item>मई</item>
+        <item>जून</item>
+        <item>जुलाई</item>
+        <item>अगस्त</item>
+        <item>सितंबर</item>
+        <item>अक्टूबर</item>
+        <item>नवंबर</item>
+        <item>दिसंबर</item>
+    </string-array>
 
     // ---------------------------------------------------------------------
     // # Timer Screen Related Strings
@@ -317,7 +364,8 @@
     <string name="min_formatted_stopwatch_time">%1$sमि : %2$sसे</string>
     <string name="sec_formatted_stopwatch_time">%1$sसे</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$sसे : %2$sमिसे</string>
-    <string name="timer_dashboard">टाइमर डैशबोर्ड</string> <!-- Hindi -->
+    <string name="timer_dashboard">टाइमर डैशबोर्ड</string>
+    <string name="timer_generic_error">कुछ गलत हो गया। कृपया फिर से प्रयास करें।</string>
 
     <!-- Active Timer Notification String -->
     <string name="active_timer">सक्रिय टाइमर</string>
@@ -335,6 +383,12 @@
     <string name="missed_timer_target_time">टाइमर लक्ष्य समय: %1$s</string>
 
 
+    <!-- Show Timer Error Messages -->
+    <string name="timer_start_failed">टाइमर शुरू नहीं किया जा सका। कृपया पुनः प्रयास करें।</string>
+    <string name="timer_pause_failed">टाइमर रोक नहीं सका। कृपया पुनः प्रयास करें।</string>
+    <string name="timer_restart_failed">टाइमर फिर से शुरू नहीं किया जा सका। कृपया पुनः प्रयास करें।</string>
+    <string name="timer_snooze_failed">टाइमर स्नेज़ नहीं किया जा सका। कृपया पुनः प्रयास करें।</string>
+    <string name="timer_stop_failed">टाइमर बंद नहीं किया जा सका। कृपया पुनः प्रयास करें।</string>
 
 
     // ---------------------------------------------------------------------
@@ -343,13 +397,21 @@
     <!--  1] Stopwatch layout Strings   -->
     <string name="stopwatch_progress_indicator">स्टॉपवॉच समय प्रगति संकेतक</string>
     <string name="stopwatch_rv_desc">रिकॉर्ड किए गए स्टॉपवॉच लैप टाइम की सूची</string>
-    <string name="toggle_stopwatch">स्टॉपवॉच शुरू/रोकें</string>
+    <string name="start_stopwatch">स्टॉपवॉच शुरू करें</string>
+    <string name="pause_stopwatch">स्टॉपवॉच रोकें</string>
+    <string name="resume_stopwatch">स्टॉपवॉच फिर से शुरू करें</string>
     <string name="reset_stopwatch">स्टॉपवॉच रीसेट करें</string>
     <string name="record_lap_time">लैप समय रिकॉर्ड करें</string>
-    <string name="lap_index"># लैप</string>
+    <string name="lap_index"># लैप %1$s</string>
+
+    <!-- Stopwatch Feature Permission Strings -->
+    <string name="stopwatch_notification_permission_rationale_title">सूचना अनुमति आवश्यक</string>
+    <string name="stopwatch_notification_permission_rationale_message">स्टॉपवॉच को पृष्ठभूमि में विश्वसनीय रूप से चलाने और लॉक स्क्रीन नियंत्रण की अनुमति देने के लिए सूचना अनुमति आवश्यक है।</string>
+    <string name="stopwatch_notification_permission_permanently_denied_title">सूचनाएँ अवरुद्ध हैं</string>
+    <string name="stopwatch_notification_permission_permanently_denied_message">सूचनाएँ अवरुद्ध हैं। कृपया उन्हें ऐप सेटिंग्स में सक्षम करें।</string>
+    <string name="stopwatch_notification_permission_denied_toast">अनुमति अस्वीकृत</string>
 
     <!-- Stopwatch Viewmodel Specific Error Strings  -->
-    <string name="failed_to_restore_stopwatch_state">स्टॉपवॉच की स्थिति पुनर्स्थापित करने में विफल। कृपया पुनः प्रयास करें।</string>
     <string name="failed_to_start_stopwatch">स्टॉपवॉच शुरू करने में विफल। कृपया पुनः प्रयास करें।</string>
     <string name="failed_to_pause_stopwatch_state">स्टॉपवॉच की स्थिति रोकने में विफल। कृपया पुनः प्रयास करें।</string>
     <string name="failed_to_reset_stopwatch_state">स्टॉपवॉच की स्थिति रीसेट करने में विफल। कृपया पुनः प्रयास करें।</string>
@@ -372,6 +434,60 @@
     <string name="chinese">चाइनीज़</string>
     <string name="japanese">जापानी</string>
     <string name="hindi">हिंदी</string>
+
+
+    // ---------------------------------------------------------------------
+    // About Screen Strings
+    // ---------------------------------------------------------------------
+
+    <string name="smart_alarm">स्मार्ट अलार्म</string>
+    <string name="version_1_0">संस्करण 1.0</string>
+    <string name="about_app_desc">मिशन-आधारित अनुशासन के साथ आपको ताज़गी से जगाने और दिन की शुरुआत के लिए तैयार करने में मदद करता है।</string>
+    <string name="rate_on_play_store">Play Store पर रेट करें</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
+    <string name="terms_of_service">सेवा की शर्तें</string>
+    <string name="_2026_smart_alarm_inc">© 2026 स्मार्ट अलार्म इंक.</string>
+    <string name="smart_alarm_app_icon">स्मार्ट अलार्म ऐप आइकन</string>
+    <string name="undo_successful">पूर्ववत सफल</string>
+    <string name="version">संस्करण %1$s</string>
+    <string name="no_browser_found_to_open_link">लिंक खोलने के लिए कोई ब्राउज़र नहीं मिला</string>
+
+
+    // ---------------------------------------------------------------------
+    // Help Screen Strings
+    // ---------------------------------------------------------------------
+
+    <string name="help_support_title">सहायता और समर्थन</string>
+    <string name="section_system_reliability">सिस्टम विश्वसनीयता</string>
+    <string name="section_faq">अक्सर पूछे जाने वाले प्रश्न</string>
+    <string name="section_missions_snoozing">मिशन और स्नूज़</string>
+    <string name="section_world_clock">विश्व घड़ी</string>
+    <string name="section_timer">टाइमर</string>
+    <string name="section_stopwatch">स्टॉपवॉच</string>
+    <string name="btn_email_support">ईमेल सहायता</string>
+    <string name="send_email">ईमेल भेजें</string>
+    <string name="no_email_app_found">कोई ईमेल ऐप नहीं मिला</string>
+
+    <string name="title_required_permissions">आवश्यक अनुमतियाँ</string>
+    <string name="desc_required_permissions">• सटीक अलार्म: मिशन समय पर शुरू हों यह सुनिश्चित करता है.\n
+        •फुल स्क्रीन नोटिफिकेशन: लॉक स्क्रीन पर मिशन दिखाने की अनुमति देता है.\n
+        • गतिविधि पहचान: वॉकिंग/शेकिंग मिशन के लिए आवश्यक.\n
+        •बैटरी ऑप्टिमाइज़ेशन: ऐप को कभी स्लीप न होने देने के लिए Unrestricted पर सेट करें.</string>
+
+    <string name="title_scheduling_dismissing">शेड्यूलिंग और बंद करना</string>
+    <string name="desc_scheduling_dismissing">अलार्म बनाने के लिए + टैप करें। एडिट स्क्रीन में आप अधिकतम 5 मिशन जोड़ सकते हैं। नोट: अलार्म तभी बंद होगा जब सभी मिशन पूरे हो जाएँ।</string>
+
+    <string name="title_why_snooze_disappeared">स्नूज़ बटन क्यों गायब हो गया?</string>
+    <string name="desc_why_snooze_disappeared">यदि आपने स्नूज़ लिमिट सेट की है, तो लिमिट पूरी होने पर स्नूज़ बटन निष्क्रिय हो जाएगा और आपको मिशन पूरे करने होंगे।</string>
+
+    <string name="title_global_time">वैश्विक समय ट्रैकिंग</string>
+    <string name="desc_global_time">वैश्विक शहर जोड़ने के लिए + टैप करें। तुलना के लिए आपका स्थानीय समय ऊपर पिन किया रहता है।</string>
+
+    <string name="title_managing_countdowns">काउंटडाउन प्रबंधन</string>
+    <string name="desc_managing_countdowns">अवधि सेट करें और स्टार्ट दबाएँ। ऐप बंद या स्क्रीन लॉक होने पर भी टाइमर बैकग्राउंड में चलता रहेगा।</string>
+
+    <string name="title_laps_splits">लैप और स्प्लिट टाइम</string>
+    <string name="desc_laps_splits">स्टॉपवॉच चलते समय लैप दबाकर समय अंतराल रिकॉर्ड करें। व्यायाम ट्रैकिंग के लिए उपयोगी।</string>
 
 
     // ---------------------------------------------------------------------
@@ -423,8 +539,8 @@
     <string name="lap_time_format">#लैप %1$s : %2$s</string>
     <string name="stop_all_completed">सभी पूर्ण हुए टाइमर रोकें</string>
     <string name="stop_all_active">सभी सक्रिय टाइमर रोकें</string>
-    <string name="start_timer">टाइमर शुरू करें</string>
-    <string name="delete_timer">टाइमर हटाएँ</string>
+    <string name="start_timer_btn_desc">टाइमर शुरू करें</string>
+    <string name="delete_timer_btn_desc">टाइमर हटाएँ</string>
     <string name="rounds">राउंड्स</string>
     <string name="exact_alarm">सटीक अलार्म</string>
 

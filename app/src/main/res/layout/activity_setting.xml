@@ -20,7 +20,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/settingToolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_default_height"
+            android:layout_height="wrap_content"
             app:navigationIcon="@drawable/ic_back"
             app:navigationIconTint="?attr/colorOnSurface"
             app:title="@string/settings"
@@ -43,7 +43,7 @@
         app:layout_constraintGuide_percent="@dimen/guideline_setting_end" />
 
 
-    <!-- CardView to change language -->
+    <!-- Language CardView  -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardLanguage"
         android:layout_width="0dp"
@@ -77,8 +77,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
                 android:layout_weight="3"
+                android:gravity="start"
                 android:padding="@dimen/padding_m"
                 android:text="@string/language"
                 android:textSize="@dimen/text_size_l"
@@ -89,7 +89,7 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- CardView to change about -->
+    <!-- About CardView -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardAbout"
         android:layout_width="0dp"
@@ -124,6 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="3"
+                android:gravity="start"
                 android:padding="@dimen/spacing_m"
                 android:text="@string/about"
                 android:textSize="@dimen/text_size_l"
@@ -134,7 +135,7 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- CardView to app help -->
+    <!-- Help CardView -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardHelp"
         android:layout_width="0dp"
@@ -169,6 +170,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="3"
+                android:gravity="start"
                 android:padding="@dimen/spacing_m"
                 android:text="@string/help"
                 android:textSize="@dimen/text_size_l"

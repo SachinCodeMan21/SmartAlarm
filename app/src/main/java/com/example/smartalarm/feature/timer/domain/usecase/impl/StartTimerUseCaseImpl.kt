@@ -48,8 +48,11 @@ class StartTimerUseCaseImpl @Inject constructor(
         // 3. Persistence: Attempt to save to DB first
         return when (val saveResult = timerRepository.persistTimer(updatedTimer)) {
             is MyResult.Success -> {
+
                 // 4. System Side-Effects: Only schedule if the DB save was successful
-                val triggerAt = updatedTimer.startTime + updatedTimer.targetTime
+                //val triggerAt = updatedTimer.startTime + updatedTimer.targetTime
+                val triggerAt = timerTimeHelper.getCurrentTime() + updatedTimer.remainingTime
+
 
                 timerScheduler.scheduleTimer(updatedTimer.timerId, triggerAt)
                 timerScheduler.scheduleTimerTimeout(updatedTimer.timerId, triggerAt)

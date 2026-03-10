@@ -14,7 +14,7 @@ import javax.inject.Inject
  * @param localeProvider A provider for locale adjustments based on the current locale.
  */
 class NumberFormatterImpl @Inject constructor(
-    private val localeProvider: LocaleProvider // Provider for locale adjustments
+    private val localeProvider: LocaleProvider,
 ) : NumberFormatter {
 
     /**
@@ -34,6 +34,9 @@ class NumberFormatterImpl @Inject constructor(
 
         // Create a NumberFormat instance using the adjusted locale
         val formatter = NumberFormat.getIntegerInstance(correctedLocale)
+
+        formatter.isGroupingUsed = false
+
 
         // Set the minimum integer digits to 2 if leadingZero is true
         if (leadingZero) {

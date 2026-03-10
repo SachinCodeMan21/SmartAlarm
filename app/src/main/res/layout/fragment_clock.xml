@@ -4,76 +4,87 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clock_fragment_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    tools:context=".feature.clock.presentation.view.fragment.ClockFragment">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/clock_guideline_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/guideline_clock_top" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/clock_guideline_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="@dimen/guideline_clock_start" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/clock_guideline_end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="@dimen/guideline_clock_end" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/clock_guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/guideline_clock_bottom" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/clock_guideline_top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="@dimen/guideline_clock_top" />
 
-    <!-- Current Local TimeStamp   -->
-    <TextView
-        android:id="@+id/clockTimeTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_xxl"
-        android:textStyle="bold"
-        android:textColor="?attr/colorOnSurface"
-        android:layout_marginStart="@dimen/spacing_s"
-        app:layout_constraintStart_toStartOf="@+id/clock_guideline_start"
-        app:layout_constraintTop_toTopOf="@+id/clock_guideline_top"
-        tools:text="03 : 20" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/clock_guideline_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="@dimen/guideline_clock_start" />
 
-    <TextView
-        android:id="@+id/clockDayTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_s"
-        android:layout_marginTop="@dimen/spacing_s"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="@dimen/text_size_m"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/clock_guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/clockTimeTv"
-        tools:text="Thu, 8 Dec" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/clock_guideline_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="@dimen/guideline_clock_end" />
 
-    <!-- Timezone Recyclerview   -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/globalTimeZoneRv"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_m"
-        android:contentDescription="@string/selected_timezones_list"
-        app:layout_constraintBottom_toBottomOf="@id/clock_guideline_bottom"
-        app:layout_constraintEnd_toStartOf="@+id/clock_guideline_end"
-        app:layout_constraintStart_toStartOf="@+id/clock_guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/clockDayTv"
-        tools:listitem="@layout/item_timezone_layout" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/clock_guideline_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="@dimen/guideline_clock_bottom" />
+
+                <!-- Current Local TimeStamp   -->
+                <TextView
+                    android:id="@+id/clockTimeTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_xl"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnSurface"
+                    android:layout_marginStart="@dimen/spacing_s"
+                    app:layout_constraintStart_toStartOf="@+id/clock_guideline_start"
+                    app:layout_constraintTop_toTopOf="@+id/clock_guideline_top"
+                    tools:text="03 : 20" />
+
+                <TextView
+                    android:id="@+id/clockDayTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_s"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_size_m"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/clock_guideline_start"
+                    app:layout_constraintTop_toBottomOf="@+id/clockTimeTv"
+                    tools:text="Thu, 8 Dec" />
+
+                <!-- Timezone Recyclerview   -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/globalTimeZoneRv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:contentDescription="@string/selected_timezones_list"
+                    app:layout_constraintEnd_toStartOf="@+id/clock_guideline_end"
+                    app:layout_constraintStart_toStartOf="@+id/clock_guideline_start"
+                    app:layout_constraintTop_toBottomOf="@+id/clockDayTv"
+                    tools:listitem="@layout/item_timezone_layout" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
     <!--  Add Timezone Button  -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -91,3 +102,8 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+

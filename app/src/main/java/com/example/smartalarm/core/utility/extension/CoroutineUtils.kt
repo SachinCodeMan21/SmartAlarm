@@ -8,13 +8,13 @@ import kotlin.coroutines.cancellation.CancellationException
 // Specify both T (Data) and DataError (Error)
 suspend inline fun <T> myRunCatchingResult(
     block: suspend () -> T
-): MyResult<T, DataError> { // <--- Added the second type argument
+): MyResult<T, DataError> {
     return try {
         MyResult.Success(block())
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
         // Now the compiler knows that mapDatabaseException returns a DataError
-        MyResult.Error(GeneralErrorMapper.mapDatabaseException(e))
+        MyResult.Error(GeneralErrorMapper.map(e))
     }
 }

@@ -82,13 +82,18 @@
     <dimen name="empty_alarm_img_max_size">72dp</dimen>
     <dimen name="alarm_item_mission_img_size">32dp</dimen>
     <dimen name="edit_alarm_weekday_max_size">60dp</dimen>
+
     <item name="alarm_editor_guideline_top_percent" format="float" type="dimen">0.02</item>
     <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.2</item>
     <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.8</item>
+    <dimen name="alarm_editor_weekdays_max_width">56dp</dimen>
+
+
     <item name="memory_mission_grid_max_width_percent" format="float" type="dimen">0.4</item>
     <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.05</item>
     <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.4</item>
-
+    <item name="typing_mission_guideline_start_percent" format="float" type="dimen">0.25</item>
+    <item name="typing_mission_guideline_end_percent" format="float" type="dimen">0.75</item>
 
     <!-- Timer Screen Dimens   -->
     <item name="guideline_timer_top" format="float" type="dimen">0.2</item>
@@ -97,6 +102,7 @@
     <item name="guideline_timer_bottom" format="float" type="dimen">0.8</item>
 
     <!-- Stopwatch Dimens -->
+    <dimen name="stopwatch_elapsed_time_size">36sp</dimen>
     <dimen name="stopwatch_elapsed_time_trans_size">28sp</dimen>
     <dimen name="stopwatch_progress_indicator_thickness">0.9dp</dimen>
     <item name="guideline_stopwatch_top" format="float" type="dimen">0.0</item>
@@ -109,9 +115,13 @@
     <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">0.0</item>
 
     <!-- About Screen Dimens   -->
-    <item name="guideline_about_start" format="float" type="dimen">0.3</item>
-    <item name="guideline_about_end" format="float" type="dimen">0.7</item>
+    <item name="guideline_about_start" format="float" type="dimen">0.2</item>
+    <item name="guideline_about_end" format="float" type="dimen">0.8</item>
     <item name="guideline_about_bottom" format="float" type="dimen">0.8</item>
+
+
+    <!-- Help Screen Dimens   -->
+    <item name="guideline_help_container" format="float" type="dimen">0.8</item>
 
 </resources>
 

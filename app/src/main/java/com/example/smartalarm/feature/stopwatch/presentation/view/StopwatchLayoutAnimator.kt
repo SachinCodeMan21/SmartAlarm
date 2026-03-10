@@ -9,13 +9,17 @@ import com.example.smartalarm.databinding.FragmentStopwatchBinding
 import com.example.smartalarm.core.utility.extension.getDimenRawFloat
 
 /**
- * Handles animated ConstraintLayout updates for the stopwatch screen.
+ * Layout Transition Coordinator responsible for orchestrating complex UI animations
+ * within the Stopwatch screen.
  *
- * Centralizes layout animation logic for portrait and landscape orientations,
- * adjusting guidelines, progress bar bias, and text size based on lap availability.
+ * This class leverages the [ConstraintSet] and [TransitionManager] APIs to perform
+ * declarative layout updates. It centralizes the logic for structural UI changes—such
+ * as guideline shifts, bias adjustments, and text scaling—ensuring smooth,
+ * interruptible transitions between "Default" and "Lap Active" view states.
  *
- * Uses ConstraintSet transitions to ensure smooth and consistent UI updates
- * across different screen sizes and orientations.
+ * ### Architectural Role:
+ * Acts as a UI helper to keep the [StopwatchFragment] focused on lifecycle and state
+ * observation, isolating the imperative logic required for manual layout manipulation.
  */
 class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
 
@@ -24,9 +28,10 @@ class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
 
 
     /**
-     * Animates stopwatch layout changes for portrait orientation.
-     *
-     * Updates guidelines and progress bar vertical bias based on lap availability.
+     * Triggers portrait-specific layout reconciliations.
+     * * Dynamically repositions horizontal guidelines and adjusts the vertical
+     * focal point (bias) of the progress indicator to accommodate the lap list.
+     * * @param isLapTimeAvailable Determines if the layout should contract to show the list.
      */
     fun animateStopWatchLayoutPortrait(isLapTimeAvailable: Boolean) {
         animateStopWatchLayout(isLapTimeAvailable) {
@@ -49,9 +54,9 @@ class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
     }
 
     /**
-     * Animates stopwatch layout changes for landscape orientation.
-     *
-     * Updates guidelines and progress bar horizontal bias based on lap availability.
+     * Triggers landscape-specific layout reconciliations.
+     * * Optimizes screen real-estate by shifting vertical guidelines and horizontal
+     * bias, ensuring the stopwatch timer remains legible alongside the lap data.
      */
     fun animateStopWatchLayoutLandscape(isLapTimeAvailable: Boolean) {
         animateStopWatchLayout(isLapTimeAvailable) {
@@ -75,13 +80,14 @@ class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
 
 
     /**
-     * Animates stopwatch layout changes using ConstraintSet transitions.
+     * Internal engine for applying atomic layout transitions.
      *
-     * Applies common animation logic (text size update + delayed transition)
-     * while allowing callers to provide orientation-specific constraint updates.
+     * Clones the current [androidx.constraintlayout.widget.ConstraintLayout] state into a [ConstraintSet],
+     * applies mutations via [applyConstraints], and utilizes [TransitionManager]
+     * to interpolate between the current and target states.
      *
-     * @param isLapTimeAvailable Whether lap data is present, affecting layout values
-     * @param applyConstraints Lambda for applying custom ConstraintSet changes
+     * @param isLapTimeAvailable State flag used to derive visual metrics like text size.
+     * @param applyConstraints Target constraints to be applied to the cloned set.
      */
     private inline fun animateStopWatchLayout(
         isLapTimeAvailable: Boolean,
@@ -110,7 +116,8 @@ class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
 
 
     /**
-     * Returns the top guideline percentage based on smallest screen width size and lap availability.
+     * Resolves the target guideline percentage based on the active View State.
+     * Leverages dimension resources to support varying screen densities.
      */
     private fun getTopGuidelinePercent(isLapTimeAvailable: Boolean): Float {
         val defaultTopPercentage = res.getDimenRawFloat(R.dimen.guideline_stopwatch_top)
@@ -118,27 +125,18 @@ class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
         return if (isLapTimeAvailable) animTopPercentage else defaultTopPercentage
     }
 
-    /**
-     * Returns the start guideline percentage based on smallest screen width size and lap availability.
-     */
     private fun getStartGuidelinePercent(isLapTimeAvailable: Boolean): Float {
         val defaultStartPercentage = res.getDimenRawFloat(R.dimen.guideline_stopwatch_start)
         val animStartPercentage = res.getDimenRawFloat(R.dimen.guideline_stopwatch_anim_start)
         return if (isLapTimeAvailable) animStartPercentage else defaultStartPercentage
     }
 
-    /**
-     * Returns the end guideline percentage based on smallest screen width size and lap availability.
-     */
     private fun getEndGuidelinePercent(isLapTimeAvailable: Boolean): Float {
         val defaultEndPercentage = res.getDimenRawFloat(R.dimen.guideline_stopwatch_end)
         val animEndPercentage = res.getDimenRawFloat(R.dimen.guideline_stopwatch_anim_end)
         return if (isLapTimeAvailable) animEndPercentage else defaultEndPercentage
     }
 
-    /**
-     * Returns the bottom guideline percentage based on smallest screen width size and lap availability.
-     */
     private fun getBottomGuidelinePercent(isLapTimeAvailable: Boolean): Float {
         val defaultBottomPercentage = res.getDimenRawFloat(R.dimen.guideline_stopwatch_bottom)
         val animBottomPercentage = res.getDimenRawFloat(R.dimen.guideline_stopwatch_anim_bottom)
@@ -153,16 +151,13 @@ class StopwatchLayoutAnimator(private val binding: FragmentStopwatchBinding) {
     //=====================================
 
     /**
-     * Returns the vertical bias for the progress bar based on lap availability.
+     * Derives the optimal vertical positioning (0.0 to 1.0) for the timer.
+     * Pulls the timer toward the top (0.05f) when laps are visible to maximize
+     * scrolling real-estate.
      */
     private fun getProgressBarVerticalBias(isLapTimeAvailable: Boolean): Float {
         return if (isLapTimeAvailable) 0.05f else 0.50f
     }
-
-
-    /**
-     * Returns the horizontal bias for the progress bar based on lap availability.
-     */
     private fun getProgressBarHorizontalBias(isLapTimeAvailable: Boolean): Float {
         return if (isLapTimeAvailable) 0.05f else 0.50f
     }

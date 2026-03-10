@@ -6,52 +6,56 @@ import com.example.smartalarm.core.utility.exception.MyResult
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Repository interface defining the contract for managing alarms and their associated missions.
+ * Repository contract for managing alarms and their associated missions.
  *
- * Provides methods to observe, retrieve, create, update, and delete alarms.
- * Implementations of this interface handle the underlying data source (e.g., database, network).
+ * Provides methods to observe, retrieve, create, update, and delete alarms in a consistent
+ * and type-safe manner. All operations return a [MyResult] to handle success or failure
+ * using [DataError].
  */
 interface AlarmRepository {
 
     /**
-     * Returns a stream of alarms as a [Flow] that emits the current list of [AlarmModel]s
-     * and updates whenever the list changes.
+     * Observes all alarms along with their associated missions.
      *
-     * @return A [Flow] emitting the list of all alarms.
+     * The returned [Flow] emits updates whenever the database changes.
+     *
+     * @return A [Flow] emitting a list of [AlarmModel].
      */
-    fun getAlarms(): Flow<List<AlarmModel>>
+    fun observeAlarms(): Flow<List<AlarmModel>>
 
     /**
-     * Retrieves a specific [AlarmModel] by its unique identifier.
+     * Retrieves a specific alarm and its missions by ID.
+     *
+     * If the alarm does not exist, the result will contain `null`.
      *
      * @param alarmId The ID of the alarm to retrieve.
-     * @return A [MyResult] containing the [AlarmModel] if found, or an error if not.
+     * @return [MyResult] containing either the [AlarmModel] if found, `null` if not, or a [DataError] on failure.
      */
-    suspend fun getAlarmById(alarmId: Int): MyResult<AlarmModel, DataError>
+    suspend fun getAlarmWithMissions(alarmId: Int): MyResult<AlarmModel?, DataError>
 
     /**
-     * Saves a **new alarm** with its associated missions.
+     * Creates a new alarm along with its associated missions in a single transaction.
      *
-     * @param alarm The new [AlarmModel] to save (must have ID = 0).
-     * @return A [MyResult] containing the newly inserted alarm ID, or an error if failed.
+     * @param alarm The [AlarmModel] to create.
+     * @return [MyResult] containing the generated alarm ID on success, or [DataError] on failure.
      */
-    suspend fun saveAlarm(alarm: AlarmModel): MyResult<Int, DataError>
-
+    suspend fun createAlarmWithMissions(alarm: AlarmModel): MyResult<Int, DataError>
 
     /**
-     * Updates an **existing alarm** and its missions in a single transaction.
+     * Updates an existing alarm and its associated missions in a single transaction.
      *
-     * @param alarm The [AlarmModel] to update (must have a valid non-zero ID).
-     * @return A [MyResult] indicating success or failure.
+     * Existing missions are replaced by the new list provided in [alarm].
+     *
+     * @param alarm The [AlarmModel] to update.
+     * @return [MyResult] with `Unit` on success, or [DataError] on failure.
      */
-    suspend fun updateAlarm(alarm: AlarmModel): MyResult<Unit, DataError>
-
+    suspend fun updateAlarmWithMissions(alarm: AlarmModel): MyResult<Unit, DataError>
 
     /**
-     * Deletes an alarm by its ID. Associated missions are deleted via CASCADE.
+     * Deletes an alarm and all its associated missions (cascade) from the database.
      *
      * @param alarmId The ID of the alarm to delete.
-     * @return A [MyResult] indicating success or failure.
+     * @return [MyResult] with `Unit` on success, or [DataError] on failure.
      */
-    suspend fun deleteAlarmById(alarmId: Int): MyResult<Unit, DataError>
+    suspend fun deleteAlarm(alarmId: Int): MyResult<Unit, DataError>
 }

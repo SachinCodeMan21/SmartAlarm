@@ -2,17 +2,22 @@ package com.example.smartalarm.feature.stopwatch.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
 import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
+import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import com.example.smartalarm.feature.stopwatch.framework.jobmanager.contract.BlinkEffectJobManager
 import com.example.smartalarm.feature.stopwatch.presentation.effect.StopwatchEffect
 import com.example.smartalarm.feature.stopwatch.presentation.event.StopwatchEvent
-import com.example.smartalarm.feature.stopwatch.presentation.mapper.StopwatchUiMapper
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import com.example.smartalarm.feature.stopwatch.domain.usecase.StopwatchUseCases
+import com.example.smartalarm.feature.stopwatch.presentation.mapper.toUiModel
+import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchAnalyticsEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,45 +30,51 @@ import javax.inject.Inject
 
 
 /**
- * ViewModel responsible for managing stopwatch state and coordinating UI behavior.
+ * State Orchestrator for the Stopwatch feature.
  *
- * Acts as the **single source of truth** for the stopwatch feature in an MVVM architecture.
- * It processes user-driven [StopwatchEvent]s, manages background jobs, and exposes
- * lifecycle-safe streams of UI state and one-off UI effects.
+ * This ViewModel serves as the central hub of the feature's **Unidirectional Data Flow (UDF)**.
+ * It encapsulates the transformation of domain-level signals into reactive UI states
+ * while managing transient side effects that fall outside the persistent state scope.
  *
- * @property stopwatchUsecase Encapsulates domain operations (start, pause, lap, delete).
- * @property stopWatchUiMapper Converts domain models into UI-friendly models (e.g., formatting time strings).
- * @property blinkEffectJobManager Manages the coroutine job that toggles time visibility when paused.
+ * ### Responsibilities:
+ * - **State Projection**: Converts raw domain models into [StopwatchUiModel] snapshots.
+ * - **Lifecycle Persistence**: Utilizes [SharingStarted.WhileSubscribed] to bridge
+ * configuration changes (rotations) without state loss.
+ * - **Side-Effect Coordination**: Manages high-frequency UI tasks (blinking) and
+ * system-level integrations (Foreground Services).
+ * - **Domain Delegation**: Routes UI events to specialized [StopwatchUseCases].
  */
 @HiltViewModel
 class StopWatchViewModel @Inject constructor(
     private val stopwatchUsecase: StopwatchUseCases,
-    private val stopWatchUiMapper: StopwatchUiMapper,
     private val blinkEffectJobManager: BlinkEffectJobManager,
+    private val resourceProvider: ResourceProvider,
+    private val errorLogger: ErrorLogger,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
     /**
-     * A [StateFlow] representing the current UI state of the stopwatch.
-     * * It observes the domain layer, handles the logic for starting/stopping the
-     * blinking animation, and maps the data to a [StopwatchUiModel].
-     * * Uses [SharingStarted.WhileSubscribed] to ensure the flow remains active for 5 seconds
-     * after the last collector disappears, preventing restarts during configuration changes.
+     * Authority of truth for the View layer.
+     * * Projects a cold domain Flow into a hot [StateFlow]. It applies a 5000ms
+     * keep-alive timeout to maintain continuity during Fragment/Activity
+     * recreation, ensuring a seamless user experience.
      */
     val uiState: StateFlow<StopwatchUiModel> = stopwatchUsecase.getStopwatch()
         .onEach { model ->
             // Handle side effects separately from data mapping
             updateBlinkingState(model.isRunning, model.elapsedTime)
         }
-        .map { model -> stopWatchUiMapper.mapToUiModel(model) }
+        .map { model -> model.toUiModel() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = stopWatchUiMapper.mapToUiModel(StopwatchModel())
+            initialValue = StopwatchModel().toUiModel()
         )
 
     /**
-     * A [Channel] for one-time side effects that should not be part of the persistent state.
-     * Examples: Starting/Stopping the foreground service or showing a Toast.
+     * Transient effect stream for one-off UI events.
+     * * Uses a Buffered [Channel] to ensure that navigation commands, service
+     * triggers, and user-facing error messages are delivered exactly once.
      */
     private val _uiEffect = Channel<StopwatchEffect>(Channel.BUFFERED)
     val uiEffect: Flow<StopwatchEffect> = _uiEffect.receiveAsFlow()
@@ -76,14 +87,19 @@ class StopWatchViewModel @Inject constructor(
         viewModelScope.launch { _uiEffect.send(effect) }
     }
 
+    init {
+        analyticsHelper.logEvent(StopwatchAnalyticsEvent.SCREEN_VIEWED.eventName)
+    }
 
 
-    //------------------
-    // Handle UI Events
-    //------------------
+    //---------------------------------------------------------------------
+    // Event Pipeline
+    //---------------------------------------------------------------------
+
     /**
-     * Entry point for all UI interactions.
-     * Maps incoming [StopwatchEvent]s to specific internal business logic.
+     * Primary interface for the View to communicate user intent.
+     * * Maps semantic [StopwatchEvent]s to internal business logic execution,
+     * ensuring the View layer remains purely declarative.
      */
     fun handleEvent(event: StopwatchEvent) {
         when (event) {
@@ -95,7 +111,6 @@ class StopWatchViewModel @Inject constructor(
     }
 
 
-
     //-------------------------
     // Stopwatch Action Methods
     //-------------------------
@@ -104,19 +119,21 @@ class StopWatchViewModel @Inject constructor(
      * Switches the stopwatch between Running and Paused states.
      */
     private fun toggleRunState() {
-        val state = stopwatchUsecase.getCurrentStopwatch()
-        if (state.isRunning) pauseStopwatch() else startStopwatch()
+        if (uiState.value.isRunning){ pauseStopwatch() }
+        else {startStopwatch()}
     }
 
     /**
-     * Starts the stopwatch and triggers the foreground service effect to ensure
-     * persistence when the UI is hidden.
+     * Toggles the operational state. If entering a 'Running' state, triggers
+     * a Foreground Service promotion to ensure durability.
      */
     private fun startStopwatch() = viewModelScope.launch {
         val result = stopwatchUsecase.startStopwatch()
         if (result is MyResult.Error) {
-            postEffect(StopwatchEffect.ShowError(result.error))
+            postEffect(StopwatchEffect.ShowError(resourceProvider.getString(R.string.failed_to_start_stopwatch)))
         } else {
+            analyticsHelper.logEvent(StopwatchAnalyticsEvent.START_STOPWATCH.eventName)
+            analyticsHelper.logEvent(StopwatchAnalyticsEvent.START_FOREGROUND_SERVICE.eventName)
             postEffect(StopwatchEffect.StartForegroundService)
         }
     }
@@ -126,7 +143,8 @@ class StopWatchViewModel @Inject constructor(
      */
     private fun pauseStopwatch() = viewModelScope.launch {
         val result = stopwatchUsecase.pauseStopwatch()
-        handleErrorResult(result)
+        analyticsHelper.logEvent(StopwatchAnalyticsEvent.PAUSE_STOPWATCH.eventName)
+        handleErrorResult(result,R.string.failed_to_pause_stopwatch_state)
     }
 
     /**
@@ -134,16 +152,20 @@ class StopWatchViewModel @Inject constructor(
      */
     private fun recordStopwatchLap() = viewModelScope.launch {
         val result = stopwatchUsecase.lapStopwatch()
-        handleErrorResult(result)
+        analyticsHelper.logEvent(StopwatchAnalyticsEvent.LAP_STOPWATCH.eventName)
+        handleErrorResult(result,R.string.failed_to_record_lap_stopwatch_state)
     }
 
     /**
-     * Resets the stopwatch to zero, clears laps, and stops the foreground service.
+     * Clears persistent session data and signals the service to demote
+     * to a background state.
      */
     private fun resetStopwatch() = viewModelScope.launch {
         val result = stopwatchUsecase.deleteStopwatch()
+        analyticsHelper.logEvent(StopwatchAnalyticsEvent.RESET_STOPWATCH.eventName)
+        analyticsHelper.logEvent(StopwatchAnalyticsEvent.STOP_FOREGROUND_SERVICE.eventName)
         postEffect(StopwatchEffect.StopForegroundService)
-        handleErrorResult(result)
+        handleErrorResult(result, R.string.failed_to_reset_stopwatch_state)
     }
 
 
@@ -153,9 +175,9 @@ class StopWatchViewModel @Inject constructor(
     //--------------------
 
     /**
-     * Updates the blinking state based on the current stopwatch state.
-     *
-     * @param isRunning Whether the stopwatch is currently running.
+     * Evaluates state criteria to manage the 'Paused' blinking animation.
+     * Orchestrates the [BlinkEffectJobManager] to maintain UI responsiveness
+     * without cluttering the primary [uiState].
      */
     private fun updateBlinkingState(isRunning: Boolean, elapsedTime: Long) {
         if (!isRunning && elapsedTime > 0) {
@@ -164,7 +186,6 @@ class StopWatchViewModel @Inject constructor(
             stopBlinkingJob()
         }
     }
-
 
     /**
      * Initiates the blinking visual effect for the "Paused" state.
@@ -190,17 +211,33 @@ class StopWatchViewModel @Inject constructor(
     // Helper Method
     // --------------------
 
-    fun getIsStopwatchRunning() : Boolean {
-        return stopwatchUsecase.getCurrentStopwatch().isRunning
+    fun getCurrentStopwatch() : StopwatchModel {
+        return stopwatchUsecase.getCurrentStopwatch()
     }
 
 
     /**
-     * Helper to handle common result patterns and post errors to UI.
+     * Centralized error handling.
+     * Logs the context to Crashlytics while showing the UI message to the user.
      */
-    private fun handleErrorResult(result: MyResult<Unit, DataError>) {
+    private fun handleErrorResult(result: MyResult<Unit, DataError>, errorMessageResId: Int) {
+
         if (result is MyResult.Error) {
-            postEffect(StopwatchEffect.ShowError(result.error))
+
+            val error = result.error
+            val userFriendlyMessage = resourceProvider.getString(errorMessageResId)
+
+            // 4. Log the error details silently
+            errorLogger.log("Action Failed: $userFriendlyMessage | DataError: $error")
+
+            // 5. Record the actual exception/non-fatal
+            val throwable = if (error is DataError.Unexpected) error.throwable
+            else Exception("UI_ACTION_ERROR: $userFriendlyMessage ($error)")
+
+            errorLogger.recordException(throwable)
+
+            // 6. Notify the user via UI Effect
+            postEffect(StopwatchEffect.ShowError(userFriendlyMessage))
         }
     }
 

@@ -139,7 +139,7 @@
         android:id="@+id/toggle_stopwatch_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/toggle_stopwatch"
+        android:contentDescription="@string/start_stopwatch"
         android:src="@drawable/ic_play"
         app:fabCustomSize="@dimen/fab_size_large"
         app:layout_constraintBottom_toTopOf="@+id/reset_stopwatch_Btn"

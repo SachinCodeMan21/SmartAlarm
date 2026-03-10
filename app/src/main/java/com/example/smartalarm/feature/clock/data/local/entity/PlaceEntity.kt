@@ -14,7 +14,6 @@ import androidx.room.PrimaryKey
  * @property primaryName The primary name of the place (e.g., "New York").
  * @property timeZoneId The ID of the time zone for this place (e.g., "America/New_York").
  * @property offsetSeconds The offset from UTC in seconds (e.g., UTC-5 hours would be -18000).
- * @property currentTime The current local time in the place, formatted as a string (e.g., "12:45 PM").
  *
  * @constructor Creates an instance of [PlaceEntity] with the specified properties.
  */
@@ -25,5 +24,4 @@ data class PlaceEntity(
     @ColumnInfo(name = "primary_name") val primaryName: String,
     @ColumnInfo(name = "time_zone_id") val timeZoneId: String,
     @ColumnInfo(name = "offset_seconds") val offsetSeconds: Int,
-    @ColumnInfo(name = "current_time") val currentTime: String
 )

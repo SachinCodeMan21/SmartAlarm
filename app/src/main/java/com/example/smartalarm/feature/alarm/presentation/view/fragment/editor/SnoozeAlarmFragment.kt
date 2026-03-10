@@ -89,7 +89,6 @@ class SnoozeAlarmFragment : Fragment() {
         setUpSnoozeLimitNumPicker()
         setUpRadioButtonPairs()
         setUpSnoozeUIData()
-        //setUpOnBackPressed()
     }
 
     /**

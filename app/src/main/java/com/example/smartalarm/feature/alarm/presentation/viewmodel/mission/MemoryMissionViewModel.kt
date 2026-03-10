@@ -5,13 +5,16 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
 import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.enums.Difficulty
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.presentation.effect.mission.MissionEffect
 import com.example.smartalarm.feature.alarm.presentation.event.mission.MemoryMissionEvent
 import com.example.smartalarm.feature.alarm.presentation.model.mission.MemoryMissionUIModel
+import com.example.smartalarm.feature.alarm.presentation.model.mission.analyticEnum.MissionEventType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -55,6 +58,8 @@ import kotlin.math.sqrt
 @HiltViewModel
 class MemoryMissionViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
+    private val analyticsHelper: AnalyticsHelper,
+    private val numberFormatter: NumberFormatter,
     @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel()
 {
@@ -111,9 +116,18 @@ class MemoryMissionViewModel @Inject constructor(
      */
     fun handleEvent(event: MemoryMissionEvent) {
         when (event) {
-            is MemoryMissionEvent.InitializeMission -> initializeMission(event.mission)
-            is MemoryMissionEvent.StartMission -> startMission()
-            is MemoryMissionEvent.SquareSelected -> handleSquareClick(event.index)
+            is MemoryMissionEvent.InitializeMission -> {
+                initializeMission(event.mission)
+                analyticsHelper.logEvent(MissionEventType.INITIALIZE_MEMORY_MISSION.eventName)
+            }
+            is MemoryMissionEvent.StartMission -> {
+                startMission()
+                analyticsHelper.logEvent(MissionEventType.START_MEMORY_MISSION.eventName)
+            }
+            is MemoryMissionEvent.SquareSelected -> {
+                handleSquareClick(event.index)
+                analyticsHelper.logEvent(MissionEventType.SQUARE_SELECTED_MEMORY.eventName)
+            }
         }
     }
 
@@ -419,7 +433,7 @@ class MemoryMissionViewModel @Inject constructor(
         memorizationCountdownJob?.cancel()
         memorizationCountdownJob = viewModelScope.launch(defaultDispatcher) {
             for (i in MEMORIZATION_COUNTDOWN_SECONDS downTo 1) {
-                _uiState.update { it.copy(countdownText = i.toString()) }
+                _uiState.update { it.copy(countdownText = numberFormatter.formatLocalizedNumber(i.toLong(),false)) }
                 delay(1000)
             }
             onComplete()

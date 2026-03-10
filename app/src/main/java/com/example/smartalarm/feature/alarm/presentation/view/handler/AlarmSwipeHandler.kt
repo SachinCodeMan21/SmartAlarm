@@ -13,8 +13,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.smartalarm.R
 import com.example.smartalarm.databinding.FragmentShowAlarmBinding
 import com.example.smartalarm.feature.alarm.framework.manager.contract.VibrationManager
-import com.example.smartalarm.feature.alarm.presentation.event.mission.ShowAlarmEvent
-import com.example.smartalarm.feature.alarm.presentation.viewmodel.mission.ShowAlarmViewModel
 import kotlin.math.abs
 
 /**
@@ -33,7 +31,6 @@ import kotlin.math.abs
  *
  * @param binding The view binding for the fragment
  * @param context The application context
- * @param viewModel The ViewModel to send events to
  * @param vibrationManager Manager for haptic feedback
  * @param onShowToast Callback to show toast messages
  */

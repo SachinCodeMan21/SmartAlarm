@@ -56,7 +56,7 @@ class UpdateAlarmUseCaseImplTest {
     *//**
      * Tests that the alarm is updated successfully.
      * Verifies that a success result is returned after updating the alarm and that no error occurs.
-     * Ensures that the [AlarmRepository.updateAlarm] function is called.
+     * Ensures that the [AlarmRepository.updateAlarmWithMissions] function is called.
      *//*
     @Test
     fun `invoke should update alarm successfully`() = runTest {

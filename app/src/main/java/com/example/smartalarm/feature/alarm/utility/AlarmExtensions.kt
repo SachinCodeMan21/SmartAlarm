@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcelable
-import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.EditText
@@ -18,11 +17,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartalarm.R
 import com.example.smartalarm.core.presentation.helper.SwipeToDeleteCallback
-import com.example.smartalarm.core.utility.extension.toLocalizedString
 import com.google.android.material.snackbar.Snackbar
 import com.shawnlin.numberpicker.NumberPicker
 import java.time.LocalDate
-import java.time.LocalTime
 
 
 // ---------------------------------------------------------------------
@@ -180,7 +177,6 @@ fun NumberPicker.setValueIfDifferent(newValue: Int) {
  */
 fun CompoundButton.setCheckedIfDifferent(checked: Boolean) {
     if (isChecked != checked){
-        Log.d("TAG","CompoundButton setCheckedIfDifferent Assigned = $checked")
         isChecked = checked
     }
 }
@@ -250,28 +246,6 @@ fun SeekBar.setProgressIfDifferent(newProgress: Int) {
 // Int Extensions
 // ---------------------------------------------------------------------
 
-/**
- * Converts this integer to a two-digit string representation, localized based on the default locale.
- *
- * This function formats the integer using the default locale and ensures that the resulting string
- * always has at least two digits by padding with a leading zero if necessary. Additionally, it takes
- * the locale into account, meaning it will use localized digits if the locale requires it (for example,
- * Hindi, Marathi, or Nepali will use Devanagari digits).
- *
- * Example usage:
- * ```
- * 5.toLocalizedTwoDigitString()   // returns "05" in English locale, "०५" in Hindi locale
- * 12.toLocalizedTwoDigitString()  // returns "12" in both English and Hindi locales
- * ```
- *
- * @receiver The integer to be formatted.
- * @return A string representing this integer as a two-digit number, using the appropriate locale's numbering system.
- */
-fun Int.toLocalizedTwoDigitString(): String {
-    return this.toLong().toLocalizedString(true)
-}
-
-
 fun getLocalizedDay(context: Context): String {
     // Get the current day of the week (1 = Monday, 7 = Sunday)
     val currentDay = LocalDate.now().dayOfWeek.value // Monday = 1, Sunday = 7
@@ -283,48 +257,6 @@ fun getLocalizedDay(context: Context): String {
     val localizedDay = context.resources.getStringArray(R.array.full_weekdays)[adjustedDay]
 
     return localizedDay
-}
-
-
-// ---------------------------------------------------------------------
-// Local Time Extensions
-// ---------------------------------------------------------------------
-/**
- * Extension function to format a [LocalTime] object into a localized 12-hour time format with AM/PM.
- *
- * This function takes a [LocalTime] object, extracts the hour and minute, and returns a string
- * representing the time in a 12-hour format with an AM or PM suffix, based on the hour of the day.
- * The format is also localized using the provided [Context] to retrieve the appropriate AM/PM string.
- *
- * @param context The [Context] to access localized resources.
- * @return A string representing the formatted time in a 12-hour format (e.g., "1:30 PM").
- */
-fun LocalTime.getFormattedTime(context: Context): String {
-
-    // Extract hour and minute from the LocalTime object
-    val hour = this.hour
-    val minute = this.minute
-
-    // Get localized AM/PM string based on the hour
-    val amPmString = if (hour < 12) {
-        context.getString(R.string.am)  // Get "AM" string from resources
-    } else {
-        context.getString(R.string.pm)  // Get "PM" string from resources
-    }
-
-    // Handle 12-hour format conversion:
-    // - 0 hours (midnight) is displayed as 12
-    // - 13-23 hours are converted to 1-11 (afternoon/evening)
-    val formattedHour = if (hour == 0) 12 else if (hour > 12) hour - 12 else hour
-
-    // Get the hour in a two-digit format (e.g., "01" for 1 AM)
-    val localizedHour = formattedHour.toLocalizedTwoDigitString()
-
-    // Get the minute in a two-digit format (e.g., "03" for 3 minutes)
-    val localizedMinute = minute.toLong().toLocalizedString()
-
-    // Return the formatted time string, combining the localized hour, minute, and AM/PM string
-    return "$localizedHour:$localizedMinute $amPmString"
 }
 
 

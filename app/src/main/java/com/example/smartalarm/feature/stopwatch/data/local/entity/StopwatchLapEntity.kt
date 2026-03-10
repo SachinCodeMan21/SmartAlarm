@@ -7,33 +7,26 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
- * Represents an individual lap record associated with a stopwatch session.
+ * Represents a single lap recorded during a stopwatch session.
  *
- * ### Why this exists:
- * This entity is designed to provide a historical log of time splits. By isolating
- * laps into a separate table rather than a serialized list inside the state entity,
- * we achieve a **normalized database schema**. This allows for efficient querying,
- * independent updates, and virtually unlimited lap counts without impacting the
- * performance of the main state table.
+ * Laps are stored in a separate table to maintain a normalized database schema
+ * and allow efficient querying without affecting the main stopwatch state.
  *
- * ### Architectural Choices:
- * 1. **Foreign Key Mapping:** Linked to [StopwatchStateEntity] via `stopwatch_id`.
- * The `CASCADE` delete ensures that if a stopwatch state is cleared, all
- * associated laps are automatically purged, maintaining referential integrity.
- * 2. **Surrogate Primary Key ([id]):** While `lapIndex` is logically unique per
- * session, a dedicated Long [id] is used to provide stable identifiers for
- * RecyclerView's DiffUtil. This ensures smooth UI animations during list
- * updates and deletions.
- * 3. **Time Normalization:** All duration and timestamp fields are stored in
- * milliseconds (Suffix: `_millis`) to prevent unit-mismatch bugs across
- * the Repository and ViewModel layers.
+ * Design decisions:
+ * - Linked to [StopwatchStateEntity] via a foreign key (`stopwatch_id`).
+ * - CASCADE deletion ensures laps are automatically removed when the parent
+ *   stopwatch state is cleared, preserving referential integrity.
+ * - Uses a surrogate primary key ([id]) instead of `lapIndex` to provide
+ *   stable identifiers for RecyclerView DiffUtil updates.
+ * - All time values are stored in milliseconds (`*_millis`) to maintain
+ *   consistent units across the data, repository, and UI layers.
  *
- * @property id Auto-generated unique identifier used as the primary key for the database row.
- * @property stopwatchId Reference to the parent stopwatch instance this lap belongs to.
- * @property lapIndex The sequential order of the lap (e.g., 1, 2, 3) for display purposes.
- * @property lapStartTimeMillis The system epoch time when this specific lap began.
- * @property lapElapsedTimeMillis The duration of this specific lap (difference between start and end).
- * @property lapEndTimeMillis The system epoch time when the lap button was pressed.
+ * @property id Auto-generated unique identifier for the lap record.
+ * @property stopwatchId Reference to the parent stopwatch instance.
+ * @property lapIndex Sequential lap number used for display.
+ * @property lapStartTimeMillis Timestamp when the lap started.
+ * @property lapElapsedTimeMillis Duration of the lap in milliseconds.
+ * @property lapEndTimeMillis Timestamp when the lap ended.
  */
 @Entity(
     tableName = "stopwatch_laps",

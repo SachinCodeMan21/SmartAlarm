@@ -3,6 +3,7 @@ package com.example.smartalarm.feature.alarm.presentation.view.activity
 import android.app.KeyguardManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
@@ -57,7 +58,8 @@ import kotlinx.coroutines.launch
  * @see com.example.smartalarm.feature.alarm.presentation.job.MissionCountDownJobManager
  */
 @AndroidEntryPoint
-class AlarmActivity : AppCompatActivity() {
+class AlarmActivity : AppCompatActivity()
+{
 
     companion object {
 
@@ -117,6 +119,8 @@ class AlarmActivity : AppCompatActivity() {
         setUpMissionProgressObserver()
         setUpUIEffectObserver()
 
+        Log.d("TAG","Preview Activity onCreate Executed")
+
     }
 
 
@@ -129,6 +133,7 @@ class AlarmActivity : AppCompatActivity() {
      */
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("TAG","Preview Activity onDestroy Executed")
         _binding = null
     }
 

@@ -1,9 +1,8 @@
 package com.example.smartalarm.feature.timer.presentation.view.statemanager.impl
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.timer.presentation.view.statemanager.contract.TimerInputStateManager
+import com.example.smartalarm.feature.timer.utility.formatter.TimerTimeFormatter
 import javax.inject.Inject
 
 
@@ -18,7 +17,7 @@ import javax.inject.Inject
  * @constructor Creates an instance of [TimerInputStateManagerImpl].
  */
 class TimerInputStateManagerImpl @Inject constructor(
-    private val timeFormatter: TimeFormatter
+    private val timeFormatter: TimerTimeFormatter
 ) : TimerInputStateManager {
 
     companion object{
@@ -59,6 +58,15 @@ class TimerInputStateManagerImpl @Inject constructor(
     }
 
     /**
+     * Indicates whether the start button should be visible based on the input state.
+     *
+     * The start button is visible if there is at least one digit entered.
+     *
+     * @return `true` if input digits are not empty; `false` otherwise.
+     */
+    override fun isStartButtonVisible(): Boolean = inputDigits.isNotEmpty()
+
+    /**
      * Returns a formatted timer string based on the current input digits.
      *
      * If no input digits are present, returns a default timer text.
@@ -69,14 +77,6 @@ class TimerInputStateManagerImpl @Inject constructor(
         return timeFormatter.formatStringDigitsToTimerTextFormat(inputDigits)
     }
 
-    /**
-     * Indicates whether the start button should be visible based on the input state.
-     *
-     * The start button is visible if there is at least one digit entered.
-     *
-     * @return `true` if input digits are not empty; `false` otherwise.
-     */
-    override fun isStartButtonVisible(): Boolean = inputDigits.isNotEmpty()
 
     /**
      * Converts the current input digits to a timer duration in milliseconds.
@@ -86,14 +86,5 @@ class TimerInputStateManagerImpl @Inject constructor(
      * @return The duration in milliseconds represented by the input digits.
      */
     override fun timerInputToMillis(): Long = timeFormatter.formatStringDigitsToMillis(inputDigits)
-
-    /**
-     * Getter for inputDigits that is only exposed for testing purposes.
-     * This allows unit tests to access the internal state without violating encapsulation.
-     */
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    internal fun getInputDigitsForTesting(): String {
-        return inputDigits
-    }
 
 }

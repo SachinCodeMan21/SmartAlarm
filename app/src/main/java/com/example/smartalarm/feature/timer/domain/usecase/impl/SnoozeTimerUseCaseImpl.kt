@@ -58,7 +58,7 @@ class SnoozeTimerUseCaseImpl @Inject constructor(
 
                 // Schedule the new snooze alarm
                 timerScheduler.scheduleSnoozeTimer(timer.timerId, snoozeDuration)
-                timerScheduler.scheduleTimerTimeout(timer.timerId, remaining)
+                timerScheduler.scheduleTimerTimeout(timer.timerId, timerTimeHelper.getCurrentTime() + updatedTimer.remainingTime)
 
                 MyResult.Success(Unit) // No need to return the updated model
             }

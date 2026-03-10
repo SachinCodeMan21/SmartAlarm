@@ -4,11 +4,11 @@ import android.content.Context
 import com.example.smartalarm.R
 import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.core.framework.notification.model.NotificationAction
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationData
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel
 import com.example.smartalarm.feature.alarm.framework.notification.mapper.AlarmNotificationDataMapperHelper.createContentIntent
 import com.example.smartalarm.feature.alarm.framework.notification.mapper.AlarmNotificationDataMapperHelper.createDismissIntent
+import com.example.smartalarm.feature.alarm.utility.formatter.AlarmTimeFormatter
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ import javax.inject.Inject
  * @constructor Injects an instance of [SnoozedAlarmNotificationDataMapper] using dependency injection.
  */
 class SnoozedAlarmNotificationDataMapper @Inject constructor(
-    private val timeFormatter: TimeFormatter
+    private val timeFormatter: AlarmTimeFormatter
 ) : AppNotificationDataMapper<AlarmNotificationModel.SnoozedAlarmModel, AlarmNotificationData> {
 
     /**

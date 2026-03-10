@@ -20,5 +20,5 @@ interface GetAlarmByIdUseCase {
      *         The [Result] wrapper is used to represent either a successful outcome (with the [AlarmModel])
      *         or a failure (with an error).
      */
-    suspend operator fun invoke(alarmId: Int): MyResult<AlarmModel, DataError>
+    suspend operator fun invoke(alarmId: Int): MyResult<AlarmModel?, DataError>
 }

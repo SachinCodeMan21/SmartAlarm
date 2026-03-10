@@ -50,8 +50,6 @@
     <string name="empty">Leer</string>
     <string name="alarm_playback_attribution">Audio-Wiedergabe für Wecker</string>
     <string name="empty_attribution_label">Leeres Attributions-Tag</string>
-    <string name="navigation_drawer_open">Navigationsleiste öffnen</string>
-    <string name="navigation_drawer_close">Navigationsleiste schließen</string>
 
 
     // ---------------------------------------------------------------------
@@ -146,7 +144,12 @@
         <item>VORM.</item>
         <item>NACHM.</item>
     </string-array>
-
+    <string name="failed_this_alarm_no_longer_exists">Dieser Alarm existiert nicht mehr.</string>
+    <string name="failed_alarm_not_found">Dieser Alarm konnte nicht gefunden werden.</string>
+    <string name="failed_to_load_the_alarm">Fehler beim Laden des Alarms. Bitte versuchen Sie es erneut.</string>
+    <string name="failed_to_save_the_alarm">Alarm konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.</string>
+    <string name="failed_to_update_the_alarm">Alarm konnte nicht aktualisiert werden. Bitte versuchen Sie es erneut.</string>
+    <string name="failed_to_schedule_the_alarm">Alarm gespeichert, konnte jedoch nicht geplant werden.</string>
 
     <!-- 3] Mission Picker Bottom Sheet Layout  -->
     <string name="choose_mission">Aufgabe auswählen</string>
@@ -201,6 +204,14 @@
         <item>Freitag</item>
         <item>Samstag</item>
     </string-array>
+    <string name="drag_left_to_snooze">Nach links ziehen, um zu snoozen</string>
+    <string name="drag_right_to_stop">Nach rechts ziehen, um zu stoppen</string>
+    <string name="drag_to_snooze_or_stop">Ziehen, um zu snoozen oder zu stoppen</string>
+    <string name="no_snooze_left">Kein Snooze übrig</string>
+    <string name="snooze_left"> %1$s übrig </string>
+    <string name="exit_preview">Vorschau beenden</string>
+    <string name="error_snooze_alarm">Alarme konnten nicht aufgeschoben werden. Bitte versuche es erneut.</string>
+    <string name="error_stop_alarm">Alarm konnte nicht gestoppt werden. Bitte versuche es erneut.</string>
 
     <!-- Mission Fragment Common Strings -->
     <string name="round_text">Runde %1$s von %2$s</string>
@@ -240,6 +251,9 @@
     <!-- 3]  Math Mission Strings -->
     <string name="solve_the_math_problem">Löse die Rechenaufgabe</string>
     <string name="enter_your_answer">Gib deine Antwort ein</string>
+    <string name="please_enter_an_answer">Bitte geben Sie eine Antwort ein!</string>
+    <string name="invalid_number_format">Ungültiges Zahlenformat!</string>
+    <string name="wrong_answer">Falsche Antwort!</string>
 
     <!-- 4]  Shake Mission Strings -->
     <string name="shake_your_phone">Schüttle dein Handy!</string>
@@ -251,7 +265,12 @@
     <string name="accelerometer_sensor_not_available">Beschleunigungssensor nicht verfügbar</string>
     <string name="step_detector_sensor_not_available">Schrittsensor nicht verfügbar</string>
     <string name="permission_required_for_step_detection">Berechtigung für Schrittzählung erforderlich</string>
-
+    <string name="start_walking_slowly_to_detect_your_first_step">Beginnen Sie langsam zu gehen, damit wir Ihren ersten Schritt erkennen und den Sensor kalibrieren können.</string>
+    <string name="activity_recognition_permission_rationale_title">Aktivitätserkennungsberechtigung erforderlich</string>
+    <string name="activity_recognition_permission_rationale_message">Um Ihre körperlichen Aktivitäten und Schritte zu verfolgen, benötigen wir die Erlaubnis, auf Ihre Aktivitätsdaten zuzugreifen. Dies ermöglicht uns, genauere Funktionen zur Überwachung Ihrer Schritte bereitzustellen.</string>
+    <string name="activity_recognition_permission_permanently_denied_title">Berechtigung dauerhaft verweigert</string>
+    <string name="activity_recognition_permission_permanently_denied_message">Sie haben die Berechtigung zur Aktivitätserkennung dauerhaft verweigert. Um diese Funktion zu aktivieren, gehen Sie bitte zu den App-Einstellungen und erlauben Sie die Berechtigung manuell.</string>
+    <string name="activity_recognition_permission_denied_toast">Berechtigung verweigert. Sie können Ihre Schritte und Aktivitäten nicht verfolgen.</string>
 
     <!--  Alarm View Model    -->
     <string name="alarm_already_passed">Die Weckzeit ist bereits vorbei.</string>
@@ -282,6 +301,19 @@
     <string name="selected_timezones_list">Zeitzonen-Liste</string>
     <string name="no_result_found">Keine Ergebnisse gefunden!</string>
     <string name="search">Suchen</string>
+    <string name="timezone_deleted">Zeitzone %1$s gelöscht</string>
+    <string name="undo_timezone_successful">Rückgängig erfolgreich</string>
+    <string name="failed_to_load_time_zones">Zeitzonen konnten nicht geladen werden</string>
+    <string name="failed_to_undo_time_zone">Rückgängig der Zeitzone fehlgeschlagen</string>
+    <string name="failed_to_delete_timezone">Löschen der Zeitzone fehlgeschlagen</string>
+    <string name="start_typing_to_search_for_a_place">Beginnen Sie mit der Eingabe, um einen Ort zu suchen</string>
+    <string name="no_such_place_found">Kein solcher Ort gefunden</string>
+    <string name="time_same">Gleiche Zeit</string>
+    <string name="time_ahead">%1$s voraus</string>
+    <string name="time_behind">%1$s hinterher</string>
+    <string name="time_tomorrow">Morgen</string>
+    <string name="time_yesterday">Gestern</string>
+    <string name="time_today">Heute</string>
 
     // ---------------------------------------------------------------------
     // # Timer Screen Related Strings
@@ -320,6 +352,7 @@
     <string name="sec_formatted_stopwatch_time">%1$ss</string>
     <string name="sec_millis_formatted_stopwatch_time">%1$ss : %2$sms</string>
     <string name="timer_dashboard">Zeitgeber-Dashboard</string>
+    <string name="timer_generic_error">Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.</string>
 
     <!-- Active Timer Notification String -->
     <string name="active_timer">Aktiver Timer</string>
@@ -336,6 +369,13 @@
     <string name="missed_timer">Verpasster Timer</string>
     <string name="missed_timer_target_time">Zielzeit des Timers: %1$s</string>
 
+    <!-- Show Timer Error Messages -->
+    <string name="timer_start_failed">Der Timer konnte nicht gestartet werden. Bitte versuchen Sie es erneut.</string>
+    <string name="timer_pause_failed">Der Timer konnte nicht pausiert werden. Bitte versuchen Sie es erneut.</string>
+    <string name="timer_restart_failed">Der Timer konnte nicht neu gestartet werden. Bitte versuchen Sie es erneut.</string>
+    <string name="timer_snooze_failed">Der Timer konnte nicht verschoben werden. Bitte versuchen Sie es erneut.</string>
+    <string name="timer_stop_failed">Der Timer konnte nicht gestoppt werden. Bitte versuchen Sie es erneut.</string>
+
     // ---------------------------------------------------------------------
     // # Stopwatch Screen Related Strings
     // ---------------------------------------------------------------------
@@ -343,13 +383,21 @@
     <!--  1] Stopwatch layout Strings   -->
     <string name="stopwatch_progress_indicator">Stoppuhr-Fortschrittsanzeige</string>
     <string name="stopwatch_rv_desc">Liste der aufgezeichneten Runden</string>
-    <string name="toggle_stopwatch">Stoppuhr starten/pausieren</string>
+    <string name="start_stopwatch">Stoppuhr starten</string>
+    <string name="pause_stopwatch">Stoppuhr pausieren</string>
+    <string name="resume_stopwatch">Stoppuhr fortsetzen</string>
     <string name="reset_stopwatch">Stoppuhr zurücksetzen</string>
     <string name="record_lap_time">Runde speichern</string>
-    <string name="lap_index">#Runde</string>
+    <string name="lap_index">#Runde %1$s</string>
+
+    <!-- Stopwatch Feature Permission Strings -->
+    <string name="stopwatch_notification_permission_rationale_title">Benachrichtigungsberechtigung erforderlich</string>
+    <string name="stopwatch_notification_permission_rationale_message">Damit die Stoppuhr zuverlässig im Hintergrund läuft und Steuerungen auf dem Sperrbildschirm möglich sind, ist die Benachrichtigungsberechtigung erforderlich.</string>
+    <string name="stopwatch_notification_permission_permanently_denied_title">Benachrichtigungen blockiert</string>
+    <string name="stopwatch_notification_permission_permanently_denied_message">Benachrichtigungen sind blockiert. Bitte aktivieren Sie sie in den App-Einstellungen.</string>
+    <string name="stopwatch_notification_permission_denied_toast">Berechtigung verweigert</string>
 
     <!-- Stopwatch Viewmodel Specific Error Strings -->
-    <string name="failed_to_restore_stopwatch_state">Stoppuhr-Zustand konnte nicht wiederhergestellt werden. Bitte erneut versuchen.</string>
     <string name="failed_to_start_stopwatch">Stoppuhr konnte nicht gestartet werden. Bitte erneut versuchen.</string>
     <string name="failed_to_pause_stopwatch_state">Stoppuhr konnte nicht pausiert werden. Bitte erneut versuchen.</string>
     <string name="failed_to_reset_stopwatch_state">Stoppuhr konnte nicht zurückgesetzt werden. Bitte erneut versuchen.</string>
@@ -374,6 +422,54 @@
     <string name="chinese">Chinesisch</string>
     <string name="japanese">Japanisch</string>
     <string name="hindi">Hindi</string>
+
+    // ---------------------------------------------------------------------
+    // About Screen Strings
+    // ---------------------------------------------------------------------
+    <string name="smart_alarm">Smart Alarm</string>
+    <string name="version_1_0">Version 1.0</string>
+    <string name="about_app_desc">Hilft Ihnen, erfrischt aufzuwachen und mit missionsbasierter Disziplin in den Tag zu starten.</string>
+    <string name="rate_on_play_store">Im Play Store bewerten</string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+    <string name="terms_of_service">Nutzungsbedingungen</string>
+    <string name="_2026_smart_alarm_inc">© 2026 Smart Alarm Inc.</string>
+    <string name="smart_alarm_app_icon">Smart Alarm App-Symbol</string>
+    <string name="undo_successful">Rückgängig erfolgreich</string>
+    <string name="version">Version %1$s</string>
+    <string name="no_browser_found_to_open_link">Kein Browser zum Öffnen des Links gefunden</string>
+
+    // ---------------------------------------------------------------------
+    // Help Screen Strings
+    // ---------------------------------------------------------------------
+    <string name="help_support_title">Hilfe &amp; Support</string>
+    <string name="section_system_reliability">Systemzuverlässigkeit</string>
+    <string name="section_faq">Häufig gestellte Fragen</string>
+    <string name="section_missions_snoozing">Missionen &amp; Snooze</string>
+    <string name="section_world_clock">Weltuhr</string>
+    <string name="section_timer">Timer</string>
+    <string name="section_stopwatch">Stoppuhr</string>
+    <string name="btn_email_support">Support per E-Mail</string>
+    <string name="send_email">E-Mail senden</string>
+    <string name="no_email_app_found">Keine E-Mail-App gefunden</string>
+
+    <string name="title_required_permissions">Erforderliche Berechtigungen</string>
+    <string name="desc_required_permissions">•Exakter Alarm: Stellt sicher, dass Missionen pünktlich starten.\n• Vollbildbenachrichtigung: Zeigt Missionen über dem Sperrbildschirm an.\n• Aktivitätserkennung: Erforderlich für Geh-/Schüttelmissionen.\n• Batterieoptimierung: Auf Unrestricted setzen, damit die App nicht in den Ruhemodus geht.</string>
+
+    <string name="title_scheduling_dismissing">Planung Beenden</string>
+    <string name="desc_scheduling_dismissing">Erstellen Sie einen Alarm mit +. Im Bearbeitungsbildschirm können Sie bis zu 5 Missionen hinzufügen. Der Alarm stoppt erst, wenn alle Missionen abgeschlossen sind.</string>
+
+    <string name="title_why_snooze_disappeared">Warum ist die Snooze-Taste verschwunden?</string>
+    <string name="desc_why_snooze_disappeared">Wenn ein Snooze-Limit festgelegt ist, wird die Taste deaktiviert, sobald das Limit erreicht ist.</string>
+
+    <string name="title_global_time">Globale Zeitverfolgung</string>
+    <string name="desc_global_time">Tippen Sie auf, um Städte hinzuzufügen. Ihre lokale Zeit bleibt oben angeheftet.</string>
+
+    <string name="title_managing_countdowns">Countdown verwalten</string>
+    <string name="desc_managing_countdowns">Dauer einstellen und Start drücken. Der Timer läuft auch im Hintergrund weiter.</string>
+
+    <string name="title_laps_splits">Runden- und Zwischenzeiten</string>
+    <string name="desc_laps_splits">Verwenden Sie die Runde-Taste während die Stoppuhr läuft, um Zeitintervalle zu speichern.</string>
+
 
     // ---------------------------------------------------------------------
     // # Notification Related Strings
@@ -427,8 +523,8 @@
     <string name="lap_time_format">#Runde %1$s: %2$s</string>
     <string name="stop_all_completed">Alle abgelaufenen Timer stoppen</string>
     <string name="stop_all_active">Alle aktiven Timer stoppen</string>
-    <string name="start_timer">Timer starten</string>
-    <string name="delete_timer">Timer löschen</string>
+    <string name="start_timer_btn_desc">Timer starten</string>
+    <string name="delete_timer_btn_desc">Timer löschen</string>
     <string name="rounds">Runden</string>
     <string name="exact_alarm">Exakter Alarm</string>
 

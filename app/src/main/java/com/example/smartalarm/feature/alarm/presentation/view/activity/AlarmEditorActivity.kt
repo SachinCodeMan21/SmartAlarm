@@ -15,7 +15,6 @@ import androidx.navigation.NavHost
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.smartalarm.R
-import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.Constants.PACKAGE
 import com.example.smartalarm.databinding.ActivityAlarmEditorBinding
 import com.example.smartalarm.feature.alarm.presentation.effect.editor.AlarmEditorEffect
@@ -30,18 +29,19 @@ import kotlinx.coroutines.launch
 
 
 /**
- * Activity responsible for editing or creating alarms within the app.
+
+ * Hosts the Alarm Editor flow for creating or editing alarms.
  *
- * This activity handles the setup of the navigation graph, toolbar, UI effects, and back press behavior
- * for the Alarm Editor feature. It supports both creating new alarms and editing existing ones, based on
- * the alarm ID passed via the intent.
+ * This activity acts as a navigation container that manages the alarm editing
+ * experience using the Navigation Component. It initializes the navigation graph,
+ * passes required arguments, and coordinates toolbar and back navigation behavior.
  *
- * Key functionalities:
- * 1. **Navigation**: Initializes the navigation controller and sets up the appropriate navigation graph
- *    with arguments passed to the fragments.
- * 2. **Toolbar Setup**: Configures the toolbar for navigation, including handling the custom back navigation action.
- * 3. **UI Effects**: Observes UI effects from the `AlarmEditorViewModel`, such as finishing the activity when needed.
- * 4. **Back Press Handling**: Customizes the back navigation behavior, delegating it to the ViewModel or specific fragments.
+ * Fragments hosted:
+ * * [AlarmEditorHomeFragment] – Handles alarm creation, editing, and updates.
+ * * [SnoozeAlarmFragment] – Provides a dedicated interface for configuring alarm snooze options.
+ *
+ * The activity also observes UI effects from [AlarmEditorViewModel] to handle
+ * actions such as finishing the editor when the alarm operation completes.
  */
 @AndroidEntryPoint
 class AlarmEditorActivity : AppCompatActivity()
@@ -49,18 +49,11 @@ class AlarmEditorActivity : AppCompatActivity()
 
     companion object {
 
-        // Tag for logging within AlarmEditorActivity
-        private const val TAG = "AlarmEditorActivity"
-
-        // Error message for null view binding reference
-        private const val BINDING_NULL_ERROR = "$TAG $BINDING_NULL"
-
         // Key for passing existing alarm ID when editing
         const val EXISTING_ALARM_ID_KEY = "$PACKAGE.EXISTING_ALARM_ID_KEY"
     }
 
-    private var _binding: ActivityAlarmEditorBinding? = null
-    private val binding get() = _binding?: error(BINDING_NULL_ERROR)
+    private lateinit var binding: ActivityAlarmEditorBinding
     private val alarmEditorViewModel: AlarmEditorViewModel by viewModels()
     private lateinit var navController: NavController
 
@@ -79,7 +72,7 @@ class AlarmEditorActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        _binding = ActivityAlarmEditorBinding.inflate(layoutInflater)
+        binding = ActivityAlarmEditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -92,16 +85,8 @@ class AlarmEditorActivity : AppCompatActivity()
         setUpAlarmEditorToolbar()
         setUpUIEffectObserver()
         setUpBackPressedCallback()
-    }
 
-    /**
-     * - Cleans up references to the binding to avoid memory leaks.
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
-
 
 
 

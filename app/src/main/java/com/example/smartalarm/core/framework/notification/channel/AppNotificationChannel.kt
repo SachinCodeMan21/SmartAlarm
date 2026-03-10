@@ -54,7 +54,7 @@ enum class AppNotificationChannel(
         channelId = "active_timer_channel_id",
         channelNameResId = R.string.channel_active_timer,
         channelDescResId = R.string.desc_active_timer,
-        channelImportance = NotificationManager.IMPORTANCE_DEFAULT
+        channelImportance = NotificationManager.IMPORTANCE_LOW
     ),
 
     COMPLETED_TIMER(
@@ -75,7 +75,7 @@ enum class AppNotificationChannel(
         channelId = "stopwatch_channel_id",
         channelNameResId = R.string.channel_stopwatch,
         channelDescResId = R.string.desc_stopwatch,
-        channelImportance = NotificationManager.IMPORTANCE_DEFAULT
+        channelImportance = NotificationManager.IMPORTANCE_LOW
     );
 
 }

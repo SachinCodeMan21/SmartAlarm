@@ -1,53 +1,44 @@
 package com.example.smartalarm.feature.home.presentation.effect
 
 import com.example.smartalarm.core.framework.notification.model.NotificationIntentData
-import com.example.smartalarm.feature.home.presentation.viewmodel.HomeViewModel
 
 /**
- * Represents all possible UI effects emitted by the Home Activity feature.
+ * Represents one-time UI effects emitted by HomeViewModel.
  *
- * These effects are triggered by the [HomeViewModel] and observed by the HomeActivity to manage UI
- * transitions, actions, and other one-time effects such as navigation and icon animations.
+ * Effects are consumed by HomeActivity to perform UI actions such as
+ * navigation, animations, or finishing the activity. Unlike state,
+ * effects are not persisted and should only occur once.
  */
 sealed class HomeEffect {
 
     /**
-     * Triggers navigation to a specific child fragment within the Home Activity.
+     * Requests navigation to a specific fragment destination.
      *
-     * This effect is emitted when the user navigates to a new destination, such as when a menu item
-     * is selected or a notification is clicked. The destination ID is used to determine which fragment
-     * to navigate to.
-     *
-     * @param destinationId The ID of the destination to navigate to.
+     * @param destinationId Navigation destination resource ID.
      */
-    data class NavigateToChildFragment(val destinationId: Int) : HomeEffect()
+    data class NavigateToChildFragment(
+        val destinationId: Int
+    ) : HomeEffect()
 
     /**
-     * Handles navigation triggered by a notification click.
+     * Handles navigation triggered by a notification interaction.
      *
-     * This effect provides the necessary data (destination ID, notification action, etc.)
-     * to navigate based on the notification's content, such as opening a timer or switching fragments.
-     *
-     * @param notificationIntentData Contains details like destination ID, action, and additional data.
+     * @param notificationIntentData Data extracted from the notification intent.
      */
-    data class HandleNotificationNavigation(val notificationIntentData: NotificationIntentData) : HomeEffect()
+    data class HandleNotificationNavigation(
+        val notificationIntentData: NotificationIntentData
+    ) : HomeEffect()
 
     /**
-     * Animates the rotation of the selected bottom navigation item icon.
+     * Triggers a rotation animation for the selected navigation item icon.
      *
-     * This effect is triggered when a user interacts with a navigation item, providing a visual cue.
-     *
-     * @param bottomNavItemId The ID of the bottom navigation item to animate.
+     * @param bottomNavItemId ID of the navigation item to animate.
      */
-    data class RotateSelectedNavItemIcon(val bottomNavItemId: Int) : HomeEffect()
+    data class RotateSelectedNavItemIcon(
+        val bottomNavItemId: Int
+    ) : HomeEffect()
 
-    /**
-     * Represents the effect to finish the current activity.
-     *
-     * This effect is typically triggered when the user presses the back button or when the activity
-     * needs to be closed programmatically.
-     */
+    /** Requests the activity to finish. */
     object FinishActivity : HomeEffect()
-
 }
 

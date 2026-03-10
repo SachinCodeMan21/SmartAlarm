@@ -55,7 +55,7 @@ class PlaceSearchAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val place = getItem(position)
         with(holder.binding) {
-            name.text = place.name
+            name.text = place.fullName
             root.setOnClickListener { onPlaceSelected(place.id) }
         }
     }

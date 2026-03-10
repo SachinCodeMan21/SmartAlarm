@@ -16,7 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartalarm.R
-import com.example.smartalarm.core.utility.exception.asUiText
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
 import com.example.smartalarm.core.framework.permission.MyPermissionChecker
 import com.example.smartalarm.core.framework.permission.PermissionFlowDelegate
 import com.example.smartalarm.core.framework.permission.model.AppFeature
@@ -26,6 +26,7 @@ import com.example.smartalarm.core.framework.permission.model.RequesterType
 import com.example.smartalarm.core.framework.permission.model.Requirement
 import com.example.smartalarm.core.utility.Constants.BINDING_NULL
 import com.example.smartalarm.core.utility.extension.showSnackBar
+import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.databinding.FragmentStopwatchBinding
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.StopWatchBroadCastAction
 import com.example.smartalarm.feature.stopwatch.presentation.adapter.StopWatchLapAdapter
@@ -34,7 +35,9 @@ import com.example.smartalarm.feature.stopwatch.presentation.event.StopwatchEven
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchLapUiModel
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchUiModel
 import com.example.smartalarm.feature.stopwatch.framework.services.StopwatchService
+import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchAnalyticsEvent
 import com.example.smartalarm.feature.stopwatch.presentation.viewmodel.StopWatchViewModel
+import com.example.smartalarm.feature.stopwatch.utility.StopwatchTimeFormatter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -43,15 +46,17 @@ import javax.inject.Inject
 
 
 /**
- * Fragment responsible for presenting and managing the stopwatch feature.
+ * Primary View controller for the Stopwatch feature.
  *
- * Acts as the **UI layer in an MVVM setup**:
- * - Renders state from [StopWatchViewModel].
- * - Forwards user interactions as [StopwatchEvent]s to the ViewModel.
- * - Delegates long-running behavior to background services when the app is not visible.
+ * This fragment implements a **Passive View** pattern, delegating all business
+ * logic to [StopWatchViewModel] while handling visual state rendering and
+ * lifecycle-specific hardware interactions (e.g., Foreground Services).
  *
- * UI logic is **lifecycle-aware** to avoid unnecessary work and resource leaks,
- * ensuring proper cleanup when the fragment is destroyed.
+ * ### Responsibilities:
+ * - **State Observation**: Synchronizes UI components with a reactive state stream.
+ * - **Event Dispatching**: Maps user interactions to a Unidirectional Data Flow (UDF).
+ * - **Lifecycle Management**: Orchestrates the transition between UI execution and
+ * background service persistence via [StopwatchEvent.MoveToBackground].
  */
 @AndroidEntryPoint
 class StopwatchFragment : Fragment() {
@@ -77,7 +82,10 @@ class StopwatchFragment : Fragment() {
     /** ViewModel controlling stopwatch state and events. */
     private val stopWatchViewModel: StopWatchViewModel by viewModels()
 
-    /** Animator handling dynamic layout changes and transitions for the stopwatch UI. */
+
+    /** * Orchestrates dynamic layout transitions (Portrait/Landscape) based on
+     * the presence of lap data.
+     */
     private var stopWatchAnimator: StopwatchLayoutAnimator? = null
 
     /** Adapter for displaying stopwatch lap times in a RecyclerView  */
@@ -87,7 +95,19 @@ class StopwatchFragment : Fragment() {
     /** Stores the previous number of recorded laps to manage animations and scrolling. */
     private var previousLapsCount = 0
 
+    /** * Injected utility for locale-aware duration formatting.
+     * Ensures consistent time representation across diverse regions.
+     */
+    @Inject
+    lateinit var stopwatchTimeFormatter: StopwatchTimeFormatter
 
+    @Inject
+    lateinit var numberFormatter : NumberFormatter
+
+
+
+    @Inject
+    lateinit var analyticsHelper: AnalyticsHelper
     @Inject
     lateinit var permissionChecker: MyPermissionChecker
     private lateinit var permissionRequester: MyAppPermissionRequester
@@ -98,7 +118,10 @@ class StopwatchFragment : Fragment() {
     // Lifecycle Methods
     // ---------------------------------------------------------------------
 
-
+    /**
+     * Initializes hardware-level delegates (Permissions, Callbacks) that
+     * require early attachment to the Fragment host.
+     */
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // This is the safest place to initialize it
@@ -131,14 +154,9 @@ class StopwatchFragment : Fragment() {
 
 
     /**
-     * Sets up the UI after the view has been created.
-     *
-     * Sets up:
-     * - Progress bar animator
-     * - Lap RecyclerView
-     * - Button click listeners
-     * - Lifecycle-aware UI state and effect observers
-     * - Permission handlers
+     * Finalizes the UI initialization sequence.
+     * Triggers the setup of observers and adapters only after the view hierarchy
+     * is fully established and stable.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -149,13 +167,6 @@ class StopwatchFragment : Fragment() {
         setUpUIEffectObserver()
     }
 
-
-    /**
-     * Hands off stopwatch execution to a foreground service when the UI is no longer visible.
-     *
-     * Executed only if notification permission is granted.
-     * Skipped during configuration changes to avoid duplicate service starts.
-     */
     override fun onStop() {
         super.onStop()
         stopWatchViewModel.handleEvent(StopwatchEvent.MoveToBackground)
@@ -199,10 +210,8 @@ class StopwatchFragment : Fragment() {
 
         toggleStopwatchBtn.setOnClickListener {
 
-            if (stopWatchViewModel.getIsStopwatchRunning()) {
-                stopWatchViewModel.handleEvent(
-                    StopwatchEvent.ToggleRunState
-                )
+            if (stopWatchViewModel.getCurrentStopwatch().isRunning) {
+                stopWatchViewModel.handleEvent(StopwatchEvent.ToggleRunState)
                 return@setOnClickListener
             }
 
@@ -223,7 +232,7 @@ class StopwatchFragment : Fragment() {
      * fixed size optimizations for smooth scrolling and efficient updates.
      */
     private fun setUpLapRecyclerView() {
-        stopWatchLapAdapter = StopWatchLapAdapter()
+        stopWatchLapAdapter = StopWatchLapAdapter(numberFormatter, stopwatchTimeFormatter)
         binding.stopwatchLapRv.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
@@ -233,10 +242,9 @@ class StopwatchFragment : Fragment() {
 
 
     /**
-     * Observes the stopwatch UI state and updates views accordingly.
-     *
-     * Uses a lifecycle-aware collector scoped to [viewLifecycleOwner] to prevent
-     * updates when the fragment is not visible.
+     * Collects and projects the [StopwatchUiModel] onto the view hierarchy.
+     * Uses [repeatOnLifecycle] to ensure collection only occurs when the
+     * view is in a valid state, preventing resource leakage.
      */
     private fun setUpUIStateObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -250,9 +258,9 @@ class StopwatchFragment : Fragment() {
 
 
     /**
-     * Observes one-off UI effects such as toasts, permission requests, or service commands.
-     *
-     * Handles effects from [StopWatchViewModel] using lifecycle-aware collection.
+     * Intercepts one-time [StopwatchEffect] signals.
+     * Manages transient UI events such as SnackBar notifications and Service triggers
+     * that do not persist within the primary UI state.
      */
     private fun setUpUIEffectObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -262,8 +270,8 @@ class StopwatchFragment : Fragment() {
                         effect.isVisible
 
                     is StopwatchEffect.ShowError -> {
-                        val message = effect.error.asUiText().asString(requireContext())
-                        binding.root.showSnackBar(message, Snackbar.LENGTH_SHORT)
+                       // val message = effect.error.asUiText().asString(requireContext())
+                        binding.root.showSnackBar(effect.errorMessage, Snackbar.LENGTH_SHORT)
                     }
 
                     is StopwatchEffect.StartForegroundService -> startStopwatchService()
@@ -279,24 +287,29 @@ class StopwatchFragment : Fragment() {
     // ---------------------------------------------------------------------
 
     /**
-     * Synchronizes the stopwatch screen with the latest UI state.
-     *
-     * This keeps the visual representation (time, progress, controls, and laps)
-     * fully aligned with the underlying stopwatch state, ensuring the UI
-     * accurately reflects whether the stopwatch is running or paused
-     * and maintains a consistent, predictable user experience.
+     * Synchronizes the layout with the current [StopwatchUiModel].
+     * Performs atomic updates to time displays, progress indicators, and
+     * interactive controls to maintain a consistent visual truth.
      */
     private fun updateUi(uiModel: StopwatchUiModel) = with(binding) {
 
         val toggleIcon = if (uiModel.isRunning) R.drawable.ic_pause else R.drawable.ic_play
 
         // Update stopwatch time and progress
-        stopwatchSecondsText.text = uiModel.secondsText
-        stopwatchMilliSecondsText.text = uiModel.milliSecondsText
+        stopwatchSecondsText.text = stopwatchTimeFormatter.formatMainDisplay(uiModel.elapsedMillis,false)
+        stopwatchMilliSecondsText.text = stopwatchTimeFormatter.formatFractionalSeconds(uiModel.elapsedMillis)
         stopwatchProgressBarIndicator.progress = uiModel.progress
 
         // Update button icons and visibility
         toggleStopwatchBtn.setImageResource(toggleIcon)
+        toggleStopwatchBtn.contentDescription = getString(
+            when {
+                uiModel.isRunning -> R.string.pause_stopwatch
+                uiModel.elapsedMillis == 0L -> R.string.start_stopwatch
+                else -> R.string.resume_stopwatch
+            }
+        )
+
         recordLapStopwatchBtn.isVisible = uiModel.isRunning
         resetStopwatchBtn.isVisible = uiModel.isRunning
 
@@ -306,12 +319,9 @@ class StopwatchFragment : Fragment() {
 
 
     /**
-     * Updates the lap list UI to reflect the current stopwatch state.
-     *
-     * This ensures the lap section is only visible when laps exist,
-     * keeps the layout visually balanced through orientation-aware animations,
-     * and automatically scrolls to the newest lap to maintain focus on
-     * the most recent user action.
+     * Manages the Lap List state and associated transition animations.
+     * Implements orientation-aware layout adjustments and handles
+     * auto-scrolling logic for improved user ergonomics.
      */
     private fun updateRecyclerView(lapsTimesList: List<StopwatchLapUiModel>) = with(binding) {
         val hasLaps = lapsTimesList.isNotEmpty()
@@ -345,10 +355,8 @@ class StopwatchFragment : Fragment() {
     // ---------------------------------------------------------------------
 
     /**
-     * Starts the StopwatchService in foreground mode when the stopwatch begins running.
-     *
-     * This ensures the stopwatch continues running reliably in the background
-     * and is not killed by the system while active.
+     * Promotes the stopwatch session to a Foreground Service.
+     * Ensures session durability and persistence.
      */
     private fun startStopwatchService() {
         val intent = createStopwatchServiceIntent(StopWatchBroadCastAction.START_FOREGROUND)
@@ -382,7 +390,11 @@ class StopwatchFragment : Fragment() {
     // ---------------------------------------------------------------------
     // Permission Methods
     // ---------------------------------------------------------------------
-
+    /**
+     * Negotiates Notification permissions required for Foreground Execution.
+     * Implements a custom [PermissionFlowDelegate] to handle rationales and
+     * permanent denials gracefully.
+     */
     private fun requestNotificationPermission() {
         val requirement = Requirement(
             permission = MyAppPermission.Runtime.PostNotifications,

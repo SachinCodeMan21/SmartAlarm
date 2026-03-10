@@ -13,7 +13,6 @@ package com.example.smartalarm.feature.clock.domain.model
  * @property primaryName Display-friendly name of the place (e.g., "New York").
  * @property timeZoneId IANA time zone identifier (e.g., "America/New_York").
  * @property offsetSeconds UTC offset in seconds from GMT.
- * @property currentTime Current local time at the place, formatted for display purposes.
  */
 data class PlaceModel(
     val id: Long = 0,
@@ -21,5 +20,4 @@ data class PlaceModel(
     val primaryName: String,
     val timeZoneId: String,
     val offsetSeconds: Int,
-    val currentTime: String
 )

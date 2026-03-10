@@ -3,12 +3,14 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.mission
 import android.os.VibrationEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.framework.manager.contract.VibrationManager
 import com.example.smartalarm.feature.alarm.presentation.effect.mission.MissionEffect
 import com.example.smartalarm.feature.alarm.presentation.event.mission.StepMissionEvent
 import com.example.smartalarm.feature.alarm.presentation.model.mission.StepMissionUiModel
+import com.example.smartalarm.feature.alarm.presentation.model.mission.analyticEnum.MissionEventType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,6 +40,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StepMissionViewModel @Inject constructor(
     private val systemClockHelper: SystemClockHelper,
+    private val analyticsHelper: AnalyticsHelper,
    private val vibrationManager: VibrationManager
 ): ViewModel() {
 
@@ -76,9 +79,18 @@ class StepMissionViewModel @Inject constructor(
      */
     fun handleEvent(event: StepMissionEvent) {
         when (event) {
-            is StepMissionEvent.InitializeMission -> initialize(event.mission)
-            is StepMissionEvent.AccelerationChanged -> lastAcceleration = event.magnitude
-            is StepMissionEvent.StepDetected -> handleStepDetected()
+            is StepMissionEvent.InitializeMission -> {
+                initialize(event.mission)
+                analyticsHelper.logEvent(MissionEventType.INITIALIZE_STEP_MISSION.eventName)
+            }
+            is StepMissionEvent.AccelerationChanged -> {
+                lastAcceleration = event.magnitude
+                analyticsHelper.logEvent(MissionEventType.ACCELERATION_CHANGED_STEP.eventName)
+            }
+            is StepMissionEvent.StepDetected -> {
+                handleStepDetected()
+                analyticsHelper.logEvent(MissionEventType.STEP_DETECTED.eventName)
+            }
         }
     }
 

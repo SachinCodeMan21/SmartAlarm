@@ -7,7 +7,6 @@ import com.example.smartalarm.R
 import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.core.framework.notification.model.NotificationAction
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity.Companion.EXTRA_NOTIFICATION_ACTION
 import com.example.smartalarm.feature.home.presentation.view.HomeActivity.Companion.EXTRA_START_DESTINATION
@@ -16,6 +15,7 @@ import com.example.smartalarm.feature.stopwatch.framework.broadcasts.constants.S
 import com.example.smartalarm.feature.stopwatch.framework.broadcasts.receivers.StopwatchReceiver
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotificationData
 import com.example.smartalarm.feature.stopwatch.framework.notification.model.StopwatchNotificationModel
+import com.example.smartalarm.feature.stopwatch.utility.StopwatchTimeFormatter
 import javax.inject.Inject
 
 /**
@@ -30,7 +30,7 @@ import javax.inject.Inject
  * This class is injectable via Hilt.
  */
 class ActiveStopwatchNotificationDataMapper @Inject constructor(
-    private val timeFormatter: TimeFormatter,
+    private val stopwatchTimeFormatter: StopwatchTimeFormatter,
     private val numberFormatter: NumberFormatter
 ) : AppNotificationDataMapper<StopwatchNotificationModel.ActiveStopwatchModel, StopwatchNotificationData> {
 
@@ -52,7 +52,7 @@ class ActiveStopwatchNotificationDataMapper @Inject constructor(
 
         val stopwatch = model.stopwatch
         val lapCount = stopwatch.lapCount.takeIf { it > 0 } ?: 1
-        val formattedElapsedTime = timeFormatter.formatDurationForStopwatch(durationMillis = stopwatch.elapsedTime, includeMillis = false)
+        val formattedElapsedTime = stopwatchTimeFormatter.formatMainDisplay(durationMillis = stopwatch.elapsedTime, includeMillis = false)
         val contentText = context.getString(R.string.lap_time_format, numberFormatter.formatLocalizedNumber(lapCount.toLong(),true), formattedElapsedTime)
 
         val actions = buildActions(context, stopwatch)
@@ -123,7 +123,6 @@ class ActiveStopwatchNotificationDataMapper @Inject constructor(
      * @param context Context used to create the intent.
      * @return A [PendingIntent] that opens [HomeActivity] with the stopwatch ID.
      */
-
     private fun buildStopwatchContentIntent(context: Context): PendingIntent {
 
         val intent = Intent(context, HomeActivity::class.java).apply {

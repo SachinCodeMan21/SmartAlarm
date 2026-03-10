@@ -26,17 +26,23 @@
     <item name="alarm_home_guideline_start_percent" format="float" type="dimen">0.05</item>
     <item name="alarm_home_guideline_end_percent" format="float" type="dimen">0.95</item>
 
-
+    <!-- 2] Alarm Editor Home Screen   -->
+    <item name="alarm_editor_guideline_top_percent" format="float" type="dimen">0</item>
     <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.15</item>
     <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.85</item>
+    <dimen name="alarm_editor_weekdays_max_width">48dp</dimen>
+
+    <!-- 3] Alarm Mission Screen   -->
     <item name="memory_mission_grid_max_width_percent" format="float" type="dimen">0.25</item>
     <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.0</item>
     <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.12</item>
+    <item name="typing_mission_guideline_start_percent" format="float" type="dimen">0.2</item>
+    <item name="typing_mission_guideline_end_percent" format="float" type="dimen">0.8</item>
 
     <!-- Clock Screen Dimens -->
     <item name="guideline_clock_top" format="float" type="dimen">0.02</item>
-    <item name="guideline_clock_start" format="float" type="dimen">0.02</item>
-    <item name="guideline_clock_end" format="float" type="dimen">0.9</item>
+    <item name="guideline_clock_start" format="float" type="dimen">0.2</item>
+    <item name="guideline_clock_end" format="float" type="dimen">0.8</item>
     <item name="guideline_clock_bottom" format="float" type="dimen">1</item>
 
 
@@ -66,8 +72,8 @@
 
 
     <!-- Setting Screen Dimens   -->
-    <item name="guideline_setting_start" format="float" type="dimen">0.1</item>
-    <item name="guideline_setting_end" format="float" type="dimen">0.9</item>
+    <item name="guideline_setting_start" format="float" type="dimen">0.05</item>
+    <item name="guideline_setting_end" format="float" type="dimen">0.95</item>
 
 
     <!-- Language Screen Dimens   -->
@@ -76,7 +82,7 @@
     <item name="guideline_language_bottom" format="float" type="dimen">0.98</item>
 
     <!-- About Screen Dimens   -->
-    <item name="guideline_about_top" format="float" type="dimen">0.01</item>
+    <item name="guideline_about_top" format="float" type="dimen">0</item>
     <item name="guideline_about_start" format="float" type="dimen">0.2</item>
     <item name="guideline_about_end" format="float" type="dimen">0.8</item>
     <item name="guideline_about_bottom" format="float" type="dimen">0.98</item>

@@ -6,7 +6,6 @@ import android.content.Intent
 import com.example.smartalarm.R
 import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.core.framework.notification.model.NotificationAction
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.framework.broadcasts.constants.AlarmBroadCastAction
 import com.example.smartalarm.feature.alarm.framework.broadcasts.constants.AlarmKeys
@@ -14,6 +13,7 @@ import com.example.smartalarm.feature.alarm.framework.broadcasts.receivers.Alarm
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationData
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel
 import com.example.smartalarm.feature.alarm.presentation.view.activity.AlarmActivity
+import com.example.smartalarm.feature.alarm.utility.formatter.AlarmTimeFormatter
 import javax.inject.Inject
 
 
@@ -32,7 +32,7 @@ import javax.inject.Inject
  * @constructor Injects the mapper instance via dependency injection.
  */
 class RingingAlarmNotificationDataMapper @Inject constructor(
-    private val timeFormatter: TimeFormatter
+    private val timeFormatter: AlarmTimeFormatter
 ) : AppNotificationDataMapper<AlarmNotificationModel.RingingAlarmModel, AlarmNotificationData> {
 
     /**

@@ -143,6 +143,13 @@
         <item>PM</item>
     </string-array>
 
+    <string name="failed_this_alarm_no_longer_exists">This alarm no longer exists.</string>
+    <string name="failed_alarm_not_found">This alarm could not be found.</string>
+    <string name="failed_to_load_the_alarm">Failed to load the alarm. Please try again.</string>
+    <string name="failed_to_save_the_alarm">Unable to save the alarm. Please try again.</string>
+    <string name="failed_to_update_the_alarm">Unable to update the alarm. Please try again.</string>
+    <string name="failed_to_schedule_the_alarm">Alarm saved but could not be scheduled.</string>
+
 
     <!-- 3] Mission Picker Bottom Sheet Layout  -->
     <string name="choose_mission">Choose Mission</string>
@@ -203,7 +210,8 @@
     <string name="no_snooze_left">No Snooze Left</string>
     <string name="snooze_left"> %1$s Left </string>
     <string name="exit_preview">Exit Preview</string>
-
+    <string name="error_snooze_alarm">Unable to snooze the alarm. Please try again.</string>
+    <string name="error_stop_alarm">Unable to stop the alarm. Please try again.</string>
 
     <!-- Mission Fragment Common Strings -->
     <string name="round_text">Round %1$s of %2$s</string>
@@ -242,6 +250,10 @@
     <!-- 3]  Math Mission Strings -->
     <string name="solve_the_math_problem">Solve the math problem</string>
     <string name="enter_your_answer">Enter your answer</string>
+    <string name="please_enter_an_answer">Please enter an answer!</string>
+    <string name="invalid_number_format">Invalid number format!</string>
+    <string name="wrong_answer">Wrong answer!</string>
+
 
     <!-- 4]  Shake Mission Strings -->
     <string name="shake_your_phone">Shake your phone!</string>
@@ -253,7 +265,12 @@
     <string name="accelerometer_sensor_not_available">Accelerometer sensor not available</string>
     <string name="step_detector_sensor_not_available">Step detector sensor not available</string>
     <string name="permission_required_for_step_detection">Permission required for step detection</string>
-
+    <string name="start_walking_slowly_to_detect_your_first_step">Begin walking slowly so we can detect your first step and calibrate the sensor.</string>
+    <string name="activity_recognition_permission_rationale_title">Activity Recognition Permission Required</string>
+    <string name="activity_recognition_permission_rationale_message">To track your physical activities and steps, we need permission to access your activity data. This will allow us to provide more accurate features for monitoring your Steps.</string>
+    <string name="activity_recognition_permission_permanently_denied_title">Permission Permanently Denied</string>
+    <string name="activity_recognition_permission_permanently_denied_message">You have permanently denied the activity recognition permission. To enable this feature, please go to your app settings and allow the permission manually.</string>
+    <string name="activity_recognition_permission_denied_toast">Permission denied. You won’t be able to track your steps and activities.</string>
 
     <!--  Alarm View Model    -->
     <string name="alarm_already_passed">Alarm time has already passed.</string>
@@ -308,7 +325,17 @@
     <string name="search">Search</string>
     <string name="timezone_deleted">%1$s Timezone Deleted</string>
     <string name="undo_timezone_successful">Undo successful</string>
-    <string name="failed_to_restore_time_zone">Failed to restore time zone</string>
+    <string name="failed_to_load_time_zones">Failed to load time zones</string>
+    <string name="failed_to_undo_time_zone">Failed to Undo time zone</string>
+    <string name="failed_to_delete_timezone">Failed to delete timezone</string>
+    <string name="start_typing_to_search_for_a_place">Start typing to search for a place</string>
+    <string name="no_such_place_found">No such place found</string>
+    <string name="time_same">Same time</string>
+    <string name="time_ahead">%1$s ahead</string>
+    <string name="time_behind">%1$s behind</string>
+    <string name="time_tomorrow">Tomorrow</string>
+    <string name="time_yesterday">Yesterday</string>
+    <string name="time_today">Today</string>
 
 
     <string-array name="month_names">
@@ -356,8 +383,9 @@
     <string name="btnBackSpace">⌫</string>
     <string name="default_timer_time">00h : 00m : 00s</string>
     <string name="formatted_timer_time">%1$sh : %2$sm : %3$ss</string>
+    <string name="start_timer_btn_desc">Start Timer</string>
+    <string name="delete_timer_btn_desc">Delete Timer</string>
     <string name="unable_to_start_the_timer">Unable to start the timer at the moment. Please try again later.</string>
-    <string name="failed_to_load_timers">Failed to load timers. Please try again later.</string>
 
 
     // ---------------------------------------------------------------------
@@ -393,6 +421,15 @@
     <string name="missed_timer_target_time">Timer Target Time: %1$s</string>
 
 
+    <!-- Show Timer Error Messages -->
+    <string name="timer_start_failed">Unable to start the timer. Please try again.</string>
+    <string name="timer_pause_failed">Unable to pause the timer. Please try again.</string>
+    <string name="timer_restart_failed">Unable to restart the timer. Please try again.</string>
+    <string name="timer_snooze_failed">Unable to snooze the timer. Please try again.</string>
+    <string name="timer_stop_failed">Unable to stop the timer. Please try again.</string>
+    <string name="timer_generic_error">Something went wrong. Please try again.</string>
+
+
     <!-- Timer Feature Permission Strings  -->
 
     <!-- Notification Permission -->
@@ -423,10 +460,13 @@
     <!--  1] Stopwatch layout Strings   -->
     <string name="stopwatch_progress_indicator">Stopwatch progress indicator</string>
     <string name="stopwatch_rv_desc">List of recorded stopwatch lap times</string>
-    <string name="toggle_stopwatch">Toggle Start/Pause Stopwatch</string>
+    <string name="start_stopwatch">Start stopwatch</string>
+    <string name="pause_stopwatch">Pause stopwatch</string>
+    <string name="resume_stopwatch">Resume stopwatch</string>
     <string name="reset_stopwatch">Reset Stopwatch</string>
     <string name="record_lap_time">Record lap time</string>
-    <string name="lap_index"># Lap</string>
+    <string name="lap_index">#Lap %1$s</string>
+    <string name="full_formatted_stopwatch_time" translatable="false">%1$s : %2$s : %3$s : %4$s</string>
 
     <!-- Stopwatch Feature Permission Strings -->
     <string name="stopwatch_notification_permission_rationale_title">Notification Permission Required</string>
@@ -434,10 +474,8 @@
     <string name="stopwatch_notification_permission_permanently_denied_title">Notification Permission Blocked</string>
     <string name="stopwatch_notification_permission_permanently_denied_message">Notifications are blocked. Please enable them in app settings.</string>
     <string name="stopwatch_notification_permission_denied_toast">Permission Denied</string>
-    <string name="could_not_delete_item">Could not delete item</string>
 
     <!-- Stopwatch Viewmodel Specific Error Strings -->
-    <string name="failed_to_restore_stopwatch_state">Failed to restore the stopwatch state. Please try again.</string>
     <string name="failed_to_start_stopwatch">Failed to start the stopwatch. Please try again.</string>
     <string name="failed_to_pause_stopwatch_state">Failed to pause the stopwatch state. Please try again.</string>
     <string name="failed_to_reset_stopwatch_state">Failed to pause the stopwatch state. Please try again.</string>
@@ -479,6 +517,8 @@
     <string name="_2026_smart_alarm_inc">© 2026 Smart Alarm Inc.</string>
     <string name="smart_alarm_app_icon">smart alarm app icon</string>
     <string name="undo_successful">Undo Successful</string>
+    <string name="version">Version %1$s</string>
+    <string name="no_browser_found_to_open_link">No browser found to open link</string>
 
 
 
@@ -495,6 +535,9 @@
     <string name="section_timer">Timer</string>
     <string name="section_stopwatch">Stopwatch</string>
     <string name="btn_email_support">Email Support</string>
+    <string name="send_email">Send Email</string>
+    <string name="no_email_app_found">No email app found</string>
+
 
     <string name="title_required_permissions">Required Permissions</string>
     <string name="desc_required_permissions">• Exact Alarm: Ensures missions trigger on time.\n• Full Screen Notification: Allows missions to show over the lock screen.\n• Activity Recognition: Required for Walking/Shaking missions.\n• Battery Optimization: Set to \'Unrestricted\' so the app never sleeps.</string>
@@ -568,8 +611,6 @@
     <string name="lap_time_format">#Lap %1$s : %2$s</string>
     <string name="stop_all_completed">Stop All Completed Timers</string>
     <string name="stop_all_active">Stop All Active Timers</string>
-    <string name="start_timer">Start Timer</string>
-    <string name="delete_timer">Delete Timer</string>
     <string name="rounds">Rounds</string>
     <string name="exact_alarm">Exact Alarm</string>
 
@@ -614,5 +655,6 @@
     <string name="error_server_down">Our servers are currently having trouble. Please wait.</string>
     <string name="error_generic_network">A network error occurred.</string>
     <string name="error_unexpected_system">An unexpected system error occurred. Please try again or contact support.</string>
+
 
 </resources>

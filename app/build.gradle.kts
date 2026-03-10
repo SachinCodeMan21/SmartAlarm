@@ -9,11 +9,14 @@ plugins {
     id("kotlin-android")
     id("kotlin-parcelize")
     id("jacoco")
+    alias(libs.plugins.googleGmsGoogleServices)
+    alias(libs.plugins.googleFirebaseCrashlytics)
 }
 
 jacoco {
     toolVersion = "0.8.10"
 }
+
 
 android {
 
@@ -58,13 +61,6 @@ android {
             )
 
             // Inject a build-time constant (API key) for the production environment, accessible via BuildConfig.GOOGLE_API_KEY_PROD
-//            buildConfigField(
-//                "String",
-//                "GOOGLE_API_KEY_PROD",
-//                localProperties.getProperty("GOOGLE_API_KEY_PROD")
-//            )
-
-            // Inject a build-time constant (API key) for the production environment, accessible via BuildConfig.GOOGLE_API_KEY_PROD
             buildConfigField(
                 "String",
                 "GEO_APIFY_API_KEY_PROD",
@@ -73,12 +69,6 @@ android {
         }
 
         debug {
-            // Inject a build-time constant (API key) for the debug environment, accessible via BuildConfig.GOOGLE_API_KEY
-//            buildConfigField(
-//                "String",
-//                "GOOGLE_API_KEY",
-//                localProperties.getProperty("GOOGLE_API_KEY")
-//            )
 
             buildConfigField(
                 "String",
@@ -147,7 +137,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.service) // Lifecycle-aware services (e.g., LifecycleService)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.monitor)
-    implementation(libs.androidx.uiautomator) // ViewModel support with Kotlin coroutines
+    implementation(libs.androidx.uiautomator)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics) // ViewModel support with Kotlin coroutines
     kapt(libs.androidx.lifecycle.compiler) // Annotation processor for Lifecycle (e.g., @OnLifecycleEvent)
 
 
@@ -176,9 +168,6 @@ dependencies {
     implementation(libs.converter.gson) // Retrofit converter for JSON serialization/deserialization using Gson
     implementation(libs.gson) // Gson: JSON parsing library used by Retrofit converter
     implementation(libs.logging.interceptor) // OkHttp interceptor for logging HTTP request and response details
-
-    // Google Places API
-    implementation(libs.places) // Provides APIs for location and place data, autocomplete, and more
 
     // ShawnLin Picker
     implementation(libs.number.picker) // Custom number picker UI component for selecting numbers easily i.e Provide [NumPicker]
@@ -250,8 +239,6 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.compiler)  // Annotation processor for Hilt in Android tests
 
-    testImplementation(project(":test-utils"))       // Use shared test helpers/fakes in unit tests
-    androidTestImplementation(project(":test-utils")) // Use shared test helpers/fakes in instrumentation tests
     testImplementation(kotlin("test"))
 
 

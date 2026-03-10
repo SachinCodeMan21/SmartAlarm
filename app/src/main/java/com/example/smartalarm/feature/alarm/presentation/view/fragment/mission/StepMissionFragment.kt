@@ -27,6 +27,7 @@ import com.example.smartalarm.core.utility.extension.isSdk29AndAbove
 import com.example.smartalarm.core.utility.extension.showToast
 import com.example.smartalarm.core.utility.extension.toLocalizedString
 import com.example.smartalarm.core.framework.permission.PermissionManager
+import com.example.smartalarm.core.framework.permission.PermissionRationaleDialog
 import com.example.smartalarm.databinding.FragmentStepMissionBinding
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.presentation.effect.mission.MissionEffect
@@ -101,6 +102,7 @@ class StepMissionFragment : Fragment(), SensorEventListener {
     // Lifecycle Methods
     // ---------------------------------------------------------------------
 
+
     /**
      * Called when the fragment is created.
      *
@@ -147,7 +149,6 @@ class StepMissionFragment : Fragment(), SensorEventListener {
         registerSensorLauncher()
         checkPermissions()
         observeViewModel()
-        setupSensors()
     }
 
     /**
@@ -184,8 +185,15 @@ class StepMissionFragment : Fragment(), SensorEventListener {
      */
     private fun registerSensorLauncher() {
         sensorPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) setupSensors()
-            else requireContext().showToast("Permission required for step detection")
+            if (isGranted){
+                setupSensors()
+            }
+            else if(requireActivity().shouldShowRequestPermissionRationale(Manifest.permission.ACTIVITY_RECOGNITION)){
+                showActivityRecognitionPermissionRationale()
+            }
+            else{
+                sharedViewModel.handleSharedEvent(AlarmMissionEvent.MissionCompleted)
+            }
         }
     }
 
@@ -212,6 +220,7 @@ class StepMissionFragment : Fragment(), SensorEventListener {
      * This method must be called only after permissions are granted.
      */
     private fun setupSensors() {
+
         sensorManager = ContextCompat.getSystemService(requireContext(), SensorManager::class.java)
         stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
         accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -225,7 +234,6 @@ class StepMissionFragment : Fragment(), SensorEventListener {
         } ?:  requireContext().showToast("Accelerometer sensor not available")
 
         showStepRecognitionDialog()
-
 
     }
 
@@ -339,6 +347,8 @@ class StepMissionFragment : Fragment(), SensorEventListener {
     // ---------------------------------------------------------------------
     // Pre Sensor Dialog Methods
     // ---------------------------------------------------------------------
+
+
     /**
      * Displays the StepRecognitionDialogFragment if it's not already shown.
      *
@@ -352,6 +362,19 @@ class StepMissionFragment : Fragment(), SensorEventListener {
             stepRecognitionDialog = StepRecognitionDialogFragment.newInstance()
             stepRecognitionDialog?.show(childFragmentManager, "StepRecognitionDialog")
         }
+    }
+
+    // Example of how to show rationale dialog
+    fun showActivityRecognitionPermissionRationale() {
+        PermissionRationaleDialog.showRationale(
+            fragmentManager = childFragmentManager,
+            title = getString(R.string.activity_recognition_permission_rationale_title),
+            message = getString(R.string.activity_recognition_permission_rationale_message),
+            positiveText = getString(R.string.grant_permission),
+            negativeText = getString(R.string.deny),
+            onPositive = { setupSensors() },
+            onNegative = { sharedViewModel.handleSharedEvent(AlarmMissionEvent.MissionCompleted) }
+        )
     }
 
 }

@@ -8,44 +8,30 @@ import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 
 
 /**
- * Mapper object responsible for converting between Domain Models
- * ([StopwatchModel], [StopwatchLapModel]) and Data Entities
+ * Data transformation layer responsible for mapping between Domain models
+ * ([StopwatchModel], [StopwatchLapModel]) and Persistence entities
  * ([StopwatchStateEntity], [StopwatchLapEntity]).
  *
- * ### Why this exists:
- * This mapper acts as a corruption barrier. By separating storage concerns from
- * business logic, we ensure that if the database schema changes, the core
- * stopwatch logic remains untouched.
- *
- * ### Future-Proofing & Scalability:
- * While the application currently operates as a singleton, this mapping strategy
- * allows for a seamless transition to a "Multi-Stopwatch" feature:
- * 1. **Minimal Refactoring**: To support multiple stopwatches, we only need to
- * add an `id` field to the [StopwatchModel] and update this mapper.
- * 2. **UI Isolation**: The ViewModels and UI logic are already built to be
- * ID-agnostic, meaning they won't need to change even if the underlying
- * database starts managing hundreds of sessions.
- * 3. **Stable Identity**: By relying on [StopwatchLapModel.lapIndex] for domain identification,
- * we ensure that business logic remains consistent regardless of how
- * SQLite handles primary key increments.
+ * This object acts as a 'Corruption Barrier,' isolating the Domain layer from
+ * database-specific constraints like Primary Keys and relational structures.
+ * This ensures that schema changes do not impact core business logic.
  */
 object StopwatchMapper {
 
     /**
-     * Entry point for the Repository to transform database results into domain data.
-     * * We use the DTO here because it encapsulates the relationship logic, allowing
-     * the caller to get a complete model without knowing how the JOIN or Relation
-     * was performed.
+     * Converts a database Relation DTO into a unified Domain model.
+     * Encapsulates relational logic, providing a complete model to the Repository
+     * without exposing underlying SQL JOIN or Relation structures.
      */
     fun StopwatchWithLaps.toDomainModel(): StopwatchModel {
         return stopwatch.toDomainModel(laps)
     }
 
     /**
-     * Prepares a Domain model for persistent storage.
-     * * We re-attach the singleton ID (default 1) because the Domain layer is unaware
-     * of primary keys, but SQLite requires them to prevent creating duplicate
-     * stopwatch records on every save.
+     * Maps a Domain model to a persistence-ready Entity.
+     * Re-attaches the persistence ID to ensure the Data layer can perform
+     * 'Upsert' operations correctly without creating duplicate records.
+     * * @param id The primary key used for database persistence (defaults to singleton ID).
      */
     fun StopwatchModel.toEntity(id: Int = 1): StopwatchStateEntity = StopwatchStateEntity(
         id = id,
@@ -57,10 +43,9 @@ object StopwatchMapper {
     )
 
     /**
-     * Transforms a raw state entity and its associated laps into a Domain model.
-     * * IDs are discarded here to ensure that UI and Business layers rely on
-     * stable domain properties (like timestamps) rather than ephemeral database
-     * row identifiers.
+     * Reconstructs a Domain model from flat persistence entities.
+     * Discards database identifiers to ensure the Domain layer remains
+     * focused on business-relevant properties (timestamps, counts).
      */
     fun StopwatchStateEntity.toDomainModel(laps: List<StopwatchLapEntity>): StopwatchModel =
         StopwatchModel(
@@ -73,10 +58,10 @@ object StopwatchMapper {
         )
 
     /**
-     * Converts a domain lap into a persistence-ready entity.
-     * * We hardcode the [StopwatchLapEntity.id] to 0 because Room interprets a zero/null value as a
-     * signal to auto-generate a new unique primary key, simplifying the insertion
-     * flow for the caller.
+     * Prepares a Domain Lap for persistent storage.
+     * * @param stopwatchId Foreign key linking the lap to the parent session.
+     * @note Hardcoded '0' ID allows Room's @PrimaryKey(autoGenerate = true)
+     * to handle unique row identifier generation.
      */
     fun StopwatchLapModel.toEntity(stopwatchId: Int): StopwatchLapEntity =
         StopwatchLapEntity(
@@ -89,10 +74,9 @@ object StopwatchMapper {
         )
 
     /**
-     * Transforms a database lap record back into a pure domain object.
-     * * We remove the ID because the domain layer identifies laps by their
-     * [StopwatchLapModel.lapIndex]. Using business-relevant indices instead of database keys
-     * makes the UI logic more predictable and easier to test.
+     * Maps a database Lap record to a Domain representation.
+     * Relies on [StopwatchLapModel.lapIndex] for identification within the
+     * Domain layer, providing stable identity across database migrations.
      */
     fun StopwatchLapEntity.toDomainModel(): StopwatchLapModel =
         StopwatchLapModel(
@@ -101,5 +85,4 @@ object StopwatchMapper {
             lapElapsedTimeMillis = lapElapsedTimeMillis,
             lapEndTimeMillis = lapEndTimeMillis
         )
-
 }

@@ -24,7 +24,6 @@ object ClockMapper {
             primaryName = primaryName,
             timeZoneId = timeZoneId,
             offsetSeconds = offsetSeconds,
-            currentTime = currentTime
         )
     }
 
@@ -40,8 +39,7 @@ object ClockMapper {
             fullName = fullName,
             primaryName = primaryName,
             timeZoneId = timeZoneId,
-            offsetSeconds = offsetSeconds,
-            currentTime = currentTime
+            offsetSeconds = offsetSeconds
         )
     }
 

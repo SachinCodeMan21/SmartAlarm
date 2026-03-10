@@ -2,7 +2,6 @@ package com.example.smartalarm.feature.alarm.presentation.mapper
 
 import com.example.smartalarm.R
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.model.Mission
@@ -22,13 +21,11 @@ import javax.inject.Inject
  * by the application. It handles conversions like formatting the alarm time,
  * preparing mission-related data, and formatting snooze settings for display.
  *
- * @param timeFormatter Formatter used to convert time into the desired format.
  * @param numberFormatter Formatter used to format numbers for UI.
  * @param alarmRingtonePlayer Manages alarm ringtone settings and titles.
  * @param resourceProvider Provides localized strings for UI elements.
  */
 class AlarmUiMapper @Inject constructor(
-    private val timeFormatter: TimeFormatter,
     private val numberFormatter: NumberFormatter,
     private val alarmRingtonePlayer: AlarmRingtoneManager,
     private val resourceProvider: ResourceProvider
@@ -46,11 +43,10 @@ class AlarmUiMapper @Inject constructor(
      * @return A UI-friendly [AlarmUiModel] with formatted alarm data.
      */
     fun toUiModel(alarmModel: AlarmModel): AlarmUiModel {
-        val formattedAlarmTime = timeFormatter.formatToAlarmTime(alarmModel.time.hour, alarmModel.time.minute)
         val missionIconResId = alarmModel.missions.firstOrNull()?.type?.getIconRes()
         return AlarmUiModel(
             id = alarmModel.id,
-            formattedAlarmTime = formattedAlarmTime,
+            alarmTime = alarmModel.time,
             selectedDays = alarmModel.days,
             missionIconResId = missionIconResId,
             alarmMissions = alarmModel.missions,
@@ -152,6 +148,7 @@ class AlarmUiMapper @Inject constructor(
         return "${numberFormatter.formatLocalizedNumber(snoozeSettings.snoozeIntervalMinutes.toLong(), false)} ${resourceProvider.getString(R.string.min)}," +
                 " ${numberFormatter.formatLocalizedNumber(snoozeSettings.snoozeLimit.toLong(), false)} ${resourceProvider.getString(R.string.times)} "
     }
+
 }
 
 

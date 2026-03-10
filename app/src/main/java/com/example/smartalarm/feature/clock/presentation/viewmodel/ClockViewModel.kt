@@ -3,8 +3,10 @@ package com.example.smartalarm.feature.clock.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
 import com.example.smartalarm.feature.clock.domain.usecase.contract.ClockUseCases
@@ -19,9 +21,10 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
-import com.example.smartalarm.feature.clock.domain.usecase.contract.UpdateClockUseCase
 import com.example.smartalarm.feature.clock.presentation.mapper.PlaceUiMapper
+import com.example.smartalarm.feature.clock.presentation.model.ClockAnalyticsEvent
 import com.example.smartalarm.feature.clock.presentation.model.ClockUiModel
+import com.example.smartalarm.feature.clock.utility.ClockTimeFormatter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
@@ -32,10 +35,13 @@ import java.util.concurrent.TimeUnit
 class ClockViewModel @Inject constructor(
     private val clockUseCases: ClockUseCases,
     private val systemClockHelper: SystemClockHelper,
-    private val timeFormatter: TimeFormatter,
-    private val updateClockUseCase: UpdateClockUseCase,
+    private val placeUiMapper: PlaceUiMapper,
+    private val timeFormatter: ClockTimeFormatter,
     private val resourceProvider: ResourceProvider,
-) : ViewModel() {
+    private val errorLogger: ErrorLogger,
+    private val analyticsHelper: AnalyticsHelper
+) : ViewModel()
+{
 
     private val _uiModel = MutableStateFlow(ClockUiModel())
     val uiModel: StateFlow<ClockUiModel> = _uiModel
@@ -48,14 +54,12 @@ class ClockViewModel @Inject constructor(
     private var updateJob: Job? = null
 
 
-
     // ---------------------------------------------------------------------
     // UI Effects
     // ---------------------------------------------------------------------
     private fun postEffect(effect: ClockEffect) {
         viewModelScope.launch { _uiEffect.send(effect) }
     }
-
 
 
     // ---------------------------------------------------------------------
@@ -67,8 +71,10 @@ class ClockViewModel @Inject constructor(
             is ClockEvent.StopClockUiUpdates -> stopClockUpdater()
             is ClockEvent.DeleteTimeZone -> deleteTimeZone(event.deletedTimeZoneId)
             is ClockEvent.UndoDeletedTimeZone -> undoDeletedTimeZone()
-            is ClockEvent.AddNewTimeZone -> postEffect(ClockEffect.NavigateToAddTimeZoneScreen)
-            is ClockEvent.ShowToastMessage -> postEffect(ClockEffect.ShowToast(event.message))
+            is ClockEvent.AddNewTimeZone -> {
+                analyticsHelper.logEvent(ClockAnalyticsEvent.NAVIGATE_TO_TIMEZONE_SEARCH.eventName)
+                postEffect(ClockEffect.NavigateToAddTimeZoneScreen)
+            }
         }
     }
 
@@ -77,18 +83,26 @@ class ClockViewModel @Inject constructor(
     // Load and Update Time Zones
     // ---------------------------------------------------------------------
     private fun loadTimeZones() {
+
+        analyticsHelper.logEvent(ClockAnalyticsEvent.SCREEN_VIEWED.eventName)
+
         viewModelScope.launch {
+
             when (val result = clockUseCases.getAllSavedPlaces()) {
                 is MyResult.Success -> {
                     cachedPlacesMap = result.data.associateBy { it.id }
-                    startClockUpdater(result.data)
+                    startClockUpdater()
                 }
-                is MyResult.Error -> postEffect(ClockEffect.ShowToast("Failed to load time zones"))
+                is MyResult.Error -> {
+                    val message = resourceProvider.getString(R.string.failed_to_load_time_zones)
+                    logClockError(result, message)
+                    postEffect(ClockEffect.ShowToast(message))
+                }
             }
         }
     }
 
-    private fun startClockUpdater(savedPlaces: List<PlaceModel>) {
+    private fun startClockUpdater() {
 
         stopClockUpdater() // cancel existing job
 
@@ -100,10 +114,8 @@ class ClockViewModel @Inject constructor(
                 val formattedTime = timeFormatter.formatClockTime(now)
                 val formattedDate = timeFormatter.formatDayMonth(now)
 
-                val updatedPlaces = updateClockUseCase(savedPlaces)
-                cachedPlacesMap = updatedPlaces.associateBy { it.id }
+                val savedPlacesUiModelList = placeUiMapper.mapToUiList(cachedPlacesMap.values.toList())
 
-                val savedPlacesUiModelList = PlaceUiMapper.mapToUiList(updatedPlaces)
                 _uiModel.value = ClockUiModel(
                     formattedTime = formattedTime,
                     formattedDate = formattedDate,
@@ -122,8 +134,6 @@ class ClockViewModel @Inject constructor(
     }
 
 
-
-
     // ---------------------------------------------------------------------
     // Delete / Undo
     // ---------------------------------------------------------------------
@@ -132,8 +142,13 @@ class ClockViewModel @Inject constructor(
 
         val placeToDelete = cachedPlacesMap[deletedPlaceId] ?: return // get from cache
 
+        analyticsHelper.logEvent(
+            ClockAnalyticsEvent.TIMEZONE_SWIPE_DELETED.eventName,
+            ClockAnalyticsEvent.Params.TIMEZONE_NAME to placeToDelete.primaryName
+        )
+
         viewModelScope.launch {
-            when (clockUseCases.deletePlaceById(deletedPlaceId)) {
+            when (val result = clockUseCases.deletePlaceById(deletedPlaceId)) {
 
                 is MyResult.Success -> {
                     // Cache the deleted place for undo
@@ -149,7 +164,12 @@ class ClockViewModel @Inject constructor(
                     postEffect(ClockEffect.DeleteTimeZone(placeToDelete))
                 }
 
-                is MyResult.Error -> postEffect(ClockEffect.ShowToast(resourceProvider.getString(R.string.could_not_delete_item)))
+                is MyResult.Error -> {
+                    val message = resourceProvider.getString(R.string.failed_to_delete_timezone)
+                    logClockError(result, "$message | ID: $deletedPlaceId")
+                    postEffect(ClockEffect.ShowToast(message))
+                }
+
             }
         }
     }
@@ -158,16 +178,18 @@ class ClockViewModel @Inject constructor(
 
         val place = deletedPlace ?: return // Nothing to undo
 
+        analyticsHelper.logEvent(ClockAnalyticsEvent.TIMEZONE_UNDO_CLICKED.eventName, ClockAnalyticsEvent.Params.TIMEZONE_NAME to place.primaryName)
+
         viewModelScope.launch {
 
-            when (clockUseCases.insertPlace(place)) {
+            when (val result = clockUseCases.insertPlace(place)) {
                 is MyResult.Success -> {
 
                     // Restore in cache map
                     cachedPlacesMap = cachedPlacesMap + (place.id to place)
 
                     // Restore in UI model
-                    val updatedList = PlaceUiMapper.mapToUiList(cachedPlacesMap.values.toList())
+                    val updatedList = placeUiMapper.mapToUiList(cachedPlacesMap.values.toList())
                     _uiModel.update { it.copy(savedPlaces = updatedList) }
 
                     postEffect(ClockEffect.ShowToast(resourceProvider.getString(R.string.undo_timezone_successful)))
@@ -176,10 +198,29 @@ class ClockViewModel @Inject constructor(
 
                 }
 
-                is MyResult.Error -> postEffect(ClockEffect.ShowToast(resourceProvider.getString(R.string.failed_to_restore_time_zone)))
+                is MyResult.Error -> {
+                    val message = resourceProvider.getString(R.string.failed_to_undo_time_zone)
+                    logClockError(result, message)
+                    postEffect(ClockEffect.ShowToast(message))
+                }
+
             }
         }
     }
+
+    private fun <T> logClockError(result: MyResult<T, DataError>, actionTag: String) {
+        if (result is MyResult.Error) {
+            val error = result.error
+            val throwable = if (error is DataError.Unexpected) {
+                error.throwable
+            } else {
+                // Groups these as "ClockError" in the Firebase dashboard
+                Exception("ClockError [$actionTag]: $error")
+            }
+            errorLogger.recordException(throwable)
+        }
+    }
+
 
 }
 

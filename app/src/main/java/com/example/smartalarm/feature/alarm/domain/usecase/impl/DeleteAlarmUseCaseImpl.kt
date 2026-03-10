@@ -26,6 +26,6 @@ class DeleteAlarmUseCaseImpl @Inject constructor(
      * @return A [MyResult] representing the outcome of the delete operation — success or failure.
      */
     override suspend fun invoke(alarmId: Int): MyResult<Unit, DataError> {
-        return alarmRepository.deleteAlarmById(alarmId)
+        return alarmRepository.deleteAlarm(alarmId)
     }
 }

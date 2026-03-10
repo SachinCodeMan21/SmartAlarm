@@ -24,7 +24,7 @@ class GetAllAlarmsUseCaseImpl @Inject constructor(
      * @return A [Flow] emitting updated lists of [AlarmModel] from the repository.
      */
     override fun invoke(): Flow<List<AlarmModel>> {
-        return alarmRepository.getAlarms()
+        return alarmRepository.observeAlarms()
     }
 
 }

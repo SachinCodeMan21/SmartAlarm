@@ -4,12 +4,12 @@ import android.content.Context
 import com.example.smartalarm.R
 import com.example.smartalarm.core.framework.notification.mapper.AppNotificationDataMapper
 import com.example.smartalarm.core.framework.notification.model.NotificationAction
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel.UpcomingAlarmModel
 import com.example.smartalarm.feature.alarm.framework.notification.mapper.AlarmNotificationDataMapperHelper.createContentIntent
 import com.example.smartalarm.feature.alarm.framework.notification.mapper.AlarmNotificationDataMapperHelper.createDismissIntent
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationData
 import com.example.smartalarm.feature.alarm.framework.notification.model.AlarmNotificationModel
+import com.example.smartalarm.feature.alarm.utility.formatter.AlarmTimeFormatter
 import javax.inject.Inject
 
 /**
@@ -26,7 +26,7 @@ import javax.inject.Inject
  * generation framework, allowing dynamic mapping of domain models to notification UI data.
  */
 class UpcomingAlarmNotificationDataMapper @Inject constructor(
-    private val timeFormatter: TimeFormatter
+    private val timeFormatter: AlarmTimeFormatter
 ) : AppNotificationDataMapper<UpcomingAlarmModel, AlarmNotificationData> {
 
     /**

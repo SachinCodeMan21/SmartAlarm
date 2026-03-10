@@ -3,36 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <!-- App Required Permissions -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- ////////////////////////////// -->
+    <!--  App Required Permissions  -->
+    <!-- ////////////////////////////// -->
 
     <!-- Permissions for Foreground Services -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
 
     <!-- Permissions related to Alarm and Notifications -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <!-- Permissions for Device Interaction -->
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
-        android:maxSdkVersion="32"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
-
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
-    <!-- Declare the attribution tag globally -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+    <!-- Other Critical Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+
+
+    <!-- Declare the attribution tag globally -->
     <attribution
         android:label="@string/alarm_playback_attribution"
         android:tag="audioPlayback" />
 
+    <!-- /////////////////////////// -->
+    <!-- Application Section -->
+    <!-- /////////////////////////// -->
     <application
         android:name=".core.application.SmartAlarmApplication"
         android:allowBackup="true"
@@ -45,14 +51,17 @@
         android:theme="@style/Theme.SmartAlarm">
 
 
+        <!-- /////////////////////////// -->
         <!-- Meta Data -->
+        <!-- /////////////////////////// -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_api_key" />
 
 
+        <!-- /////////////////////////// -->
         <!-- Activity Section -->
-
+        <!-- /////////////////////////// -->
         <activity
             android:name=".feature.setting.activity.AboutActivity"
             android:exported="false" />
@@ -65,7 +74,6 @@
         <activity
             android:name=".feature.setting.activity.SettingActivity"
             android:exported="false" />
-
         <activity
             android:name=".feature.home.presentation.view.HomeActivity"
             android:theme="@style/Theme.App.Starting"
@@ -76,34 +84,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.alarm.presentation.view.activity.AlarmActivity"
             android:exported="false" />
-
         <activity
             android:name=".feature.alarm.presentation.view.activity.AlarmEditorActivity"
             android:exported="false"/>
-
         <activity
             android:name=".feature.timer.presentation.view.activity.ShowTimerActivity"
             android:exported="false" />
-
         <activity
             android:name=".feature.clock.presentation.view.activity.SearchTimeZoneActivity"
             android:exported="false" />
 
+
+
+        <!-- /////////////////////////// -->
         <!-- Service Section -->
+        <!-- /////////////////////////// -->
         <service
             android:name=".feature.alarm.framework.services.AlarmService"
             android:directBootAware="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback|systemExempted"/>
-
         <service
             android:name=".feature.stopwatch.framework.services.StopwatchService"
             android:foregroundServiceType="mediaPlayback" />
-
         <service
             android:name=".feature.timer.framework.service.ShowTimerService"
             android:exported="false"
@@ -114,7 +120,9 @@
         </service>
 
 
+        <!-- /////////////////////////// -->
         <!-- Broadcast Receivers Section -->
+        <!-- /////////////////////////// -->
         <receiver
             android:name=".feature.alarm.framework.broadcasts.receivers.AlarmReceiver"
             android:exported="false" />
@@ -135,7 +143,9 @@
         </receiver>
 
 
+        <!-- /////////////////////////// -->
         <!-- Provider Section -->
+        <!-- /////////////////////////// -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -149,6 +159,9 @@
 
     </application>
 
+    <!-- /////////////////////////// -->
+    <!-- Query Section -->
+    <!-- /////////////////////////// -->
     <queries>
         <intent>
             <action android:name="android.intent.action.SENDTO" />

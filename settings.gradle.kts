@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "SmartAlarm"
-include(":app", ":test-utils")
+include(":app")

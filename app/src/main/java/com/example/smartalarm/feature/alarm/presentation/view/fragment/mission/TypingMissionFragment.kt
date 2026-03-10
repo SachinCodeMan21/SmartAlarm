@@ -143,7 +143,6 @@ class TypingMissionFragment : Fragment() {
             tvOverlay.text = state.overlaySpannable
             tvFeedback.text = state.feedback
             btnSubmit.isEnabled = state.isSubmitEnabled
-            //typingProgressbar.progress = state.timerProgress
 
             // Sync hidden input field safely
             if (!isProgrammaticChange && etHiddenInput.text.toString() != state.inputText) {

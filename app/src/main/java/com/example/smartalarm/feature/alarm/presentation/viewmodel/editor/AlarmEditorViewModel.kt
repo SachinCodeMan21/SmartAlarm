@@ -1,13 +1,16 @@
 package com.example.smartalarm.feature.alarm.presentation.viewmodel.editor
 
-
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
 import com.example.smartalarm.core.framework.di.annotations.DefaultDispatcher
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
 import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
 import com.example.smartalarm.core.framework.permission.PermissionManager
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
+import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmByIdUseCase
@@ -20,9 +23,9 @@ import com.example.smartalarm.feature.alarm.presentation.event.editor.AlarmEdito
 import com.example.smartalarm.feature.alarm.presentation.event.editor.AlarmEditorUserEvent
 import com.example.smartalarm.feature.alarm.presentation.mapper.AlarmUiMapper
 import com.example.smartalarm.feature.alarm.presentation.model.editor.AlarmEditorHomeUiModel
+import com.example.smartalarm.feature.alarm.presentation.model.editor.AlarmEditorViewModelAnalyticsEvent
 import com.example.smartalarm.feature.alarm.presentation.view.statemanager.contract.AlarmEditorHomeStateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -69,6 +72,9 @@ class AlarmEditorViewModel @Inject constructor(
     private val alarmUiMapper: AlarmUiMapper,
     private val permissionManager: PermissionManager,
     private val numberFormatter: NumberFormatter,
+    private val resourceProvider: ResourceProvider,
+    private val errorLogger: ErrorLogger,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel()
 {
 
@@ -92,14 +98,8 @@ class AlarmEditorViewModel @Inject constructor(
             initialValue = alarmUiMapper.toEditorHomeUiModel(AlarmModel())
         )
 
-
-    private val _uiEffect = MutableSharedFlow<AlarmEditorEffect>(
-        extraBufferCapacity = 64,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val _uiEffect = MutableSharedFlow<AlarmEditorEffect>(replay = 0, extraBufferCapacity = 0)
     val uiEffect: SharedFlow<AlarmEditorEffect> = _uiEffect.asSharedFlow()
-
-
 
 
     // ---------------------------------------------------------------------
@@ -115,8 +115,9 @@ class AlarmEditorViewModel @Inject constructor(
      * @param effect The [AlarmEditorEffect] to emit.
      */
     private fun postEffect(effect: AlarmEditorEffect) {
-        val result = _uiEffect.tryEmit(effect)  // synchronous, no coroutine needed
-        Log.d("TAG", "postEffect tryEmit $effect result=$result")
+        viewModelScope.launch {
+            _uiEffect.emit(effect) // This will wait (suspend) until the UI is ready
+        }
     }
 
 
@@ -126,7 +127,10 @@ class AlarmEditorViewModel @Inject constructor(
 
     fun handleSystemEvent(event: AlarmEditorSystemEvent) {
         when (event) {
-            is AlarmEditorSystemEvent.InitializeAlarmEditorState -> initEditorHomeAlarm(event.existingAlarmId)
+            is AlarmEditorSystemEvent.InitializeAlarmEditorState -> {
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.INITIALIZE_ALARM_EDITOR.eventName)
+                initEditorHomeAlarm(event.existingAlarmId)
+            }
             is AlarmEditorSystemEvent.SnoozeUpdated -> alarmEditorStateManager.updateSnooze(event.snoozeSettings)
         }
     }
@@ -149,10 +153,22 @@ class AlarmEditorViewModel @Inject constructor(
     private fun handleAlarmEvent(event: AlarmEditorUserEvent.AlarmEvent) {
         with(alarmEditorStateManager) {
             when (event) {
-                is AlarmEditorUserEvent.AlarmEvent.LabelChanged -> updateLabel(event.label)
-                is AlarmEditorUserEvent.AlarmEvent.TimeChanged -> updateTime(event.hour, event.minute, event.amPm)
-                is AlarmEditorUserEvent.AlarmEvent.IsDailyChanged -> updateIsDaily(event.isDaily)
-                is AlarmEditorUserEvent.AlarmEvent.DayToggled -> toggleDay(event.dayIndex)
+                is AlarmEditorUserEvent.AlarmEvent.LabelChanged -> {
+                    updateLabel(event.label)
+                    analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.ALARM_LABEL_CHANGED.eventName)
+                }
+                is AlarmEditorUserEvent.AlarmEvent.TimeChanged -> {
+                    updateTime(event.hour, event.minute, event.amPm)
+                    analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.ALARM_TIME_CHANGED.eventName)
+                }
+                is AlarmEditorUserEvent.AlarmEvent.IsDailyChanged -> {
+                    updateIsDaily(event.isDaily)
+                    analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.ALARM_DAILY_CHANGED.eventName)
+                }
+                is AlarmEditorUserEvent.AlarmEvent.DayToggled -> {
+                    toggleDay(event.dayIndex)
+                    analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.ALARM_DAY_TOGGLED.eventName)
+                }
             }
         }
     }
@@ -160,7 +176,7 @@ class AlarmEditorViewModel @Inject constructor(
         val state = alarmEditorStateManager.getAlarmState.value
 
         when (event) {
-            is AlarmEditorUserEvent.MissionEvent.PlaceholderClicked ->
+            is AlarmEditorUserEvent.MissionEvent.PlaceholderClicked -> {
                 postEffect(
                     ShowMissionPickerBottomSheet(
                         position = event.position,
@@ -168,8 +184,10 @@ class AlarmEditorViewModel @Inject constructor(
                         usedMissions = state.missions
                     )
                 )
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.MISSION_PLACEHOLDER_CLICKED.eventName)
+            }
 
-            is AlarmEditorUserEvent.MissionEvent.ItemClicked ->
+            is AlarmEditorUserEvent.MissionEvent.ItemClicked -> {
                 postEffect(
                     ShowMissionPickerBottomSheet(
                         position = event.position,
@@ -177,47 +195,76 @@ class AlarmEditorViewModel @Inject constructor(
                         usedMissions = state.missions.filterIndexed { i, _ -> i != event.position }
                     )
                 )
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.MISSION_ITEM_CLICKED.eventName)
+            }
 
-            is AlarmEditorUserEvent.MissionEvent.RemoveClicked ->
+            is AlarmEditorUserEvent.MissionEvent.RemoveClicked -> {
                 alarmEditorStateManager.removeMissionAt(event.position)
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.MISSION_ITEM_REMOVED.eventName)
+            }
 
-            is AlarmEditorUserEvent.MissionEvent.Selected ->
+            is AlarmEditorUserEvent.MissionEvent.Selected -> {
                 postEffect(ShowSelectedMissionBottomSheet(event.position, event.mission))
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.MISSION_SELECTED.eventName)
+            }
 
-            is AlarmEditorUserEvent.MissionEvent.Updated ->
+            is AlarmEditorUserEvent.MissionEvent.Updated -> {
                 alarmEditorStateManager.updateMission(event.position, event.mission)
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.MISSION_UPDATED.eventName)
+            }
 
-            is AlarmEditorUserEvent.MissionEvent.Preview -> startAlarmMissionPreview(event.mission)
+            is AlarmEditorUserEvent.MissionEvent.Preview -> {
+                startAlarmMissionPreview(event.mission)
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.MISSION_PREVIEW_STARTED.eventName)
+            }
         }
     }
     private fun handleSoundEvent(event: AlarmEditorUserEvent.SoundEvent) {
         val state = alarmEditorStateManager.getAlarmState.value
 
         when (event) {
-            is AlarmEditorUserEvent.SoundEvent.VolumeChanged -> alarmEditorStateManager.updateVolume(event.volume)
+            is AlarmEditorUserEvent.SoundEvent.VolumeChanged -> {
+                alarmEditorStateManager.updateVolume(event.volume)
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.SOUND_VOLUME_CHANGED.eventName)
+            }
 
-            is AlarmEditorUserEvent.SoundEvent.VibrationToggled -> alarmEditorStateManager.updateVibration(event.enabled)
+            is AlarmEditorUserEvent.SoundEvent.VibrationToggled -> {
+                alarmEditorStateManager.updateVibration(event.enabled)
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.SOUND_VIBRATION_TOGGLED.eventName)
+            }
 
-            AlarmEditorUserEvent.SoundEvent.LaunchPicker -> postEffect(LaunchAlarmSoundPicker(state.alarmSound))
+            AlarmEditorUserEvent.SoundEvent.LaunchPicker -> {
+                postEffect(LaunchAlarmSoundPicker(state.alarmSound))
+            }
 
-            is AlarmEditorUserEvent.SoundEvent.RingtoneSelected -> alarmEditorStateManager.updateRingtone(event.uri)
+            is AlarmEditorUserEvent.SoundEvent.RingtoneSelected -> {
+                alarmEditorStateManager.updateRingtone(event.uri)
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.SOUND_RINGTONE_SELECTED.eventName)
+            }
         }
     }
     private fun handleActionEvent(event: AlarmEditorUserEvent.ActionEvent) {
         val state = alarmEditorStateManager.getAlarmState.value
 
         when (event) {
-            AlarmEditorUserEvent.ActionEvent.EditSnooze ->
+            AlarmEditorUserEvent.ActionEvent.EditSnooze -> {
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.EDIT_SNOOZE.eventName)
                 postEffect(NavigateToSnoozeAlarmFragment(state.snoozeSettings))
+            }
 
-            AlarmEditorUserEvent.ActionEvent.SaveOrUpdate ->
-                //postEffect(ShowSaveUpdateLoadingIndicator(true))
+            AlarmEditorUserEvent.ActionEvent.SaveOrUpdate -> {
+                // Log save/update event
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.SAVE_ALARM.eventName)
                 saveOrUpdateAlarm()
+            }
         }
     }
     private fun handleNavigationEvent(event: AlarmEditorUserEvent.NavigationEvent) {
         when (event) {
-            AlarmEditorUserEvent.NavigationEvent.HandleCustomBackNavigation -> postEffect(FinishEditorActivity)
+            AlarmEditorUserEvent.NavigationEvent.HandleCustomBackNavigation -> {
+                analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.BACK_PRESSED.eventName)
+                postEffect(FinishEditorActivity)
+            }
         }
     }
 
@@ -243,8 +290,19 @@ class AlarmEditorViewModel @Inject constructor(
 
         viewModelScope.launch {
             when (val result = getAlarmByIdUseCase(existingAlarmId)) {
-                is MyResult.Success -> alarmEditorStateManager.setAlarm(result.data)
-                is MyResult.Error -> postEffect(ShowError(result.error))
+                is MyResult.Success -> {
+                    if (result.data == null){
+                        alarmEditorStateManager.initAlarmState()
+                        postEffect(ShowError(resourceProvider.getString(R.string.failed_this_alarm_no_longer_exists)))
+                        return@launch
+                    }
+                    alarmEditorStateManager.setAlarm(result.data)
+                }
+                is MyResult.Error -> {
+                    val message = resourceProvider.getString(R.string.failed_to_load_alarm)
+                    logAlarmError(result, "InitEditAlarm_ID_$existingAlarmId")
+                    postEffect(ShowError(message))
+                }
             }
         }
     }
@@ -277,15 +335,20 @@ class AlarmEditorViewModel @Inject constructor(
                 is MyResult.Success -> handlePostSaveOrUpdateAlarm(alarm.copy(id = result.data))
                 is MyResult.Error -> {
                     postEffect(ShowSaveUpdateLoadingIndicator(false))
-                    postEffect(ShowError(result.error))
+                    postEffect(ShowError(resourceProvider.getString(R.string.failed_to_save_the_alarm)))
                 }
             }
         } else {
             when (val result = updateAlarmUseCase(alarm.copy(isEnabled = true))) {
-                is MyResult.Success -> handlePostSaveOrUpdateAlarm(alarm)
+                is MyResult.Success -> {
+                    analyticsHelper.logEvent(AlarmEditorViewModelAnalyticsEvent.UPDATE_ALARM.eventName)
+                    handlePostSaveOrUpdateAlarm(alarm)
+                }
                 is MyResult.Error -> {
+                    val message = resourceProvider.getString(R.string.failed_to_update_the_alarm)
+                    logAlarmError(result, "EditorUpdateAlarm_ID_${alarm.id}")
                     postEffect(ShowSaveUpdateLoadingIndicator(false))
-                    postEffect(ShowError(result.error))
+                    postEffect(ShowError(message))
                 }
             }
         }
@@ -316,8 +379,11 @@ class AlarmEditorViewModel @Inject constructor(
                 postEffect(FinishEditorActivity)
             }
             is MyResult.Error -> {
+                val message = resourceProvider.getString(R.string.failed_to_schedule_the_alarm)
+                // This is critical: The DB save worked, but the system scheduling failed
+                logAlarmError(result, "EditorScheduleAlarm_ID_${alarm.id}")
                 postEffect(ShowSaveUpdateLoadingIndicator(false))
-                postEffect(ShowError(result.error))
+                postEffect(ShowError(message))
             }
         }
     }
@@ -357,5 +423,20 @@ class AlarmEditorViewModel @Inject constructor(
     fun getLocalizedNumber(number: Int, leadingZero: Boolean = true): String {
         return numberFormatter.formatLocalizedNumber(number.toLong(), leadingZero)
     }
+
+
+    private fun <T> logAlarmError(result: MyResult<T, DataError>, actionTag: String) {
+        if (result is MyResult.Error) {
+            val error = result.error
+            val throwable = if (error is DataError.Unexpected) {
+                error.throwable
+            } else {
+                // Grouping by "AlarmError" helps distinguish from Timer/Clock issues
+                Exception("AlarmError [$actionTag]: $error")
+            }
+            errorLogger.recordException(throwable)
+        }
+    }
+
 
 }

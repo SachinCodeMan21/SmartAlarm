@@ -5,6 +5,10 @@ import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.repository.AlarmRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import com.example.smartalarm.feature.alarm.data.local.entity.AlarmEntity
+import com.example.smartalarm.feature.alarm.data.local.entity.MissionEntity
+import com.example.smartalarm.feature.alarm.data.mapper.AlarmMapper
+import com.example.smartalarm.feature.alarm.data.mapper.MissionMapper
 import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.core.utility.extension.myRunCatchingResult
@@ -14,64 +18,72 @@ import javax.inject.Inject
 
 
 /**
- * Repository interface for managing alarms and their associated missions.
+ * Concrete implementation of [AlarmRepository] that interacts with the local database
+ * through [AlarmLocalDataSource] to manage alarms and their associated missions.
  *
- * Provides methods to observe, retrieve, create, update, and delete alarms.
- * All operations wrap results in [MyResult] for safe error handling.
+ * All operations are executed safely within [myRunCatchingResult], converting exceptions
+ * into [MyResult.Error] with [DataError] for consistent error handling.
  *
- * The repository exposes alarms as domain models ([AlarmModel]) and handles
- * the conversion to/from persistence entities internally.
+ * This class handles mapping between database entities ([AlarmEntity], [MissionEntity])
+ * and domain models ([AlarmModel]) via [AlarmMapper] and [MissionMapper].
+ *
+ * @property alarmLocalDataSource The local data source used to access alarms and missions.
  */
 class AlarmRepositoryImpl @Inject constructor(
     private val alarmLocalDataSource: AlarmLocalDataSource
 ) : AlarmRepository {
 
     /**
-     * Returns a stream of alarms as a [Flow] that emits the current list of [AlarmModel]s
-     * and updates whenever the list changes.
+     * Observes all alarms along with their associated missions.
      *
-     * @return A [Flow] emitting the list of all alarms.
+     * Returns a [Flow] that emits the latest list of [AlarmModel] whenever the database changes.
+     *
+     * @return A [Flow] emitting a list of [AlarmModel].
      */
-    override fun getAlarms(): Flow<List<AlarmModel>> {
-        return alarmLocalDataSource.getAllAlarms().map { alarmWithMissionList ->
+    override fun observeAlarms(): Flow<List<AlarmModel>> {
+        return alarmLocalDataSource.observeAllAlarms().map { alarmWithMissionList ->
             alarmWithMissionList.map { it.toDomainModel() }
         }
     }
 
     /**
-     * Retrieves a specific [AlarmModel] by its unique identifier.
+     * Retrieves a specific alarm and its missions by ID.
+     *
+     * If the alarm is not found, the result contains `null`.
+     * Any unexpected errors (e.g., database issues) are wrapped in [MyResult.Error].
      *
      * @param alarmId The ID of the alarm to retrieve.
-     * @return A [MyResult] containing the [AlarmModel] if found, or an error if not.
+     * @return [MyResult] containing either the [AlarmModel] if found, `null` if not, or a [DataError].
      */
-    override suspend fun getAlarmById(alarmId: Int): MyResult<AlarmModel, DataError> {
+    override suspend fun getAlarmWithMissions(alarmId: Int): MyResult<AlarmModel?, DataError> {
         return myRunCatchingResult {
-            val alarmWithMissions = alarmLocalDataSource.getAlarmById(alarmId)
+            val alarmWithMissions = alarmLocalDataSource.getAlarmWithMissions(alarmId)
             alarmWithMissions?.toDomainModel()
-                ?: throw NoSuchElementException("Alarm with id $alarmId not found")
         }
     }
 
     /**
-     * Saves a new alarm along with its associated missions.
+     * Creates a new alarm along with its associated missions in a single transaction.
      *
-     * @param alarm The [AlarmModel] to save (must have an ID of 0).
-     * @return A [MyResult] containing the newly generated alarm ID on success, or an error.
+     * @param alarm The [AlarmModel] to create.
+     * @return [MyResult] containing the generated alarm ID on success, or [DataError] on failure.
      */
-    override suspend fun saveAlarm(alarm: AlarmModel): MyResult<Int, DataError> {
+    override suspend fun createAlarmWithMissions(alarm: AlarmModel): MyResult<Int, DataError> {
         return myRunCatchingResult {
             val (alarmEntity, missionEntities) = alarm.toEntityWithMissions()
-            alarmLocalDataSource.saveAlarmWithMissions(alarmEntity, missionEntities)
+            alarmLocalDataSource.createAlarmWithMissions(alarmEntity, missionEntities)
         }
     }
 
     /**
-     * Updates an existing alarm and its missions.
+     * Updates an existing alarm along with its associated missions in a single transaction.
      *
-     * @param alarm The [AlarmModel] with updated data (must have a valid non-zero ID).
-     * @return A [MyResult] indicating success or failure.
+     * Existing missions are replaced with the new list from [alarm].
+     *
+     * @param alarm The [AlarmModel] to update.
+     * @return [MyResult] with `Unit` on success, or [DataError] on failure.
      */
-    override suspend fun updateAlarm(alarm: AlarmModel): MyResult<Unit, DataError> {
+    override suspend fun updateAlarmWithMissions(alarm: AlarmModel): MyResult<Unit, DataError> {
         return myRunCatchingResult {
             val (alarmEntity, missionEntities) = alarm.toEntityWithMissions()
             alarmLocalDataSource.updateAlarmWithMissions(alarmEntity, missionEntities)
@@ -79,17 +91,16 @@ class AlarmRepositoryImpl @Inject constructor(
     }
 
     /**
-     * Deletes an alarm by its unique identifier.
+     * Deletes an alarm and all its associated missions (cascade) from the database.
      *
      * @param alarmId The ID of the alarm to delete.
-     * @return A [MyResult] indicating success or failure.
+     * @return [MyResult] with `Unit` on success, or [DataError] on failure.
      */
-    override suspend fun deleteAlarmById(alarmId: Int): MyResult<Unit, DataError> {
+    override suspend fun deleteAlarm(alarmId: Int): MyResult<Unit, DataError> {
         return myRunCatchingResult {
-            alarmLocalDataSource.deleteAlarmById(alarmId)
+            alarmLocalDataSource.deleteAlarm(alarmId)
         }
     }
-
 }
 
 

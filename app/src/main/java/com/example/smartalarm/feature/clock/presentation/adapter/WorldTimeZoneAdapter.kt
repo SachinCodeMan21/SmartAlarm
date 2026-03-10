@@ -1,5 +1,6 @@
 package com.example.smartalarm.feature.clock.presentation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -17,6 +18,7 @@ import com.example.smartalarm.feature.clock.presentation.model.PlaceUiModel
 class WorldTimeZoneAdapter : ListAdapter<PlaceUiModel, WorldTimeZoneAdapter.ViewHolder>(DiffCallback) {
 
     companion object {
+
         /**
          * DiffUtil callback to optimize list updates by comparing item IDs and contents.
          */

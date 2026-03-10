@@ -4,6 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.feature.timer.domain.model.TimerModel
 import com.example.smartalarm.feature.timer.presentation.effect.TimerEffect
@@ -21,6 +24,7 @@ import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelpe
 import com.example.smartalarm.feature.timer.domain.model.TimerStatus
 import com.example.smartalarm.feature.timer.domain.usecase.contract.GetAllTimersUseCase
 import com.example.smartalarm.feature.timer.domain.usecase.contract.SaveTimerUseCase
+import com.example.smartalarm.feature.timer.presentation.model.TimerAnalyticsEvent
 import com.example.smartalarm.feature.timer.presentation.view.statemanager.contract.TimerInputStateManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -47,7 +51,9 @@ class TimerViewModel @Inject constructor(
     private val saveTimerUseCase: SaveTimerUseCase,
     private val systemClockHelper: SystemClockHelper,
     private val timerInputStateManager: TimerInputStateManager,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val errorLogger: ErrorLogger,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
     companion object {
@@ -120,7 +126,13 @@ class TimerViewModel @Inject constructor(
             is TimerEvent.InitTimerUIState -> initTimerUIState()
             is TimerEvent.HandleKeypadClick -> handleKeypadClick(action.label)
             is TimerEvent.HandleStartTimerClick -> handleStartTimer()
-            is TimerEvent.HandleDeleteTimerClick -> postEffect(TimerEffect.NavigateToShowTimerScreen)
+            is TimerEvent.HandleDeleteTimerClick -> {
+                analyticsHelper.logEvent(
+                    TimerAnalyticsEvent.TIMER_DELETE_CLICKED.eventName,
+                    TimerAnalyticsEvent.Params.TOTAL_ACTIVE_TIMERS to getIsTimerRunning()
+                )
+                postEffect(TimerEffect.NavigateToShowTimerScreen)
+            }
         }
     }
 
@@ -143,8 +155,15 @@ class TimerViewModel @Inject constructor(
         // Collect the first emission of the timers and then stop listening
         getAllTimersUseCase().firstOrNull()
             ?.let { timers ->
+
+                // Log analytics
+                analyticsHelper.logEvent(TimerAnalyticsEvent.SCREEN_VIEWED.eventName)
+                analyticsHelper.logEvent(
+                    TimerAnalyticsEvent.TIMER_INIT_UI.eventName,
+                    TimerAnalyticsEvent.Params.TOTAL_ACTIVE_TIMERS to timers.size
+                )
+
                 val hasRunningTimers = timers.isNotEmpty()
-                // Update UI to reflect whether there are active timers or not
                 updateUiState(hasRunningTimers)
             }
     }
@@ -159,8 +178,14 @@ class TimerViewModel @Inject constructor(
      * @param label The text label of the clicked keypad button.
      */
     private fun handleKeypadClick(label: String) {
+
         val isZero = resourceProvider.getString(R.string._0)
         val isDoubleZero = resourceProvider.getString(R.string._00)
+
+        analyticsHelper.logEvent(
+            TimerAnalyticsEvent.TIMER_KEYPAD_CLICKED.eventName,
+            TimerAnalyticsEvent.Params.BUTTON_LABEL to label
+        )
 
         when (label) {
             KEY_BACKSPACE -> timerInputStateManager.removeLastDigit()
@@ -174,6 +199,7 @@ class TimerViewModel @Inject constructor(
         }
 
         updateUiState()
+
     }
 
 
@@ -198,13 +224,31 @@ class TimerViewModel @Inject constructor(
         )
 
         when (val result = saveTimerUseCase(timer)) {
+
             is MyResult.Success -> {
+
+                // Analytics log
+                analyticsHelper.logEvent(
+                    TimerAnalyticsEvent.NEW_TIMER_CREATED.eventName,
+                    TimerAnalyticsEvent.Params.TIMER_DURATION_MS to timerDurationMillis
+                )
+
                 timerInputStateManager.clearInput()
                 postEffect(TimerEffect.NavigateToShowTimerScreen)
+
             }
 
             is MyResult.Error -> {
-                postEffect(TimerEffect.ShowError(result.error))
+                val error = result.error
+                val message = resourceProvider.getString(R.string.unable_to_start_the_timer)
+
+                // Strictly recording the error and sending the exception
+                val throwable = if (error is DataError.Unexpected) error.throwable
+                else Exception("Timer_Start_Error: $message ($error)")
+
+                errorLogger.recordException(throwable)
+
+                postEffect(TimerEffect.ShowError(message))
             }
         }
     }

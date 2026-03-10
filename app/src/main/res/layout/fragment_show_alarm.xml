@@ -134,7 +134,8 @@
             android:layout_marginEnd="@dimen/spacing_m"
             android:alpha="0.8"
             android:contentDescription="@string/drag_right_to_stop"
-            android:src="@drawable/ic_stop_thumb" />
+            android:src="@drawable/ic_stop_thumb"
+            tools:ignore="ImageContrastCheck" />
 
         <!-- Draggable thumb (starts in center) -->
         <ImageView

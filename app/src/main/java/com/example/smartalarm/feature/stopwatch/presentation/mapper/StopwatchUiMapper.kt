@@ -1,58 +1,50 @@
 package com.example.smartalarm.feature.stopwatch.presentation.mapper
 
-import com.example.smartalarm.R
-import com.example.smartalarm.core.utility.formatter.number.NumberFormatter
-import com.example.smartalarm.core.utility.formatter.time.TimeFormatter
-import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchLapModel
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchLapUiModel
 import com.example.smartalarm.feature.stopwatch.presentation.model.StopwatchUiModel
-import javax.inject.Inject
+
+
+ /**
+ * UI Projection Extensions for the Stopwatch Domain.
+ *
+ * These extension functions bridge the Domain and Presentation layers by projecting
+ * raw business models into UI-optimized state holders.
+ *
+ * ### Architectural Principle:
+ * Adheres to the **Raw Data Projection** pattern. These functions are strictly
+ * "String Agnostic"—they provide the numerical truth (ms, indices, percentages)
+ * but delegate all visual formatting and localization to the View layer.
+ */
+
 
 /**
- * Mapper object that converts domain models related to the stopwatch
- * into their corresponding UI models for display purposes.
+ * Projects a [StopwatchModel] into a discrete [StopwatchUiModel] snapshot.
  *
- * This ensures a clear separation between domain logic and UI representation,
- * making the app easier to test and maintain.
+ * Extracts aggregate session metrics and triggers domain-level calculations
+ * to prepare a passive state for UI consumption.
  */
-class StopwatchUiMapper @Inject constructor(
-    private val resourceProvider: ResourceProvider,
-    private val numberFormatter: NumberFormatter,
-    private val timeFormatter: TimeFormatter
-) {
+fun StopwatchModel.toUiModel(): StopwatchUiModel {
+    return StopwatchUiModel(
+        elapsedMillis = elapsedTime,
+        isRunning = isRunning,
+        progress = getIndicatorProgress,
+        laps = lapTimes.map { it.toUiModel() }
+    )
+}
 
-    /**
-     * Converts a [StopwatchModel] from the domain layer into a [StopwatchUiModel] for the UI layer.
-     *
-     * @param model The domain model representing the stopwatch state.
-     * @return A [StopwatchUiModel] containing formatted and UI-friendly data.
-     */
-    fun mapToUiModel(model: StopwatchModel): StopwatchUiModel {
-        return StopwatchUiModel(
-            secondsText = timeFormatter.formatDurationForStopwatch(durationMillis = model.elapsedTime, includeMillis = false),
-            milliSecondsText = timeFormatter.formatMillisForStopwatch(model.elapsedTime),
-            isRunning = model.isRunning,
-            progress = model.getIndicatorProgress,
-            laps = model.lapTimes.map { mapLapToUiModel(it) },
-        )
-    }
-
-
-    /**
-     * Converts a [StopwatchLapModel] from the domain layer into a [StopwatchLapUiModel] for UI display.
-     *
-     * @param lap The domain model representing a single lap's timing information.
-     * @return A [StopwatchLapUiModel] with formatted strings for use in the UI.
-     */
-    fun mapLapToUiModel(lap: StopwatchLapModel): StopwatchLapUiModel {
-        return StopwatchLapUiModel(
-            formattedLapIndex = "${resourceProvider.getString(R.string.lap_index)} ${ numberFormatter.formatLocalizedNumber(lap.lapIndex.toLong(),false)}",
-            formattedLapStartTime = timeFormatter.formatDurationForStopwatch(lap.lapStartTimeMillis, includeMillis = true),
-            formattedLapElapsedTime = timeFormatter.formatDurationForStopwatch(lap.lapElapsedTimeMillis,includeMillis = true),
-            formattedLapEndTime = timeFormatter.formatDurationForStopwatch(lap.lapEndTimeMillis,includeMillis = true)
-        )
-    }
-
+/**
+ * Transforms a [StopwatchLapModel] into a [StopwatchLapUiModel] for list rendering.
+ *
+ * Isolates the UI layer from domain-specific interval logic, ensuring stable
+ * data structures for optimized RecyclerView or Compose updates.
+ */
+fun StopwatchLapModel.toUiModel(): StopwatchLapUiModel {
+    return StopwatchLapUiModel(
+        lapIndex = lapIndex,
+        lapStartTimeMillis = lapStartTimeMillis,
+        lapElapsedMillis = lapElapsedTimeMillis,
+        lapEndTimeMillis = lapEndTimeMillis
+    )
 }

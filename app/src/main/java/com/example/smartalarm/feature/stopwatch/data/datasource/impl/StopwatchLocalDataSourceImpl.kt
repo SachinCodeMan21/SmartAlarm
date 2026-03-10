@@ -11,37 +11,43 @@ import javax.inject.Inject
 /**
  * Room-backed implementation of [StopwatchLocalDataSource].
  *
- * This class facilitates communication between the Repository layer and the
- * [StopwatchDao], ensuring that high-level data requests are translated into
- * efficient database operations.
+ * Facilitates communication between the Repository layer and the [StopwatchDao],
+ * translating high-level data requests into efficient database operations.
  *
- * @property dao The Data Access Object responsible for SQLite interactions.
+ * @property dao The DAO responsible for interacting with the Room database.
  */
 class StopwatchLocalDataSourceImpl @Inject constructor(
     private val dao: StopwatchDao
 ) : StopwatchLocalDataSource {
 
     /**
-     * Streams the stopwatch session (state + laps) from the database.
-     * * @param id The ID of the stopwatch session (Defaults to 1).
+     * Observes the stopwatch session (state + laps) as a Flow.
+     *
+     * @param id The ID of the stopwatch session. Defaults to 1.
+     * @return A [Flow] emitting the current [StopwatchWithLaps] or null if not initialized.
      */
     override fun observeStopwatchWithLaps(id: Int): Flow<StopwatchWithLaps?> {
         return dao.observeStopwatchWithLaps(id)
     }
 
     /**
-     * Fetches a single snapshot of the stopwatch session.
-     * * @param id The ID of the stopwatch session (Defaults to 1).
+     * Fetches a one-time snapshot of the stopwatch session.
+     *
+     * @param id The ID of the stopwatch session. Defaults to 1.
+     * @return The [StopwatchWithLaps] snapshot if it exists, null otherwise.
      */
     override suspend fun getStopwatchWithLaps(id: Int): StopwatchWithLaps? {
         return dao.getStopwatchWithLaps(id)
     }
 
     /**
-     * Persists the stopwatch state and its laps atomically using a Room transaction.
+     * Persists the stopwatch state and its laps atomically.
      *
-     * @param state The [StopwatchStateEntity] representing the current timer progress.
-     * @param laps The collection of [StopwatchLapEntity] records to persist.
+     * This ensures the state and laps remain consistent, avoiding stale or
+     * duplicate lap entries.
+     *
+     * @param state The [StopwatchStateEntity] representing the current stopwatch state.
+     * @param laps The list of [StopwatchLapEntity] records to persist.
      */
     override suspend fun saveStopwatchWithLaps(
         state: StopwatchStateEntity,
@@ -51,9 +57,12 @@ class StopwatchLocalDataSourceImpl @Inject constructor(
     }
 
     /**
-     * Removes the stopwatch session.
-     * Due to the cascade constraint, this also wipes all associated laps.
-     * * @param id The ID of the stopwatch session to delete.
+     * Deletes the stopwatch session and all associated laps.
+     *
+     * Due to the CASCADE foreign key in [StopwatchLapEntity], all laps
+     * for this stopwatch are removed automatically.
+     *
+     * @param id The ID of the stopwatch session to delete. Defaults to 1.
      */
     override suspend fun deleteStopwatchSession(id: Int) {
         dao.deleteStopwatchState(id)

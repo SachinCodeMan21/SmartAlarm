@@ -49,9 +49,6 @@ sealed class ShowTimerEvent {
     /** Event triggered when a new timer is added */
     object AddNewTimer : ShowTimerEvent()
 
-    /** Stops the UI updates related to the timer. */
-    data object StopTimerUiUpdates : ShowTimerEvent()
-
     /** Starts a specific timer with the given [timer] data. */
     data class StartTimer(val timer: TimerModel) : ShowTimerEvent()
 
@@ -66,12 +63,5 @@ sealed class ShowTimerEvent {
 
     /** Stops a specific timer with the given [timer] data. */
     data class StopTimer(val timer: TimerModel) : ShowTimerEvent()
-
-
-    /** Starts the foreground timer service. */
-    data object StartTimerForegroundService : ShowTimerEvent()
-
-    /** Stops the foreground timer service. */
-    data object StopTimerForegroundService : ShowTimerEvent()
 
 }

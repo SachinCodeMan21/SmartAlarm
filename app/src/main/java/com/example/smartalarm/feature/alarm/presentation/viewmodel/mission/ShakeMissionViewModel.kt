@@ -2,12 +2,14 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.mission
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
 import com.example.smartalarm.core.utility.systemClock.contract.SystemClockHelper
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.framework.manager.contract.VibrationManager
 import com.example.smartalarm.feature.alarm.presentation.effect.mission.MissionEffect
 import com.example.smartalarm.feature.alarm.presentation.event.mission.ShakeMissionEvent
 import com.example.smartalarm.feature.alarm.presentation.model.mission.ShakeMissionUiModel
+import com.example.smartalarm.feature.alarm.presentation.model.mission.analyticEnum.MissionEventType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ShakeMissionViewModel @Inject constructor(
     private val systemClockHelper: SystemClockHelper,
+    private val analyticsHelper: AnalyticsHelper,
     private val vibrationManager: VibrationManager
 ) : ViewModel()
 {
@@ -55,10 +58,16 @@ class ShakeMissionViewModel @Inject constructor(
      *
      * @param event The [ShakeMissionEvent] representing a user interaction or system event.
      */
-    fun handleEvent(event: ShakeMissionEvent){
-        when(event){
-            is ShakeMissionEvent.InitializeMission -> initialize(event.mission)
-            is ShakeMissionEvent.AccelerationChanged -> handleAcceleration(event.acceleration)
+    fun handleEvent(event: ShakeMissionEvent) {
+        when (event) {
+            is ShakeMissionEvent.InitializeMission -> {
+                initialize(event.mission)
+                analyticsHelper.logEvent(MissionEventType.INITIALIZE_SHAKE_MISSION.eventName)
+            }
+            is ShakeMissionEvent.AccelerationChanged -> {
+                handleAcceleration(event.acceleration)
+                analyticsHelper.logEvent(MissionEventType.ACCELERATION_CHANGED_SHAKE.eventName)
+            }
         }
     }
 

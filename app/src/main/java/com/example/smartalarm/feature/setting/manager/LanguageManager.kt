@@ -30,4 +30,14 @@ object LanguageManager {
             .getString(KEY_LANGUAGE, "system") ?: "system"
     }
 
+    fun getCurrentAppLanguage(): String {
+        val locales = AppCompatDelegate.getApplicationLocales()
+
+        return if (!locales.isEmpty) {
+            locales[0]?.toLanguageTag() ?: "system"
+        } else {
+            "system"
+        }
+    }
+
 }

@@ -10,37 +10,28 @@ import com.example.smartalarm.feature.stopwatch.domain.usecase.contract.UpdateSt
 import javax.inject.Inject
 
 /**
- * A domain-level container that bundles all stopwatch-related use cases into a single injection point.
+ * Domain Facade that aggregates all stopwatch-related interactors into a single injection point.
  *
- * ### Why this exists:
- * In Clean Architecture, as a feature grows, the number of individual use cases can lead to
- * "Constructor Bloat" in ViewModels and Services. This wrapper simplifies dependency
- * management by providing a unified API for the Stopwatch domain.
+ * This wrapper implements the 'Use Case Container' pattern to mitigate constructor bloat in
+ * Presentation layer components (ViewModels, Services). It centralizes the stopwatch
+ * domain's capabilities, providing a unified API for consumers while maintaining the
+ * granular separation required by Clean Architecture.
  *
- * ### Key Benefits:
- * - **Maintainability:** Adding or removing a use case only requires a change in this class
- * rather than updating every consumer's constructor.
- * - **Discoverability:** Provides a "Table of Contents" for all actions possible within
- * the stopwatch feature, making the code easier for new developers to navigate.
- * - **Clean Code:** Keeps ViewModels focused on UI state by reducing the boilerplate
- * required for dependency injection.
+ * ### Architectural Benefits:
+ * - **Dependency Orchestration:** Simplifies Dagger/Hilt injection by reducing the
+ * surface area of the Domain layer.
+ * - **Interface Segregation:** Provides a cohesive 'Table of Contents' for feature
+ * capabilities, improving discoverability and onboarding for new contributors.
+ * - **Refactoring Safety:** Decouples consumer constructors from individual interactor
+ * lifecycles; adding or deprecating a Use Case only impacts this aggregate.
  *
- * ### Usage:
- * ```
- * class StopwatchViewModel @Inject constructor(
- * private val stopwatchUseCases: StopwatchUseCases
- * ) : ViewModel() {
- * fun start() = viewModelScope.launch { stopwatchUseCases.startStopwatch() }
- * }
- * ```
- *
- * @property getStopwatch Provides a reactive stream of the stopwatch state from the database.
- * @property getCurrentStopwatch Provides a one-shot snapshot of the current state.
- * @property startStopwatch Logic for transitioning the stopwatch to a running state.
- * @property pauseStopwatch Logic for halting the timer while preserving elapsed time.
- * @property deleteStopwatch Logic for purging the stopwatch session and associated laps.
- * @property lapStopwatch Logic for recording lap splits and calculating lap indices.
- * @property updateStopwatchTicker High-frequency logic for updating the in-memory timer UI.
+ * @property getStopwatch Reactive stream providing real-time state synchronization with persistent storage.
+ * @property getCurrentStopwatch One-shot query for the active session snapshot.
+ * @property startStopwatch Business logic for session initialization and state transition to ACTIVE.
+ * @property pauseStopwatch Business logic for session suspension and persistence of elapsed intervals.
+ * @property deleteStopwatch Atomic operation for purging session records and relational lap data.
+ * @property lapStopwatch Logic for split-time calculations and lap sequence indexing.
+ * @property updateStopwatchTicker Optimized, high-frequency conduit for non-persistent UI updates.
  */
 data class StopwatchUseCases @Inject constructor(
     val getStopwatch: GetStopwatchStateUseCase,
@@ -51,4 +42,3 @@ data class StopwatchUseCases @Inject constructor(
     val lapStopwatch: LapStopwatchUseCase,
     val updateStopwatchTicker: UpdateStopwatchTickerStateUseCase
 )
-

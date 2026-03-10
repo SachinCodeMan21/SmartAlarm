@@ -1,16 +1,16 @@
 package com.example.smartalarm.feature.stopwatch.presentation.model
 
 /**
- * UI model representing a single stopwatch lap.
+ * UI-specific representation of a stopwatch lap interval.
  *
- * @property formattedLapIndex Display text for the lap index (e.g., "#Lap 1").
- * @property formattedLapStartTime Formatted string representing the start time of the lap (e.g., "00:10.25").
- * @property formattedLapElapsedTime Formatted string representing the duration of the lap (e.g., "00:10.25").
- * @property formattedLapEndTime Formatted string representing the end time of the lap (e.g., "00:20.50").
+ * This model serves as a raw data carrier for the Presentation layer. It remains
+ * "formatting agnostic," holding only the numerical metrics required for a lap.
+ * Final visual representation (e.g., converting milliseconds to "00:00") is
+ * delegated to the UI layer or specialized formatters.
  */
 data class StopwatchLapUiModel(
-    val formattedLapIndex: String,
-    val formattedLapStartTime: String,
-    val formattedLapElapsedTime: String,
-    val formattedLapEndTime: String
+    val lapIndex: Int,
+    val lapStartTimeMillis: Long,
+    val lapElapsedMillis: Long,
+    val lapEndTimeMillis: Long
 )

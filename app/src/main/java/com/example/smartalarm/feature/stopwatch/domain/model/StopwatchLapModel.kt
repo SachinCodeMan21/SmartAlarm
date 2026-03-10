@@ -1,38 +1,31 @@
 package com.example.smartalarm.feature.stopwatch.domain.model
 
 /**
- * A pure domain representation of a single stopwatch lap.
+ * Internal domain representation of a specific stopwatch lap interval.
  *
- * ### Architectural Role:
- * This model is "Database Agnostic." It contains no references to SQLite primary keys
- * or foreign keys. Instead, it focuses entirely on the business logic of a lap:
- * when it started, how long it lasted, and its position in the sequence.
- *
- * ### UI & Identity:
- * Because this model lacks a database ID, consumers (such as RecyclerView adapters)
- * should use the [lapIndex] as a stable identifier for diffing and animations,
- * as it is unique within the context of a single stopwatch session.
+ * This entity is strictly decoupled from persistence schemas. It relies on
+ * semantic identification ([lapIndex]) rather than database primary keys,
+ * ensuring business logic stability during data migrations or storage shifts.
  */
 data class StopwatchLapModel(
     /**
-     * The sequential position of the lap (e.g., Lap 1, Lap 2).
-     * This serves as the primary identifier for the domain and UI layers.
+     * Sequential identifier (1-based) representing the lap's order in the session.
+     * Acts as the stable ID for UI diffing algorithms (e.g., DiffUtil).
      */
     val lapIndex: Int,
 
     /**
-     * The absolute system time (in milliseconds) when this specific lap was started.
+     * Unix timestamp (ms) representing the precise moment this lap interval began.
      */
     val lapStartTimeMillis: Long,
 
     /**
-     * The total duration of this lap in milliseconds.
+     * Total duration (ms) recorded between the start and completion of this lap.
      */
     val lapElapsedTimeMillis: Long,
 
     /**
-     * The absolute system time (in milliseconds) when this lap was completed.
-     * If the lap is currently active, this value may represent the last recorded tick.
+     * Unix timestamp (ms) marking the completion of this lap interval.
      */
     val lapEndTimeMillis: Long
 )

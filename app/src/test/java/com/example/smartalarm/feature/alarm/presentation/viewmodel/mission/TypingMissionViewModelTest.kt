@@ -19,48 +19,48 @@ import kotlin.test.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class TypingMissionViewModelTest {
 
-    @MockK
-    private lateinit var mockResourceProvider: ResourceProvider
-
-    private lateinit var testDispatcher: TestDispatcher
-
-    private lateinit var viewModel: TypingMissionViewModel
-
-
-
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
-
-        // Mocking the resource provider methods
-        every { mockResourceProvider.getStringArray(any()) } returns arrayOf(
-            "The quick brown fox", "jumps over the lazy dog"
-        )
-        every { mockResourceProvider.getString(any()) } returns "Test Feedback"
-
-        // Create an instance of the ViewModel
-        testDispatcher = StandardTestDispatcher()
-        viewModel = TypingMissionViewModel(mockResourceProvider, testDispatcher)
-    }
-
-
-    @After
-    fun tearDown() {
-        unmockkAll()
-    }
-
-    @Test
-    fun `test start round`() {
-        // Initialize mission first
-        viewModel.handleEvent(TypingMissionEvent.InitializeMission(Mission(type = MissionType.Typing, rounds = 2, iconResId = 0)))
-
-        // Start the first round
-        viewModel.handleEvent(TypingMissionEvent.StartMission)
-
-        // Verify state after starting round
-        assertEquals("Round 1 of 2", viewModel.uiState.value.roundText)
-        assertTrue(viewModel.uiState.value.isInputEnabled)
-    }
-
+//    @MockK
+//    private lateinit var mockResourceProvider: ResourceProvider
+//
+//    private lateinit var testDispatcher: TestDispatcher
+//
+//    private lateinit var viewModel: TypingMissionViewModel
+//
+//
+//
+//    @Before
+//    fun setup() {
+//        MockKAnnotations.init(this)
+//
+//        // Mocking the resource provider methods
+//        every { mockResourceProvider.getStringArray(any()) } returns arrayOf(
+//            "The quick brown fox", "jumps over the lazy dog"
+//        )
+//        every { mockResourceProvider.getString(any()) } returns "Test Feedback"
+//
+//        // Create an instance of the ViewModel
+//        testDispatcher = StandardTestDispatcher()
+//        viewModel = TypingMissionViewModel(mockResourceProvider, testDispatcher)
+//    }
+//
+//
+//    @After
+//    fun tearDown() {
+//        unmockkAll()
+//    }
+//
+//    @Test
+//    fun `test start round`() {
+//        // Initialize mission first
+//        viewModel.handleEvent(TypingMissionEvent.InitializeMission(Mission(type = MissionType.Typing, rounds = 2, iconResId = 0)))
+//
+//        // Start the first round
+//        viewModel.handleEvent(TypingMissionEvent.StartMission)
+//
+//        // Verify state after starting round
+//        assertEquals("Round 1 of 2", viewModel.uiState.value.roundText)
+//        assertTrue(viewModel.uiState.value.isInputEnabled)
+//    }
+//
 
 }

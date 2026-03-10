@@ -24,7 +24,9 @@ sealed class StopwatchEffect {
      *
      * @property error The error message to display.
      */
-    data class ShowError(val error: DataError) : StopwatchEffect()
+    //data class ShowError(val error: DataError) : StopwatchEffect()
+    data class ShowError(val errorMessage: String) : StopwatchEffect()
+
 
     /**
      * Effect to start the stopwatch foreground service.

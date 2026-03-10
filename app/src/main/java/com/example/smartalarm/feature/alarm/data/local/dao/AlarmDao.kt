@@ -4,122 +4,149 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.data.local.entity.AlarmEntity
 import com.example.smartalarm.feature.alarm.data.local.entity.MissionEntity
 import com.example.smartalarm.feature.alarm.data.local.relation.AlarmWithMissions
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Data Access Object (DAO) for managing alarms and their associated missions.
+ * Data Access Object (DAO) for performing operations on alarms and their associated missions.
  *
- * This interface provides methods for:
- * - Inserting, updating, and deleting alarms and missions.
- * - Fetching alarms along with their related missions using Room's @Transaction.
- * - Saving or updating an alarm and its missions atomically to maintain consistency.
+ * This DAO provides methods for:
+ *  - Inserting, updating, and deleting alarms and missions.
+ *  - Observing all alarms with their missions as a reactive Flow.
+ *  - Transactionally creating or updating alarms along with their missions.
  *
- * Relationships:
- * - Each alarm can have multiple missions.
- * - Missions are linked to alarms via a foreign key (`alarmId`) and use `ON DELETE CASCADE`.
- *
- * Usage:
- * - Use [saveAlarmWithMissions] when creating a **new** alarm (ID must be 0).
- * - Use [updateAlarmWithMissions] when updating an **existing** alarm (ID must be non-zero).
+ * All transactional methods ensure consistency between the [AlarmEntity] and its [MissionEntity] children.
  */
 @Dao
 interface AlarmDao {
 
-
-
     // ---------------------------------------------------------------------
-    // Queries
+    // Insert & Update Operations
     // ---------------------------------------------------------------------
 
-
-    // Simple Insert & Update Operations
-
-    /** Insert or update a single alarm */
-    @Upsert
-    suspend fun insertAlarm(alarm: AlarmEntity): Long
-
-    /** Insert or update multiple missions */
-    @Upsert
-    suspend fun insertMissions(missions: List<MissionEntity>)
-
-
-
-    // Delete Operations
-
-    /** Delete alarm by ID (missions will be deleted via CASCADE) */
-    @Query("DELETE FROM alarm_table WHERE id = :alarmId")
-    suspend fun deleteAlarmById(alarmId: Int)
-
-    /** Delete all missions for an alarm */
-    @Query("DELETE FROM mission_table WHERE alarmId = :alarmId")
-    suspend fun deleteMissionsByAlarmId(alarmId: Int)
-
-
-
-
-
-    // ---------------------------------------------------------------------
-    // Transactional Ops
-    // ---------------------------------------------------------------------
-
-    // Getters
-
-    /** Fetch all alarms with their missions */
-    @Transaction
-    @Query("SELECT * FROM alarm_table")
-    fun getAlarms(): Flow<List<AlarmWithMissions>>
-
-    /** Fetch one alarm with its missions */
-    @Transaction
-    @Query("SELECT * FROM alarm_table WHERE id = :alarmId")
-    suspend fun getAlarmById(alarmId: Int): AlarmWithMissions?
-
-
-    // Save & Update
     /**
-     * Saves a new alarm along with its associated missions in a single transaction.
+     * Saves an [AlarmEntity] to the database.
      *
-     * Ensures the alarm is inserted first to obtain a valid ID, then inserts the missions
-     * linked to that ID. This method should only be used for creating new alarms.
+     * If the alarm already exists (same primary key), it will be updated.
+     * Uses Room's [Upsert] behavior.
      *
-     * @param alarm The new alarm to insert (ID must be 0).
-     * @param missions List of missions to associate with the alarm.
-     * @return The newly generated alarm ID.
+     * @param alarm The alarm entity to save or update.
+     * @return The row ID of the inserted/updated alarm.
+     */
+    @Upsert
+    suspend fun saveAlarm(alarm: AlarmEntity): Long
+
+    /**
+     * Saves a list of [MissionEntity]s to the database.
      *
-     * @throws IllegalArgumentException if the alarm ID is not 0.
+     * Each mission is upserted: new missions are inserted, existing missions are updated.
+     *
+     * @param missions List of mission entities to save or update.
+     */
+    @Upsert
+    suspend fun saveMissions(missions: List<MissionEntity>)
+
+
+
+    // ---------------------------------------------------------------------
+    // Delete Operations
+    // ---------------------------------------------------------------------
+
+    /**
+     * Deletes a single alarm by its ID.
+     *
+     * @param alarmId The ID of the alarm to delete.
+     */
+    @Query("DELETE FROM alarm_table WHERE id = :alarmId")
+    suspend fun deleteAlarm(alarmId: Int)
+
+    /**
+     * Deletes all missions associated with a specific alarm.
+     *
+     * @param alarmId The ID of the parent alarm whose missions should be deleted.
+     */
+    @Query("DELETE FROM mission_table WHERE alarmId = :alarmId")
+    suspend fun deleteMissionsForAlarm(alarmId: Int)
+
+
+    // ---------------------------------------------------------------------
+    // Query / Observation Operations
+    // ---------------------------------------------------------------------
+
+    /**
+     * Observes all alarms along with their associated missions.
+     *
+     * Returns a [Flow] of a list of [AlarmWithMissions] to provide reactive updates
+     * whenever the alarms or missions change in the database.
+     *
+     * @return [Flow] emitting lists of alarms with their missions.
      */
     @Transaction
-    suspend fun saveAlarmWithMissions(
+    @Query("SELECT * FROM alarm_table")
+    fun observeAllAlarms(): Flow<List<AlarmWithMissions>>
+
+    /**
+     * Fetches a single alarm along with its associated missions by alarm ID.
+     *
+     * Returns `null` if no alarm with the given ID exists.
+     *
+     * @param alarmId The ID of the alarm to fetch.
+     * @return The [AlarmWithMissions] object or `null` if not found.
+     */
+    @Transaction
+    @Query("SELECT * FROM alarm_table WHERE id = :alarmId")
+    suspend fun getAlarmWithMissions(alarmId: Int): AlarmWithMissions?
+
+
+    // ---------------------------------------------------------------------
+    // Transactional Save & Update Operations
+    // ---------------------------------------------------------------------
+
+    /**
+     * Creates a new alarm with its associated missions in a single transaction.
+     *
+     * Ensures atomicity: the alarm and missions are inserted together.
+     *
+     * @param alarm The new [AlarmEntity] to create. Must have ID = 0.
+     * @param missions List of [MissionEntity]s to associate with the alarm.
+     * @return The generated alarm ID of the newly created alarm.
+     * @throws IllegalArgumentException If [AlarmModel.id] is not 0.
+     */
+    @Transaction
+    suspend fun createAlarmWithMissions(
         alarm: AlarmEntity,
         missions: List<MissionEntity>
-    ) : Int {
+    ): Int {
 
         require(alarm.id == 0) { "Alarm ID must be 0 for new alarms" }
 
-        val alarmId = insertAlarm(alarm).toInt()
+        val alarmId = saveAlarm(alarm).toInt()
 
         if (missions.isNotEmpty()) {
             val updatedMissions = missions.map { it.copy(alarmId = alarmId) }
-            insertMissions(updatedMissions)
+            saveMissions(updatedMissions)
         }
 
         return alarmId
     }
 
-
     /**
-     * Updates an existing alarm and its missions in a single transaction.
+     * Updates an existing alarm along with its associated missions in a single transaction.
      *
-     * Replaces the alarm and its associated missions with the new data.
-     * Alarm must already exist (i.e., have a non-zero ID).
+     * This method performs a **full replacement** of the alarm’s missions:
+     * 1. The alarm itself is upserted (updated in place).
+     * 2. All existing missions associated with the alarm are deleted.
+     * 3. The provided list of missions is inserted and linked to the alarm.
      *
-     * @param alarm The alarm to update (must have a valid ID).
-     * @param missions New list of missions to associate with the alarm.
+     * Deleting the previous missions ensures that the alarm’s missions in the database
+     * exactly match the provided list, preventing stale or orphaned mission entries.
      *
-     * @throws IllegalArgumentException if the alarm ID is 0.
+     * @param alarm The existing [AlarmEntity] to update. Must have a valid non-zero ID.
+     * @param missions List of updated [MissionEntity]s to associate with the alarm.
+     * @throws IllegalArgumentException If [AlarmModel.id] is 0.
      */
     @Transaction
     suspend fun updateAlarmWithMissions(
@@ -128,15 +155,13 @@ interface AlarmDao {
     ) {
         require(alarm.id != 0) { "Cannot update alarm with ID = 0" }
 
-        insertAlarm(alarm) // Upsert
+        saveAlarm(alarm) // Upsert to update existing alarm
 
-        deleteMissionsByAlarmId(alarm.id)
+        deleteMissionsForAlarm(alarm.id)
 
         if (missions.isNotEmpty()) {
             val updatedMissions = missions.map { it.copy(alarmId = alarm.id) }
-            insertMissions(updatedMissions)
+            saveMissions(updatedMissions)
         }
-
     }
-
 }

@@ -1,7 +1,5 @@
 package com.example.smartalarm.feature.timer.presentation.effect
 
-import com.example.smartalarm.core.utility.exception.DataError
-
 /**
  * Represents one-time UI effects emitted by the TimerViewModel to be handled by the UI layer.
  *
@@ -20,9 +18,9 @@ sealed class TimerEffect {
     /**
      * Effect to show a SnackBar message to the user.
      *
-     * @property error The text message to display in the SnackBar.
+     * @property errorMessage The text message to display in the SnackBar.
      */
-    data class ShowError(val error: DataError) : TimerEffect()
+    data class ShowError(val errorMessage: String) : TimerEffect()
 
 }
 

@@ -26,11 +26,12 @@ class TimerSchedulerImpl @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val alarmManager: AlarmManager,
     private val systemClockHelper: SystemClockHelper
-) : TimerScheduler {
+) : TimerScheduler
+{
 
     companion object {
         /** Delay added to the timer end time to trigger a timeout sequence. */
-        private const val TIMEOUT_DELAY_MILLIS = 15L * 600000
+        private const val TIMEOUT_DELAY_MILLIS = 15L * 60000
     }
 
     //---------------------------------------------------------------
@@ -78,12 +79,12 @@ class TimerSchedulerImpl @Inject constructor(
         schedule(
             timerId = timerId,
             triggerAtMillis = triggerAt,
-            action = TimerBroadCastAction.ACTION_SNOOZE
+            action = TimerBroadCastAction.ACTION_START
         )
     }
 
     override fun cancelSnoozeTimer(timerId: Int) {
-        cancel(timerId, TimerBroadCastAction.ACTION_SNOOZE)
+        cancel(timerId, TimerBroadCastAction.ACTION_START)
     }
 
 

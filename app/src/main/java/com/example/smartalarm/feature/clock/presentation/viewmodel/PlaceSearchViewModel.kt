@@ -1,9 +1,15 @@
 package com.example.smartalarm.feature.clock.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.feature.clock.presentation.uiState.PlaceSearchUiState
 import com.example.smartalarm.core.utility.exception.MyResult
+import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.clock.domain.model.PlaceModel
 import com.example.smartalarm.feature.clock.domain.usecase.contract.ClockUseCases
 import com.example.smartalarm.feature.clock.domain.usecase.contract.PlaceSearchUseCases
@@ -18,6 +24,7 @@ import kotlinx.coroutines.launch
 import com.example.smartalarm.feature.clock.presentation.effect.PlaceSearchEffect.*
 import com.example.smartalarm.feature.clock.presentation.event.PlaceSearchEvent
 import com.example.smartalarm.feature.clock.presentation.mapper.PlaceUiMapper
+import com.example.smartalarm.feature.clock.presentation.model.PlaceSearchAnalyticsEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -38,7 +45,11 @@ import javax.inject.Inject
 @HiltViewModel
 class PlaceSearchViewModel @Inject constructor(
     private val clockUseCases: ClockUseCases,
-    private val placeSearchUseCases: PlaceSearchUseCases
+    private val placeSearchUseCases: PlaceSearchUseCases,
+    private val placeUiMapper: PlaceUiMapper,
+    private val resourceProvider: ResourceProvider,
+    private val errorLogger: ErrorLogger,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
     /**
@@ -63,6 +74,14 @@ class PlaceSearchViewModel @Inject constructor(
 
     /** Currently running search job, if any, to allow cancellation of previous queries. */
     private var searchJob: Job? = null
+
+
+    init {
+        // Log screen entry
+        analyticsHelper.logEvent(PlaceSearchAnalyticsEvent.SCREEN_VIEWED.eventName)
+    }
+
+
 
     // ---------------------------------------------------------------------
     // Private Helper Methods
@@ -97,7 +116,10 @@ class PlaceSearchViewModel @Inject constructor(
      */
     fun handleEvent(event: PlaceSearchEvent) {
         when (event) {
-            is PlaceSearchEvent.NavigateBack -> postEffect(NavigateToHome)
+            is PlaceSearchEvent.NavigateBack -> {
+                analyticsHelper.logEvent(PlaceSearchAnalyticsEvent.NAVIGATE_BACK_CLICKED.eventName)
+                postEffect(NavigateToHome)
+            }
             is PlaceSearchEvent.QueryChanged -> handleQueryChange(event.query)
             is PlaceSearchEvent.PlaceSelected -> handlePlaceSelected(event.selectedPlaceId)
         }
@@ -126,13 +148,27 @@ class PlaceSearchViewModel @Inject constructor(
         searchJob = viewModelScope.launch {
             when (val result = placeSearchUseCases.getPlacePredictions(query)) {
                 is MyResult.Success -> {
+
+                    analyticsHelper.logEvent(
+                        PlaceSearchAnalyticsEvent.SEARCH_QUERY_CHANGED.eventName,
+                        PlaceSearchAnalyticsEvent.Params.QUERY_LENGTH to query.length,
+                        PlaceSearchAnalyticsEvent.Params.RESULTS_COUNT to result.data.size,
+                    )
+
                     cachedSearchResults = result.data.associateBy { it.id }
-                    val uiPlaces = PlaceUiMapper.mapToUiList(result.data)
+                    val uiPlaces = placeUiMapper.mapToUiList(result.data)
                     updateState(PlaceSearchUiState.Success(uiPlaces))
                 }
                 is MyResult.Error -> {
+                    val errorMessage = when(result.error){
+                        DataError.Network.NO_CONNECTION -> { R.string.error_no_internet }
+                        DataError.Network.TIMEOUT -> { R.string.error_network_timeout }
+                        DataError.Network.SERVER_ERROR -> { R.string.error_server_down }
+                        else -> { R.string.error_generic }
+                    }
+                    logPlaceSearchError(result, "SearchQuery: $query")
                     updateState(PlaceSearchUiState.Error)
-                    postEffect(ShowError(result.error))
+                    postEffect(ShowError(resourceProvider.getString(errorMessage)))
                 }
             }
         }
@@ -149,12 +185,38 @@ class PlaceSearchViewModel @Inject constructor(
      */
     private fun handlePlaceSelected(selectedPlaceId: Long) {
         cachedSearchResults[selectedPlaceId]?.let { domainPlace ->
+            Log.d("TAG", "handlePlaceSelected: $domainPlace")
             viewModelScope.launch {
                 when (val result = clockUseCases.insertPlace(domainPlace)) {
-                    is MyResult.Success -> postEffect(NavigateToHome)
-                    is MyResult.Error -> postEffect(ShowError(result.error))
+                    is MyResult.Success ->{
+                        analyticsHelper.logEvent(
+                            PlaceSearchAnalyticsEvent.PLACE_SELECTED_SUCCESS.eventName,
+                            PlaceSearchAnalyticsEvent.Params.SELECTED_PLACE_ID to selectedPlaceId,
+                            PlaceSearchAnalyticsEvent.Params.SELECTED_PLACE_NAME to domainPlace.primaryName
+                        )
+                        postEffect(NavigateToHome)
+                    }
+                    is MyResult.Error -> {
+                        val message = resourceProvider.getString(R.string.error_generic)
+                        logPlaceSearchError(result, "InsertPlace_ID: $selectedPlaceId")
+                        postEffect(ShowError(message))
+                    }
                 }
             }
         }
     }
+
+    private fun <T> logPlaceSearchError(result: MyResult<T, DataError>, actionTag: String) {
+        if (result is MyResult.Error) {
+            val error = result.error
+            val throwable = if (error is DataError.Unexpected) {
+                error.throwable
+            } else {
+                // Prefixed with "PlaceSearchError" for easy filtering in Crashlytics
+                Exception("PlaceSearchError [$actionTag]: $error")
+            }
+            errorLogger.recordException(throwable)
+        }
+    }
+
 }

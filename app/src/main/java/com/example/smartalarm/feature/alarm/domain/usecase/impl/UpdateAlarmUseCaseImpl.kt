@@ -35,7 +35,7 @@ class UpdateAlarmUseCaseImpl @Inject constructor(
      * @return A [Result] indicating the success or failure of the update operation.
      */
     override suspend fun invoke(alarm: AlarmModel): MyResult<Unit, DataError> {
-        return alarmRepository.updateAlarm(alarm)
+        return alarmRepository.updateAlarmWithMissions(alarm)
     }
 }
 

@@ -1,13 +1,10 @@
 package com.example.smartalarm.feature.clock.presentation.view.fragment
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -43,10 +40,7 @@ class ClockFragment : Fragment() {
     private var _binding: FragmentClockBinding? = null
     private val binding get() = _binding ?: error(BINDING_NULL_ERROR)
     private val viewModel: ClockViewModel by viewModels()
-
     private lateinit var clockAdapter: WorldTimeZoneAdapter
-    private lateinit var searchTimeZoneLauncher: ActivityResultLauncher<Intent>
-
 
     // ---------------------------------------------------------------------
     //  # Lifecycle Methods
@@ -81,14 +75,16 @@ class ClockFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpPlaceSearchActivityLauncher()
         setupRecyclerView()
         setupAddTimeZoneClick()
         setUpUIStateObserver()
         setUpUIEffectObserver()
-        viewModel.onEvent(ClockEvent.LoadSelectedTimeZones)
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.onEvent(ClockEvent.LoadSelectedTimeZones)
+    }
 
     /**
      * Called when the fragment is no longer visible to the user.
@@ -120,20 +116,6 @@ class ClockFragment : Fragment() {
     //  # UI Setup Methods
     // ---------------------------------------------------------------------
 
-    /**
-     * Registers an activity result launcher for starting a timezone search activity.
-     *
-     * When the launched activity returns with RESULT_OK, triggers loading of selected time zones
-     * via the ViewModel event.
-     */
-    private fun setUpPlaceSearchActivityLauncher() {
-        searchTimeZoneLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                viewModel.onEvent(ClockEvent.LoadSelectedTimeZones)
-            }
-        }
-    }
-
 
     /**
      * Sets up the time zone RecyclerView.
@@ -145,7 +127,7 @@ class ClockFragment : Fragment() {
         binding.globalTimeZoneRv.apply {
 
             layoutManager = LinearLayoutManager(requireContext())
-            setHasFixedSize(true)
+            //setHasFixedSize(true)
             adapter = clockAdapter
 
             enableSwipeToDelete(
@@ -246,7 +228,7 @@ class ClockFragment : Fragment() {
 
     private fun navigateToAddTimeZoneScreen(){
         val intent = Intent(requireContext(), SearchTimeZoneActivity::class.java)
-        searchTimeZoneLauncher.launch(intent)
+        startActivity(intent)
     }
 
 }

@@ -44,5 +44,5 @@ sealed class ShowTimerEffect {
 
 
     /** Displays a toast message with the provided [error]. */
-    data class ShowError(val error: DataError) : ShowTimerEffect()
+    data class ShowError(val errorMessage: String) : ShowTimerEffect()
 }

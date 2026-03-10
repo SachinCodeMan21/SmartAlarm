@@ -53,13 +53,18 @@
     <dimen name="empty_alarm_img_max_size">64dp</dimen>
     <dimen name="alarm_item_mission_img_size">24dp</dimen>
     <dimen name="edit_alarm_weekday_max_size">48dp</dimen>
+
     <item name="alarm_editor_guideline_top_percent" format="float" type="dimen">0.05</item>
     <item name="alarm_editor_guideline_start_percent" format="float" type="dimen">0.2</item>
     <item name="alarm_editor_guideline_end_percent" format="float" type="dimen">0.8</item>
+    <dimen name="alarm_editor_weekdays_max_width">48dp</dimen>
+
+
     <item name="memory_mission_grid_max_width_percent" format="float" type="dimen">0.25</item>
     <item name="math_mission_guideline_top_percent" format="float" type="dimen">0.05</item>
     <item name="math_mission_char_img_max_width_percent" format="float" type="dimen">0.2</item>
-
+    <item name="typing_mission_guideline_start_percent" format="float" type="dimen">0.25</item>
+    <item name="typing_mission_guideline_end_percent" format="float" type="dimen">0.75</item>
 
     <!-- Timer Screen Dimens   -->
     <item name="guideline_timer_top" format="float" type="dimen">0.15</item>
@@ -71,6 +76,7 @@
     <dimen name="timer_item_card_height">450dp</dimen>
 
     <!-- Stopwatch Screen Dimens   -->
+    <dimen name="stopwatch_elapsed_time_size">32sp</dimen>
     <dimen name="stopwatch_elapsed_time_trans_size">24sp</dimen>
     <dimen name="stopwatch_progress_indicator_thickness">1dp</dimen>
     <item name="guideline_stopwatch_top" format="float" type="dimen">0.15</item>
@@ -81,7 +87,6 @@
     <item name="guideline_stopwatch_anim_end" format="float" type="dimen">0.0</item>
     <item name="guideline_stopwatch_bottom" format="float" type="dimen">0.85</item>
     <item name="guideline_stopwatch_anim_bottom" format="float" type="dimen">0.75</item>
-
 
     <!-- About Screen Dimens   -->
     <item name="guideline_about_start" format="float" type="dimen">0.25</item>

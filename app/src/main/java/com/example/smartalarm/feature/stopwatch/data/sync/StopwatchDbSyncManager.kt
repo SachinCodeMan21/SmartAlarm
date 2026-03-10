@@ -5,31 +5,38 @@ import com.example.smartalarm.feature.stopwatch.data.manager.StopwatchInMemorySt
 import com.example.smartalarm.feature.stopwatch.data.datasource.contract.StopwatchLocalDataSource
 import com.example.smartalarm.feature.stopwatch.data.mapper.StopwatchMapper.toDomainModel
 import com.example.smartalarm.feature.stopwatch.domain.model.StopwatchModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * A reactive synchronization manager responsible for bridging the gap between persistent storage
- * and active application state.
+ * Synchronization manager that bridges the gap between persistent storage and
+ * the active in-memory stopwatch state.
  *
- * This manager observes the [StopwatchLocalDataSource] for any changes to the stopwatch
- * session. Whenever the database is updated—whether by user action, a background service,
- * or system process—this class automatically maps the new database entities into a
- * [StopwatchModel] and pushes it to the [StopwatchInMemoryStateManager].
+ * This class continuously observes the [StopwatchLocalDataSource] for any updates
+ * to the stopwatch session. Whenever the database changes—whether from user actions,
+ * background services, or system processes—it automatically maps the latest entities
+ * into a [StopwatchModel] and updates the [StopwatchInMemoryStateManager].
  *
- * ### Key Responsibilities:
- * 1. **Data Observation**: Maintains a long-running collection of the database [Flow].
- * 2. **Domain Mapping**: Converts database-specific entities into UI-agnostic domain models.
- * 3. **State Synchronization**: Ensures the in-memory "Source of Truth" is always consistent
- * with the physical SQLite "Source of Truth."
+ * ### Key Responsibilities
+ * 1. **Data Observation** – Maintains a reactive subscription to the database [Flow]
+ *    for the primary stopwatch session.
+ * 2. **Domain Mapping** – Converts Room entities into UI-agnostic domain models.
+ * 3. **State Synchronization** – Ensures the in-memory source of truth remains
+ *    consistent with the persistent SQLite source of truth.
  *
- * ### Lifecycle & Scope:
- * This synchronization is launched within the [ApplicationScope]. Unlike a
- * ViewModelScope which dies when the user leaves a screen, this scope ensures
- * that database observation remains active as long as the app process is alive.
- * This prevents data loss or state desynchronization during background transitions.
+ * ### Lifecycle & Scope
+ * This synchronization is launched within the [ApplicationScope], ensuring the
+ * observation and synchronization pipeline remains active as long as the app
+ * process is alive. Unlike a ViewModelScope, this prevents state desynchronization
+ * when the user navigates away from the Stopwatch feature or the app goes to
+ * the background.
+ *
+ * @property localDataSource The Room-backed data source providing stopwatch state and laps.
+ * @property inMemoryStateManager Manages the live in-memory representation of the stopwatch.
+ * @property scope CoroutineScope tied to the application lifecycle for continuous observation.
  */
 @Singleton
 class StopwatchDbSyncManager @Inject constructor(
@@ -40,13 +47,12 @@ class StopwatchDbSyncManager @Inject constructor(
 
     /**
      * Initializes the synchronization pipeline.
-     * * Uses the default ID configured in the data source to observe the primary
-     * stopwatch session. If the database is empty or a session is missing,
-     * it defaults to a fresh [StopwatchModel].
+     *
+     * Observes the primary stopwatch session (default ID = 1) from the local data source.
+     * If no session exists in the database, a fresh [StopwatchModel] is used.
      */
     init {
         scope.launch {
-            // We no longer pass an ID here, as the DataStore defaults to ID 1.
             localDataSource.observeStopwatchWithLaps()
                 .collect { session ->
                     val domainModel = session?.toDomainModel() ?: StopwatchModel()

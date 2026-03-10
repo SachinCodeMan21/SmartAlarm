@@ -6,18 +6,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/typing_mission_guideline_start"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/typing_mission_guideline_start_percent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/typing_mission_guideline_end"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/typing_mission_guideline_end_percent" />
+
     <!-- Round title -->
     <TextView
         android:id="@+id/tv_round"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Round 1 of 3"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/typing_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/typing_mission_guideline_start"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Round 1 of 3" />
 
     <!-- Feedback (NOW right under round text) -->
     <TextView
@@ -28,8 +42,8 @@
         android:text=""
         android:textColor="@android:color/holo_red_light"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/typing_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/typing_mission_guideline_start"
         app:layout_constraintTop_toBottomOf="@id/tv_round" />
 
     <!-- Overlay container: reference + user input -->
@@ -37,11 +51,10 @@
         android:id="@+id/typing_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_max="488dp"
+        app:layout_constraintEnd_toStartOf="@+id/typing_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/typing_mission_guideline_start"
         app:layout_constraintTop_toBottomOf="@id/tv_feedback">
 
         <!-- Reference Text (gray) -->
@@ -50,9 +63,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
+            android:textColor="@color/colorOutline"
+            android:textSize="18sp"
             tools:text="This is a typing mission"
-            android:textColor="#CCCCCC"
-            android:textSize="18sp" />
+            tools:ignore="VisualLintOverlap" />
 
         <!-- Overlay Input Text -->
         <TextView
@@ -60,9 +74,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
+            android:letterSpacing="0"
             android:text=""
             android:textSize="18sp"
-            android:letterSpacing="0"/>
+            tools:ignore="VisualLintOverlap" />
 
         <!-- Hidden EditText (must be inside the FrameLayout) -->
         <EditText
@@ -70,6 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
+            android:minHeight="48dp"
             android:cursorVisible="false"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -89,10 +105,10 @@
         android:id="@+id/btn_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="@string/submit"
-        app:layout_constraintTop_toBottomOf="@id/typing_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
+        app:layout_constraintEnd_toStartOf="@+id/typing_mission_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/typing_mission_guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/typing_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

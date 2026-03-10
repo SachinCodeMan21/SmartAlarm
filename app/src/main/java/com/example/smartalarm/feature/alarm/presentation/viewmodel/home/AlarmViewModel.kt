@@ -3,6 +3,9 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
 import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.enums.AlarmState
@@ -15,6 +18,7 @@ import com.example.smartalarm.feature.alarm.presentation.effect.home.AlarmEffect
 import com.example.smartalarm.feature.alarm.presentation.effect.home.AlarmEffect.*
 import com.example.smartalarm.feature.alarm.presentation.event.home.AlarmEvent
 import com.example.smartalarm.feature.alarm.presentation.mapper.AlarmUiMapper
+import com.example.smartalarm.feature.alarm.presentation.model.home.AlarmViewModelAnalyticsEvent
 import com.example.smartalarm.feature.alarm.presentation.uiState.AlarmUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,6 +53,8 @@ class AlarmViewModel @Inject constructor(
     private val alarmUseCase: AlarmUseCase,
     private val resourceProvider: ResourceProvider,
     private val alarmMapper: AlarmUiMapper,
+    private val errorLogger: ErrorLogger,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel()
 {
 
@@ -116,11 +122,26 @@ class AlarmViewModel @Inject constructor(
      */
     fun handleEvent(event: AlarmEvent) {
         when (event) {
-            is AlarmEvent.AddNewAlarm ->  navigateToEditAlarm()
-            is AlarmEvent.ToggleAlarm -> onAlarmToggle(event)
-            is AlarmEvent.UndoDeletedAlarm -> undoDelete()
-            is AlarmEvent.AlarmItemSwiped -> deleteAlarm(event.deletedAlarmId)
-            is AlarmEvent.AlarmItemClicked -> postEffect(NavigateToEditAlarmScreen(event.selectedAlarmId))
+            is AlarmEvent.AddNewAlarm -> {
+                navigateToEditAlarm()
+                analyticsHelper.logEvent(AlarmViewModelAnalyticsEvent.ADD_NEW_ALARM.eventName)
+            }
+            is AlarmEvent.ToggleAlarm -> {
+                onAlarmToggle(event)
+                analyticsHelper.logEvent(AlarmViewModelAnalyticsEvent.TOGGLE_ALARM.eventName)
+            }
+            is AlarmEvent.UndoDeletedAlarm -> {
+                undoDelete()
+                analyticsHelper.logEvent(AlarmViewModelAnalyticsEvent.UNDO_DELETED_ALARM.eventName)
+            }
+            is AlarmEvent.AlarmItemSwiped -> {
+                deleteAlarm(event.deletedAlarmId)
+                analyticsHelper.logEvent(AlarmViewModelAnalyticsEvent.DELETE_ALARM.eventName)
+            }
+            is AlarmEvent.AlarmItemClicked -> {
+                postEffect(NavigateToEditAlarmScreen(event.selectedAlarmId))
+                analyticsHelper.logEvent(AlarmViewModelAnalyticsEvent.NAVIGATE_TO_EDIT_ALARM.eventName)
+            }
         }
     }
 
@@ -169,6 +190,8 @@ class AlarmViewModel @Inject constructor(
                 }
 
                 is MyResult.Error -> {
+                    // Log the toggle failure with the specific ID and state
+                    logAlarmError(result, "ToggleAlarm_ID_${currentAlarm.id}_To_${event.isEnabled}")
                     postEffect(ShowError(result.error))
                 }
 
@@ -206,6 +229,7 @@ class AlarmViewModel @Inject constructor(
                     }
 
                     is MyResult.Error -> {
+                        logAlarmError(result, "DeleteAlarm_ID_${it}")
                         postEffect(ShowError(result.error))
                     }
                 }
@@ -238,6 +262,7 @@ class AlarmViewModel @Inject constructor(
                 }
 
                 is MyResult.Error -> {
+                    logAlarmError(result, "UndoDeleteAlarm")
                     postEffect(ShowError(result.error))
                 }
             }
@@ -261,6 +286,18 @@ class AlarmViewModel @Inject constructor(
      */
     private fun getAlarm(alarmId: Int): AlarmModel? {
         return alarmCache[alarmId]
+    }
+
+    private fun <T> logAlarmError(result: MyResult<T, DataError>, actionTag: String) {
+        if (result is MyResult.Error) {
+            val error = result.error
+            val throwable = if (error is DataError.Unexpected) {
+                error.throwable
+            } else {
+                Exception("AlarmError [$actionTag]: $error")
+            }
+            errorLogger.recordException(throwable)
+        }
     }
 
 }

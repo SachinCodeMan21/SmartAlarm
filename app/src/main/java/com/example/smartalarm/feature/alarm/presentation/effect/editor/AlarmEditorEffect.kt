@@ -1,6 +1,5 @@
 package com.example.smartalarm.feature.alarm.presentation.effect.editor
 
-import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.model.Mission
 import com.example.smartalarm.feature.alarm.domain.model.SnoozeSettings
@@ -95,8 +94,8 @@ sealed class AlarmEditorEffect {
     /**
      * Effect to display an error message to the user (e.g., via a SnackBar or Toast).
      *
-     * @param error The human-readable error message to be displayed.
+     * @param errorMessage The human-readable error message to be displayed.
      */
-    data class ShowError(val error: DataError) : AlarmEditorEffect()
+    data class ShowError(val errorMessage: String) : AlarmEditorEffect()
 
 }

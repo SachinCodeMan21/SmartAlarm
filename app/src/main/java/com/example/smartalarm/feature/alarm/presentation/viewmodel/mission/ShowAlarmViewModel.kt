@@ -2,7 +2,12 @@ package com.example.smartalarm.feature.alarm.presentation.viewmodel.mission
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartalarm.R
+import com.example.smartalarm.core.framework.analytics.AnalyticsHelper
+import com.example.smartalarm.core.framework.analytics.ErrorLogger
+import com.example.smartalarm.core.utility.exception.DataError
 import com.example.smartalarm.core.utility.exception.MyResult
+import com.example.smartalarm.core.utility.provider.resource.contract.ResourceProvider
 import com.example.smartalarm.feature.alarm.domain.model.AlarmModel
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.GetAlarmByIdUseCase
 import com.example.smartalarm.feature.alarm.domain.usecase.contract.SnoozeAlarmUseCase
@@ -14,6 +19,7 @@ import com.example.smartalarm.feature.alarm.presentation.effect.mission.ShowAlar
 import com.example.smartalarm.feature.alarm.presentation.event.mission.ShowAlarmEvent
 import com.example.smartalarm.feature.alarm.presentation.mapper.ShowAlarmUIMapper
 import com.example.smartalarm.feature.alarm.presentation.model.mission.ShowAlarmUiModel
+import com.example.smartalarm.feature.alarm.presentation.model.mission.analyticEnum.MissionEventType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +54,10 @@ class ShowAlarmViewModel @Inject constructor(
     private val alarmServiceController: AlarmServiceController,
     private val alarmRingtoneManager: AlarmRingtoneManager,
     private val vibrationManager: VibrationManager,
-    private val showAlarmUIMapper: ShowAlarmUIMapper
+    private val showAlarmUIMapper: ShowAlarmUIMapper,
+    private val resourceProvider: ResourceProvider,
+    private val analyticsHelper: AnalyticsHelper,
+    private val errorLogger: ErrorLogger
 ) : ViewModel()
 {
 
@@ -98,11 +107,26 @@ class ShowAlarmViewModel @Inject constructor(
      */
     fun handleEvent(event: ShowAlarmEvent) {
         when (event) {
-            is ShowAlarmEvent.LoadAlarm -> loadAlarm(event.alarmId)
-            is ShowAlarmEvent.LoadPreview -> loadPreview(event.previewAlarm)
-            is ShowAlarmEvent.SnoozeAlarm -> snoozeAlarm()
-            is ShowAlarmEvent.StopAlarmOrStartMissions -> stopAlarmOrStartMissions()
-            is ShowAlarmEvent.ExitPreview -> handleExitPreview()
+            is ShowAlarmEvent.LoadAlarm -> {
+                loadAlarm(event.alarmId)
+                analyticsHelper.logEvent(MissionEventType.LOAD_ALARM.eventName)
+            }
+            is ShowAlarmEvent.LoadPreview -> {
+                loadPreview(event.previewAlarm)
+                analyticsHelper.logEvent(MissionEventType.LOAD_PREVIEW_ALARM.eventName)
+            }
+            is ShowAlarmEvent.SnoozeAlarm -> {
+                snoozeAlarm()
+                analyticsHelper.logEvent(MissionEventType.SNOOZE_ALARM.eventName)
+            }
+            is ShowAlarmEvent.StopAlarmOrStartMissions -> {
+                stopAlarmOrStartMissions()
+                analyticsHelper.logEvent(MissionEventType.STOP_ALARM_OR_START_MISSIONS.eventName)
+            }
+            is ShowAlarmEvent.ExitPreview -> {
+                handleExitPreview()
+                analyticsHelper.logEvent(MissionEventType.EXIT_PREVIEW_ALARM.eventName)
+            }
         }
     }
 
@@ -120,9 +144,16 @@ class ShowAlarmViewModel @Inject constructor(
 
         viewModelScope.launch {
             when (val result = getAlarmByIdUseCase(alarmId)) {
-                is MyResult.Success -> updateState(result.data)
+                is MyResult.Success -> {
+                    if (result.data == null){
+                        postEffect(ShowAlarmEffect.ShowError(resourceProvider.getString(R.string.failed_this_alarm_no_longer_exists)))
+                        return@launch
+                    }
+                    updateState(result.data)
+                }
                 is MyResult.Error -> {
-                    postEffect(ShowAlarmEffect.ShowError(result.error))
+                    logAlarmError(result, "LoadAlarm_ID_${alarmId}")
+                    postEffect(ShowAlarmEffect.ShowError(resourceProvider.getString(R.string.failed_to_load_alarm)))
                 }
             }
         }
@@ -136,12 +167,10 @@ class ShowAlarmViewModel @Inject constructor(
 
         viewModelScope.launch {
             when (val result = snoozeAlarmUseCase(alarm)) {
-                is MyResult.Success -> {
-                    //alarmServiceController.stopAlarmService()
-                    //postEffect(ShowAlarmEffect.FinishActivity)
-                }
+                is MyResult.Success -> {}
                 is MyResult.Error -> {
-                    postEffect(ShowAlarmEffect.ShowError(result.error))
+                    logAlarmError(result, "SnoozeAlarm_ID_${alarm.id}")
+                    postEffect(ShowAlarmEffect.ShowError(resourceProvider.getString(R.string.error_snooze_alarm)))
                 }
             }
         }
@@ -158,12 +187,10 @@ class ShowAlarmViewModel @Inject constructor(
             if (alarm.missions.isEmpty()) {
 
                 when (val result = stopAlarmUseCase(alarm)) {
-                    is MyResult.Success -> {
-                        //alarmServiceController.stopAlarmService()
-                        //postEffect(ShowAlarmEffect.FinishActivity)
-                    }
+                    is MyResult.Success -> {}
                     is MyResult.Error -> {
-                        postEffect(ShowAlarmEffect.ShowError(result.error))
+                        logAlarmError(result, "StopAlarm_ID_${alarm.id}")
+                        postEffect(ShowAlarmEffect.ShowError(resourceProvider.getString(R.string.error_stop_alarm)))
                     }
                 }
             } else {
@@ -215,5 +242,18 @@ class ShowAlarmViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         alarmRingtoneManager.stopAlarmRingtone()
+    }
+
+    private fun <T> logAlarmError(result: MyResult<T, DataError>, actionTag: String) {
+        if (result is MyResult.Error) {
+            val error = result.error
+            val throwable = if (error is DataError.Unexpected) {
+                error.throwable
+            } else {
+                // Grouping by "AlarmError" helps distinguish from Timer/Clock issues
+                Exception("ShowAlarmViewmodelError [$actionTag]: $error")
+            }
+            errorLogger.recordException(throwable)
+        }
     }
 }

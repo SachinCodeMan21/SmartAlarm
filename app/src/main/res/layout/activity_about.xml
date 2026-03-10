@@ -66,17 +66,15 @@
                 android:layout_height="120dp"
                 app:cardCornerRadius="@dimen/spacing_m"
                 app:cardElevation="0dp"
-                app:layout_constraintBottom_toTopOf="@id/about_guideline_bottom"
                 app:layout_constraintEnd_toStartOf="@+id/about_guideline_end"
                 app:layout_constraintStart_toStartOf="@+id/about_guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/about_guideline_top"
-                app:layout_constraintVertical_bias="0.08">
+                app:layout_constraintTop_toBottomOf="@id/about_guideline_top">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:padding="@dimen/spacing_m"
                     android:contentDescription="@string/smart_alarm_app_icon"
-                    android:padding="@dimen/spacing_l"
                     android:src="@mipmap/ic_launcher" />
 
 

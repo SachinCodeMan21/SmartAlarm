@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smartalarm.core.utility.exception.asUiText
 import com.example.smartalarm.core.utility.extension.showSnackBar
 import com.example.smartalarm.databinding.ActivityShowTimerBinding
 import com.example.smartalarm.feature.timer.framework.broadcast.constant.TimerBroadCastAction
@@ -112,11 +111,10 @@ class ShowTimerActivity : AppCompatActivity() {
         setUpUIStateObserver()
         setUpUIEffectObserver()
     }
-
     override fun onStop() {
         super.onStop()
         // Stop any ongoing timer updates when the activity stops
-        viewModel.handleEvent(ShowTimerEvent.StopTimerUiUpdates)
+        //viewModel.handleEvent(ShowTimerEvent.StopTimerUiUpdates)
     }
 
     override fun onDestroy() {
@@ -140,6 +138,7 @@ class ShowTimerActivity : AppCompatActivity() {
         showTimerAdapter = ShowTimerAdapter(viewModel::handleEvent)
         binding.showTimerRv.apply {
             layoutManager = lm
+            //layoutManager = LinearLayoutManager(this@ShowTimerActivity)
             setHasFixedSize(true)
             adapter = showTimerAdapter
         }
@@ -163,19 +162,15 @@ class ShowTimerActivity : AppCompatActivity() {
                         is TimerUiState.Loading -> {
                             binding.showTimerRv.visibility = View.GONE
                             binding.showTimerProgressBar.visibility = View.VISIBLE
-                            //binding.emptyLayout.visibility = View.GONE
                         }
                         is TimerUiState.Empty -> {
                             binding.showTimerRv.visibility = View.GONE
                             binding.showTimerProgressBar.visibility = View.GONE
                             finish()
-                            //binding.emptyLayout.visibility = View.VISIBLE
                         }
                         is TimerUiState.Success -> {
                             binding.showTimerRv.visibility = View.VISIBLE
                             binding.showTimerProgressBar.visibility = View.GONE
-                            //binding.emptyLayout.visibility = View.GONE
-
                             showTimerAdapter.submitList(state.timers)
                         }
                     }
@@ -191,8 +186,7 @@ class ShowTimerActivity : AppCompatActivity() {
                 when (effect) {
                     is ShowTimerEffect.FinishActivity -> finish()
                     is ShowTimerEffect.ShowError -> {
-                        val message = effect.error.asUiText().asString(this@ShowTimerActivity)
-                        binding.root.showSnackBar(message, Snackbar.LENGTH_SHORT)
+                        binding.root.showSnackBar(effect.errorMessage, Snackbar.LENGTH_SHORT)
                     }
                     ShowTimerEffect.StartTimerForegroundNotification -> startTimerForegroundNotification()
                 }
@@ -212,10 +206,12 @@ class ShowTimerActivity : AppCompatActivity() {
     }
 
     private fun turnScreenOnAndKeyguardOff() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
-        } else {
+        }
+        else {
             @Suppress("DEPRECATION")
             window.addFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or

@@ -1,17 +1,18 @@
 package com.example.smartalarm.feature.stopwatch.domain.model
 
 /**
- * Domain model representing a stopwatch instance with its state and lap data.
+ * Immutable domain aggregate representing a complete stopwatch session.
  *
- * Encapsulates stopwatch timing information, running state, and lap records.
- * Used in the business logic layer and mapped to UI models as needed.
+ * This model serves as the primary data structure for business logic and UI state
+ * derivation. It encapsulates high-level timing metrics and session metadata
+ * without leakage of persistence-layer identifiers.
  *
- * @property startTime Timestamp (in milliseconds) when the stopwatch was started.
- * @property endTime Timestamp (in milliseconds) when the stopwatch was paused or stopped.
- * @property elapsedTime Total elapsed time (in milliseconds) of the stopwatch session.
- * @property isRunning Indicates whether the stopwatch is currently running.
- * @property lapTimes List of recorded lap details.
- * @property lapCount Total number of recorded laps.
+ * @property startTime Unix timestamp (ms) marking the initial start of the session.
+ * @property elapsedTime Aggregate duration (ms) the stopwatch has been active.
+ * @property endTime Unix timestamp (ms) marking the most recent pause or termination.
+ * @property isRunning Current operational state of the stopwatch engine.
+ * @property lapTimes Immutable collection of recorded [StopwatchLapModel] entries.
+ * @property lapCount Cached count of the total laps for rapid O(1) access.
  */
 data class StopwatchModel(
     val startTime: Long = 0L,
@@ -23,11 +24,11 @@ data class StopwatchModel(
 ) {
 
     /**
-     * Duration of the last completed lap in milliseconds.
+     * Derives the duration of the previous completed lap.
+     * Used as a benchmark for calculating current lap performance and progress.
      *
-     * - Returns the second-to-last lap duration if two or more laps exist.
-     * - Returns total elapsed time if only one lap exists.
-     * - Returns 0 if no laps exist.
+     * @return Duration in milliseconds. Returns [elapsedTime] for the initial lap
+     * or 0L if no session data exists.
      */
     val getLastLapDuration: Long get() {
         return when {
@@ -38,16 +39,16 @@ data class StopwatchModel(
     }
 
     /**
-     * Progress of the current lap as a percentage (0 to 100) relative to the last lap duration.
+     * Calculates the current lap's progress as a normalized percentage (0-100).
+     * * This value is relative to the previous lap's performance and is intended
+     * for driving high-frequency UI components like progress indicators.
      *
-     * - Calculated by comparing current lap elapsed time with the duration of the last completed lap.
-     * - Returns 0 if no valid lap duration is available to compare against.
+     * @return Integer percentage coerced within the 0..100 range.
      */
     val getIndicatorProgress: Int get() {
-            val lastDuration = getLastLapDuration.takeIf { it > 0L } ?: return 0
-            val currentStart = lapTimes.maxByOrNull { it.lapIndex }?.lapStartTimeMillis ?: 0L
-            val elapsed = elapsedTime - currentStart
-            return ((elapsed * 100) / lastDuration).toInt().coerceIn(0, 100)
-        }
-
+        val lastDuration = getLastLapDuration.takeIf { it > 0L } ?: return 0
+        val currentStart = lapTimes.maxByOrNull { it.lapIndex }?.lapStartTimeMillis ?: 0L
+        val elapsed = elapsedTime - currentStart
+        return ((elapsed * 100) / lastDuration).toInt().coerceIn(0, 100)
+    }
 }

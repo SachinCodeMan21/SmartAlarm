@@ -1,6 +1,5 @@
 package com.example.smartalarm.feature.clock.presentation.uiState
 
-import com.example.smartalarm.feature.clock.domain.model.PlaceModel
 import com.example.smartalarm.feature.clock.presentation.model.PlaceUiModel
 
 

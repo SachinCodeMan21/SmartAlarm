@@ -28,8 +28,7 @@ object PlaceMapper {
         fullName = fullName,
         primaryName = primaryName,
         timeZoneId = timeZoneId,
-        offsetSeconds = offsetSeconds,
-        currentTime = currentTime
+        offsetSeconds = offsetSeconds
     )
 
     /**
@@ -44,7 +43,6 @@ object PlaceMapper {
         primaryName = primaryName,
         timeZoneId = timeZoneId,
         offsetSeconds = offsetSeconds,
-        currentTime = currentTime
     )
 
     /**
@@ -61,7 +59,6 @@ object PlaceMapper {
             primaryName = this.primaryName,
             timeZoneId = this.timeZoneId,
             offsetSeconds = this.offsetSeconds,
-            currentTime = this.currentTime
         )
     }
 }

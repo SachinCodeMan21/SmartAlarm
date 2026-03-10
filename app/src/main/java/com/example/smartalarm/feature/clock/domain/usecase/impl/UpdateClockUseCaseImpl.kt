@@ -12,10 +12,10 @@ class UpdateClockUseCaseImpl @Inject constructor(
     /**
      * Calculates local times for a list of saved places.
      */
-    override operator fun invoke(savedPlaces: List<PlaceModel>): List<PlaceModel> {
-        val now = clockProvider.getCurrentTime()
-        return savedPlaces.map { place ->
-            place.copy(currentTime = clockProvider.formatLocalTime(now, place.offsetSeconds))
-        }
-    }
+//    override operator fun invoke(savedPlaces: List<PlaceModel>): List<PlaceModel> {
+//        val now = clockProvider.getCurrentTime()
+//        return savedPlaces.map { place ->
+//            place.copy(currentTime = clockProvider.formatLocalTime(now, place.offsetSeconds))
+//        }
+//    }
 }
