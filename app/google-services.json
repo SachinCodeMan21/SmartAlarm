@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "371450234880",
+    "project_id": "smartalarm-875d8",
+    "storage_bucket": "smartalarm-875d8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371450234880:android:85654443a336f1836870e5",
+        "android_client_info": {
+          "package_name": "com.example.smartalarm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQS5UcLId245gE7eeUf0fvmY01l8MecYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
